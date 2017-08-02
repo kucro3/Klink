@@ -1,5 +1,5 @@
 package org.kucro3.klink.syntax;
 
-public class Sequence {
-	
+public class Operation {
+
 }
