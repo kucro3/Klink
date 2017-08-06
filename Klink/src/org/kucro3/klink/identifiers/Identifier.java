@@ -5,16 +5,10 @@ import org.kucro3.klink.Variables.Variable;
 import org.kucro3.klink.syntax.Sequence;
 
 public class Identifier implements IdentifierInvoker {
-	public Identifier(String name, IdentifierInvoker invoker)
+	public Identifier(String name, IdentifierInvoker invoker, Object source)
 	{
 		this.name = name;
 		this.invoker = invoker;
-		this.available = true;
-	}
-	
-	public boolean available()
-	{
-		return available;
 	}
 	
 	public String getName()
@@ -29,7 +23,6 @@ public class Identifier implements IdentifierInvoker {
 	
 	public void destroy()
 	{
-		this.available = false;
 		this.invoker = null;
 	}
 	
@@ -38,8 +31,6 @@ public class Identifier implements IdentifierInvoker {
 	{
 		return invoker.call(env, var, seq);
 	}
-	
-	private boolean available;
 	
 	private IdentifierInvoker invoker;
 	
