@@ -1,29 +1,29 @@
-package org.kucro3.klink.identifiers;
+package org.kucro3.klink.expression;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.kucro3.klink.exception.ScriptException;
 
-public class IdentifierLibrary {
-	public IdentifierLibrary()
+public class ExpressionLibrary {
+	public ExpressionLibrary()
 	{
 	}
 	
-	public void removeIdentifier(String name)
+	public void removeExpression(String name)
 	{
 		identifiers.remove(name);
 	}
 	
-	public Identifier getIdentifier(String name)
+	public Expression getExpression(String name)
 	{
 		return identifiers.get(name);
 	}
 	
-	public Identifier requireIdentifier(String name)
+	public Expression requireExpression(String name)
 	{
-		Identifier identifier;
-		if((identifier = getIdentifier(name)) == null)
+		Expression identifier;
+		if((identifier = getExpression(name)) == null)
 			throw NoSuchIdentifier(name);
 		return identifier;
 	}
@@ -33,5 +33,5 @@ public class IdentifierLibrary {
 		return new ScriptException("No such identifier: " + name);
 	}
 	
-	private final Map<String, Identifier> identifiers = new HashMap<>();
+	private final Map<String, Expression> identifiers = new HashMap<>();
 }

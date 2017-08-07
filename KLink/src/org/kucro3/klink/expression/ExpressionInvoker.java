@@ -1,9 +1,9 @@
-package org.kucro3.klink.identifiers;
+package org.kucro3.klink.expression;
 
 import org.kucro3.klink.Environment;
 import org.kucro3.klink.Variables.Variable;
 import org.kucro3.klink.syntax.Sequence;
 
-public interface IdentifierInvoker {
+public interface ExpressionInvoker {
 	public Object call(Environment env, Variable var, Sequence seq);
 }

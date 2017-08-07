@@ -1,11 +1,11 @@
-package org.kucro3.klink.identifiers;
+package org.kucro3.klink.expression;
 
 import org.kucro3.klink.Environment;
 import org.kucro3.klink.Variables.Variable;
 import org.kucro3.klink.syntax.Sequence;
 
-public class Identifier implements IdentifierInvoker {
-	public Identifier(String name, IdentifierInvoker invoker, Object source)
+public class Expression implements ExpressionInvoker {
+	public Expression(String name, ExpressionInvoker invoker)
 	{
 		this.name = name;
 		this.invoker = invoker;
@@ -16,7 +16,7 @@ public class Identifier implements IdentifierInvoker {
 		return name;
 	}
 	
-	public IdentifierInvoker getInvoker()
+	public ExpressionInvoker getInvoker()
 	{
 		return invoker;
 	}
@@ -32,7 +32,7 @@ public class Identifier implements IdentifierInvoker {
 		return invoker.call(env, var, seq);
 	}
 	
-	private IdentifierInvoker invoker;
+	private ExpressionInvoker invoker;
 	
 	private final String name;
 }
