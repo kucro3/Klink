@@ -1,5 +1,7 @@
 package org.kucro3.klink.syntax;
 
+import org.kucro3.klink.Klink;
+
 public class Branch implements Executable {
 	public Branch(Judgable judgable, Executable branch)
 	{
@@ -8,11 +10,11 @@ public class Branch implements Executable {
 	}
 
 	@Override
-	public void execute()
+	public void execute(Klink sys)
 	{
-		judgable.execute();
+		judgable.execute(sys);
 		if(judgable.passed())
-			branch.execute();
+			branch.execute(sys);
 	}
 	
 	protected final Judgable judgable;

@@ -10,9 +10,9 @@ public class Operation implements Executable {
 		this.seq = seq;
 	}
 	
-	public void execute()
+	public void execute(Klink sys)
 	{
-		exp.call(Klink.currentEnv(), Klink.currentEnv().popVarSlot(), seq);
+		exp.call(sys.currentEnv(), sys.currentEnv().popVarSlot(), seq);
 	}
 	
 	public Expression getExpression()

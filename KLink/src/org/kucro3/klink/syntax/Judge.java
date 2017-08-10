@@ -12,12 +12,14 @@ public abstract class Judge implements Judgable {
 		this.operation = operation;
 	}
 	
-	public void execute()
+	@Override
+	public void execute(Klink sys)
 	{
-		operation.execute();
-		result = Klink.currentEnv().popBooleanSlot();
+		operation.execute(sys);
+		result = sys.currentEnv().popBooleanSlot();
 	}
 	
+	@Override
 	public abstract boolean passed();
 	
 	protected final Operation operation;

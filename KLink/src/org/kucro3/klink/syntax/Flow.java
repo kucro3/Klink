@@ -1,6 +1,7 @@
 package org.kucro3.klink.syntax;
 
 import org.kucro3.collection.CompoundList;
+import org.kucro3.klink.Klink;
 
 public class Flow implements Executable {
 	public Flow()
@@ -8,10 +9,10 @@ public class Flow implements Executable {
 	}
 	
 	@Override
-	public void execute() 
+	public void execute(Klink sys) 
 	{
-		for(Operation op : flow)
-			op.execute();
+		for(Operation operation : flow)
+			operation.execute(sys);
 	}
 	
 	public void appendOperation(Operation operation)

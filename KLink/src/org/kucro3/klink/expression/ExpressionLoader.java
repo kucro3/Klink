@@ -12,7 +12,7 @@ import org.kucro3.klink.expression.Expression.ReturnType;
 import org.kucro3.klink.syntax.Sequence;
 
 public class ExpressionLoader {
-	public static void load(ExpressionLibrary lib, Class<?> clz)
+	public static void load(Klink sys, ExpressionLibrary lib, Class<?> clz)
 	{
 		boolean nonstatic =
 				clz.getAnnotation(Nonstatic.class) != null;
@@ -38,7 +38,7 @@ public class ExpressionLoader {
 			if(!nonstatic)
 				if(!Modifier.isStatic(mthd.getModifiers()))
 				{
-					Klink.getMessenger().warn("In class: " + clz.getCanonicalName() +
+					sys.getMessenger().warn("In class: " + clz.getCanonicalName() +
 							", Ignored: " + mthd.toGenericString() + ", Cause: Nonstatic method in static class");
 					continue;
 				}
@@ -50,7 +50,7 @@ public class ExpressionLoader {
 			|| params[1] != Variable.class
 			|| params[2] != Sequence.class)
 			{
-				Klink.getMessenger().warn("In class: " + clz.getCanonicalName() +
+				sys.getMessenger().warn("In class: " + clz.getCanonicalName() +
 						", Ignored: " + mthd.toGenericString() + ", Cause: Illegal Argument Type");
 				continue;
 			}

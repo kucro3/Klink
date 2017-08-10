@@ -5,12 +5,16 @@ import java.util.*;
 import org.kucro3.klink.exception.ScriptException;
 
 public class Klink {
-	public static Environment getEnv(String name)
+	public Klink()
+	{
+	}
+	
+	public Environment getEnv(String name)
 	{
 		return env.get(name);
 	}
 	
-	public static Environment requireEnv(String name)
+	public Environment requireEnv(String name)
 	{
 		Environment env;
 		if((env = getEnv(name)) == null)
@@ -18,74 +22,101 @@ public class Klink {
 		return env;
 	}
 	
-	public static Environment createEnv(String name)
+	public Environment createEnv(String name)
 	{
 		if(forEnv(name))
 			throw EnvAlreadyExist(name);
 		Environment env = new Environment(name);
-		Klink.env.put(name, env);
+		this.env.put(name, env);
 		return env;
 	}
 	
-	public static void putEnv(Environment env)
+	public void putEnv(Environment env)
 	{
 		if(forEnv(env.getName()))
 			throw EnvAlreadyExist(env.getName());
 		setEnv(env);
 	}
 	
-	public static void setEnv(Environment env)
+	public void setEnv(Environment env)
 	{
-		Klink.env.put(env.getName(), env);
+		this.env.put(env.getName(), env);
 	}
 	
-	public static void putCurrentEnv(Environment env)
+	public void putCurrentEnv(Environment env)
 	{
 		putEnv(env);
 		currentEnv = env;
 	}
 	
-	public static void setCurrentEnv(Environment env)
+	public void setCurrentEnv(Environment env)
 	{
 		setEnv(env);
 		currentEnv = env;
 	}
 	
-	public static boolean forEnv(String name)
+	public boolean forEnv(String name)
 	{
 		return env.containsKey(name);
 	}
 	
-	public static void destroyEnv(String name)
+	public void destroyEnv(String name)
 	{
 		env.remove(name);
 	}
 	
-	public static Messenger getMessenger()
+	public Messenger getMessenger()
 	{
 		return messenger;
 	}
 	
-	public static void setMessenger(Messenger messenger)
+	public void setMessenger(Messenger messenger)
 	{
 		if(messenger == null)
 			messenger = NULL_MESSENGER;
-		Klink.messenger = messenger;
+		this.messenger = messenger;
 	}
 	
-	public static Environment currentEnv()
+	public Environment currentEnv()
 	{
 		return currentEnv;
 	}
 	
-	public static void currentEnv(String name)
+	public void currentEnv(String name)
 	{
 		currentEnv = requireEnv(name);
 	}
 	
-	public static Environment systemEnv()
+	public Environment systemEnv()
 	{
 		return systemEnv;
+	}
+	
+	public void pushLoop()
+	{
+		loopFlags.addLast(true);
+	}
+	
+	public boolean inLoop()
+	{
+		if(loopFlags.isEmpty())
+			return false;
+		return loopFlags.getLast();
+	}
+	
+	public void popLoop()
+	{
+		if(loopFlags.isEmpty())
+			throw NotInLoop();
+		loopFlags.removeLast();
+	}
+	
+	public void interruptLoop()
+	{
+		if(loopFlags.isEmpty())
+			throw NotInLoop();
+		loopFlags.removeLast();
+		loopFlags.addLast(false);
 	}
 	
 	public static ScriptException NoSuchEnv(String name)
@@ -98,13 +129,27 @@ public class Klink {
 		return new ScriptException("ENV already exist: " + name);
 	}
 	
-	private static final Environment systemEnv = new Environment(null);
+	public static ScriptException NotInLoop()
+	{
+		return new ScriptException("Not in a loop");
+	}
 	
-	private static Environment currentEnv;
+	public static Klink getDefault()
+	{
+		return DEFAULT;
+	}
 	
-	private static final Map<String, Environment> env = new HashMap<>();
+	private static final Klink DEFAULT = new Klink();
 	
-	private static Messenger messenger;
+	private final Environment systemEnv = new Environment(null);
+	
+	private final LinkedList<Boolean> loopFlags = new LinkedList<>();
+	
+	private Environment currentEnv;
+	
+	private final Map<String, Environment> env = new HashMap<>();
+	
+	private Messenger messenger;
 	
 	private static final Messenger NULL_MESSENGER = new Messenger() {
 		@Override
