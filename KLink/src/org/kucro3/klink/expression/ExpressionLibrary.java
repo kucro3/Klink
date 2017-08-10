@@ -28,9 +28,28 @@ public class ExpressionLibrary {
 		return identifier;
 	}
 	
+	public void forceExpression(Expression expression)
+	{
+		String name = expression.getName();
+		identifiers.put(name, expression);
+	}
+	
+	public void putExpression(Expression expression)
+	{
+		String name = expression.getName();
+		if(identifiers.containsKey(name))
+			throw IdentifierRedefinition(name);
+		identifiers.put(name, expression);
+	}
+	
 	public static ScriptException NoSuchIdentifier(String name)
 	{
 		return new ScriptException("No such identifier: " + name);
+	}
+	
+	public static ScriptException IdentifierRedefinition(String name)
+	{
+		return new ScriptException("Identifier Redefinition: " + name);
 	}
 	
 	private final Map<String, Expression> identifiers = new HashMap<>();
