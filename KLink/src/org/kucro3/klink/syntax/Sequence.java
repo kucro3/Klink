@@ -2,7 +2,7 @@ package org.kucro3.klink.syntax;
 
 import java.util.Iterator;
 
-public class Sequence implements Iterator<String> {
+public class Sequence implements Iterable<String>, Iterator<String> {
 	public Sequence(String[] seq)
 	{
 		this(seq, null);
@@ -12,6 +12,12 @@ public class Sequence implements Iterator<String> {
 	{
 		this.seq = seq;
 		this.linemarks = linemarks;
+	}
+	
+	@Override
+	public Iterator<String> iterator()
+	{
+		return this;
 	}
 
 	@Override

@@ -1,7 +1,9 @@
 package org.kucro3.klink.expression;
 
 import org.kucro3.klink.Environment;
+import org.kucro3.klink.Klink;
 import org.kucro3.klink.Variables.Variable;
+import org.kucro3.klink.syntax.Flow;
 import org.kucro3.klink.syntax.Sequence;
 
 public class Expression implements ExpressionInvoker {
@@ -32,9 +34,9 @@ public class Expression implements ExpressionInvoker {
 	}
 	
 	@Override
-	public Object call(Environment env, Variable var, Sequence seq)
+	public Object call(Klink sys, Environment env, Variable[] var, Sequence seq, Flow codeBlock)
 	{
-		Object ret = invoker.call(env, var, seq);
+		Object ret = invoker.call(sys, env, var, seq, codeBlock);
 		switch(rt)
 		{
 		case BOOLEAN:

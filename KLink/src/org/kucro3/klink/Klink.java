@@ -3,10 +3,16 @@ package org.kucro3.klink;
 import java.util.*;
 
 import org.kucro3.klink.exception.ScriptException;
+import org.kucro3.klink.expression.ExpressionLibrary;
 
 public class Klink {
 	public Klink()
 	{
+	}
+	
+	public ExpressionLibrary getExpressions()
+	{
+		return exprLibrary;
 	}
 	
 	public Environment getEnv(String name)
@@ -142,6 +148,8 @@ public class Klink {
 	private static final Klink DEFAULT = new Klink();
 	
 	private final Environment systemEnv = new Environment(null);
+	
+	private final ExpressionLibrary exprLibrary = new ExpressionLibrary();
 	
 	private final LinkedList<Boolean> loopFlags = new LinkedList<>();
 	

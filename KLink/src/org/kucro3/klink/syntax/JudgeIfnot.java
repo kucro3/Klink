@@ -1,7 +1,7 @@
 package org.kucro3.klink.syntax;
 
-public class SyntaxIfnot extends Judge {
-	public SyntaxIfnot(Operation operation)
+public class JudgeIfnot extends Judge {
+	public JudgeIfnot(Operation operation)
 	{
 		super(operation);
 	}

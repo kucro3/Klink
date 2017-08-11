@@ -39,9 +39,14 @@ public class FileUtil {
 					linemarks.add(currentLinemark);
 				currentLinemark = null;
 				
-				strs.add(sb.toString());
+				sb.trimToSize();
 				
-				sb = new StringBuilder();
+				if(sb.length() != 0)
+				{
+					strs.add(sb.toString());
+					
+					sb = new StringBuilder();
+				}
 				
 				break;
 				
@@ -52,6 +57,10 @@ public class FileUtil {
 				
 				sb.append((char) word);
 			}
+		
+		sb.trimToSize();
+		if(sb.length() != 0)
+			strs.add(sb.toString());
 		
 		reader.close();
 		

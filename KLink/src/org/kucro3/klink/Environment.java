@@ -24,19 +24,19 @@ public class Environment {
 		this.source = source;
 	}
 	
-	public void setVarSlot(Variable var)
+	public void setVarSlot(Variable[] var)
 	{
 		this.varSlot = var;
 	}
 	
-	public Variable getVarSlot()
+	public Variable[] getVarSlot()
 	{
 		return this.varSlot;
 	}
 	
-	public Variable popVarSlot()
+	public Variable[] popVarSlot()
 	{
-		Variable var = this.varSlot;
+		Variable[] var = this.varSlot;
 		this.varSlot = null;
 		return var;
 	}
@@ -126,7 +126,7 @@ public class Environment {
 	
 	private Registers regs;
 	
-	private Variable varSlot;
+	private Variable[] varSlot;
 	
 	private Object returnSlot;
 	

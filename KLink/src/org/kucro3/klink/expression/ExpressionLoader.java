@@ -9,6 +9,7 @@ import org.kucro3.klink.Klink;
 import org.kucro3.klink.Variables.Variable;
 import org.kucro3.klink.exception.ScriptException;
 import org.kucro3.klink.expression.Expression.ReturnType;
+import org.kucro3.klink.syntax.Flow;
 import org.kucro3.klink.syntax.Sequence;
 
 public class ExpressionLoader {
@@ -79,10 +80,10 @@ public class ExpressionLoader {
 		}
 		
 		@Override
-		public Object call(Environment env, Variable var, Sequence seq) 
+		public Object call(Klink sys, Environment env, Variable[] var, Sequence seq, Flow codeBlock) 
 		{
 			try {
-				return mthd.invoke(instance, env, var, seq);
+				return mthd.invoke(instance, sys, env, var, seq, codeBlock);
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 				// unused
 				throw new ScriptException("Internal: Reflection Failure");
