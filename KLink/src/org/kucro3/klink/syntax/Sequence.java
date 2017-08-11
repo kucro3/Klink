@@ -2,6 +2,8 @@ package org.kucro3.klink.syntax;
 
 import java.util.Iterator;
 
+import org.kucro3.klink.exception.ScriptException;
+
 public class Sequence implements Iterable<String>, Iterator<String> {
 	public Sequence(String[] seq)
 	{
@@ -25,10 +27,20 @@ public class Sequence implements Iterable<String>, Iterator<String> {
 	{
 		return pointer < seq.length;
 	}
+	
+	public String getNext()
+	{
+		if(!hasNext())
+			throw EOF();
+		return seq[pointer];
+	}
 
 	@Override
 	public String next() 
 	{
+		if(!hasNext())
+			throw EOF();
+		
 		if(linemarks == null || linemarks.length == 0 || !(linemarkPtr < linemarks.length))
 			;
 		else
@@ -59,6 +71,11 @@ public class Sequence implements Iterable<String>, Iterator<String> {
 	public int currentColumn()
 	{
 		return column;
+	}
+	
+	public static ScriptException EOF()
+	{
+		return new ScriptException("Unexpected End of file");
 	}
 	
 	private final String[] seq;

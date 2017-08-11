@@ -11,11 +11,11 @@ public class Flow implements Executable {
 	@Override
 	public void execute(Klink sys) 
 	{
-		for(Operation operation : flow)
+		for(Executable operation : flow)
 			operation.execute(sys);
 	}
 	
-	public void appendOperation(Operation operation)
+	public void appendOperation(Executable operation)
 	{
 		flow.add(operation);
 	}
@@ -30,5 +30,5 @@ public class Flow implements Executable {
 		return flow.size();
 	}
 	
-	private CompoundList<Operation> flow;
+	private CompoundList<Executable> flow;
 }
