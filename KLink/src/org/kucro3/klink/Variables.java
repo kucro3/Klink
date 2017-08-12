@@ -20,9 +20,9 @@ public class Variables {
 		vars.clear();
 	}
 	
-	public Variable removeVar(String name)
+	public void removeVar(String name)
 	{
-		return vars.remove(name);
+		vars.remove(name);
 	}
 	
 	public Variable newVar(String name)
@@ -95,5 +95,45 @@ public class Variables {
 		private final String name;
 		
 		public Object ref;
+	}
+	
+	public static class Var
+	{
+		public Var(String name)
+		{
+			this.name = name;
+		}
+		
+		public String getName()
+		{
+			return name;
+		}
+		
+		public Variable get(Variables vars)
+		{
+			return vars.getVar(name);
+		}
+		
+		public Variable require(Variables vars)
+		{
+			return vars.requireVar(name);
+		}
+		
+		public void remove(Variables vars)
+		{
+			vars.removeVar(name);
+		}
+		
+		public void delete(Variables vars)
+		{
+			vars.deleteVar(name);
+		}
+		
+		public Variable define(Variables vars)
+		{
+			return vars.newVar(name);
+		}
+		
+		private final String name;
 	}
 }

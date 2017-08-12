@@ -43,13 +43,17 @@ public class Environment {
 	
 	public Object getReturnSlot()
 	{
+		if(returnSlot == NULL)
+			throw NoObjectReturned();
 		return returnSlot;
 	}
 	
 	public Object popReturnSlot()
 	{
+		if(returnSlot == NULL)
+			throw NoObjectReturned();
 		Object ret = returnSlot;
-		returnSlot = null;
+		returnSlot = NULL;
 		return ret;
 	}
 	
@@ -124,6 +128,11 @@ public class Environment {
 		return new ScriptException("Unknown boolean state");
 	}
 	
+	public static ScriptException NoObjectReturned()
+	{
+		return new ScriptException("No object returned");
+	}
+	
 	private Registers regs;
 	
 	private Variable[] varSlot;
@@ -137,4 +146,6 @@ public class Environment {
 	private Source source;
 	
 	private final String name;
+	
+	private static final Object NULL = new Object();
 }

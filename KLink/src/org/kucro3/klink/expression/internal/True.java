@@ -1,23 +1,24 @@
 package org.kucro3.klink.expression.internal;
 
-import org.kucro3.klink.Environment;
-import org.kucro3.klink.Klink;
-import org.kucro3.klink.Variables.Variable;
+import org.kucro3.klink.Variables.Var;
 import org.kucro3.klink.expression.Expression;
-import org.kucro3.klink.expression.Expression.ReturnType;
-import org.kucro3.klink.expression.ExpressionInvoker;
+import org.kucro3.klink.expression.ExpressionCompiler;
+import org.kucro3.klink.expression.ExpressionInstance;
 import org.kucro3.klink.syntax.Flow;
 import org.kucro3.klink.syntax.Sequence;
 
-public class True implements ExpressionInvoker {
+public class True implements ExpressionCompiler {
 	@Override
-	public Object call(Klink sys, Environment env, Variable[] var, Sequence seq, Flow codeBlock) 
+	public ExpressionInstance compile(Var[] var, Sequence seq, Flow codeBlock) 
 	{
-		return true;
+		return (sys, env) -> {
+			env.setBooleanSlot(true);
+			return null;
+		};
 	}
 	
 	public static Expression instance()
 	{
-		return new Expression("true", new True(), ReturnType.BOOLEAN);
+		return new Expression("true", new True());
 	}
 }

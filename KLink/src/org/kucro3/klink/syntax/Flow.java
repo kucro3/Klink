@@ -15,12 +15,12 @@ public class Flow implements Executable {
 			operation.execute(sys);
 	}
 	
-	public void appendOperation(Executable operation)
+	public void append(Executable operation)
 	{
 		flow.add(operation);
 	}
 	
-	public void clearOperation()
+	public void clear()
 	{
 		flow.clear();
 	}

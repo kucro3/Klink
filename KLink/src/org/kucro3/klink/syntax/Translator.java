@@ -23,16 +23,14 @@ public class Translator {
 		Flow body = new Flow();
 		
 		while(instance.globalSeq.hasNext())
-			body.appendOperation(instance.pullOperation());
+			body.append(instance.pull());
 		
 		return body;
 	}
 	
-	public Executable pullOperation()
+	public Executable pull()
 	{
 		String first = globalSeq.getNext();
-		String current = null;
-		Flow codeblock = null;
 		
 		switch(first)
 		{
@@ -58,21 +56,36 @@ public class Translator {
 			
 		default:
 			globalSeq.next();
-			Expression expression = lib.requireExpression(first);
+			return pullOperation();
+		}
+	}
+	
+	public Operation pullOperation()
+	{
+		String first = globalSeq.getNext();
+		String current = null;
+		Flow codeblock = null;
+		
+		if(first.equals(";"))
+		{
+			globalSeq.next();
+			return null;
+		}
+		
+		Expression expression = lib.requireExpression(first);
+		
+		ArrayList<String> strs = new ArrayList<>();
+		while(true) switch(current = globalSeq.next())
+		{
+		case ":":
+			codeblock = pullCodeBlock();
 			
-			ArrayList<String> strs = new ArrayList<>();
-			while(true) switch(current = globalSeq.next())
-			{
-			case ":":
-				codeblock = pullCodeBlock();
-				
-			case ";":
-				return new Operation(expression, new Sequence(strs.toArray(new String[0])), codeblock);
-			
-			default:
-				strs.add(current);
-				continue;
-			}
+		case ";":
+			return new Operation(expression, new Sequence(strs.toArray(new String[0])), codeblock);
+		
+		default:
+			strs.add(current);
+			continue;
 		}
 	}
 	
@@ -200,7 +213,7 @@ public class Translator {
 				break LOOP;
 				
 			default:
-				codeblock.appendOperation(pullOperation());
+				codeblock.append(pull());
 				continue;
 			}
 		}

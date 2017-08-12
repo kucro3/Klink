@@ -1,17 +1,14 @@
 package org.kucro3.klink.expression;
 
-import org.kucro3.klink.Environment;
-import org.kucro3.klink.Klink;
-import org.kucro3.klink.Variables.Variable;
+import org.kucro3.klink.Variables.Var;
 import org.kucro3.klink.syntax.Flow;
 import org.kucro3.klink.syntax.Sequence;
 
-public class Expression implements ExpressionInvoker {
-	public Expression(String name, ExpressionInvoker invoker, ReturnType rt)
+public class Expression implements ExpressionCompiler {
+	public Expression(String name, ExpressionCompiler compiler)
 	{
 		this.name = name;
-		this.invoker = invoker;
-		this.rt = rt;
+		this.compiler = compiler;
 	}
 	
 	public String getName()
@@ -19,55 +16,23 @@ public class Expression implements ExpressionInvoker {
 		return name;
 	}
 	
-	public ExpressionInvoker getInvoker()
+	public ExpressionCompiler getCompiler()
 	{
-		return invoker;
+		return compiler;
 	}
 	
 	public void destroy()
 	{
-		this.invoker = null;
-	}
-	
-	public ReturnType getReturnType()
-	{
-		return rt;
+		this.compiler = null;
 	}
 	
 	@Override
-	public Object call(Klink sys, Environment env, Variable[] var, Sequence seq, Flow codeBlock)
+	public ExpressionInstance compile(Var[] var, Sequence seq, Flow codeBlock)
 	{
-		try {
-			Object ret = invoker.call(sys, env, var, seq, codeBlock);
-			switch(rt)
-			{
-			case BOOLEAN:
-				env.setBooleanSlot((boolean) ret);
-				break;
-				
-			case VARIABLE:
-				env.setReturnSlot(ret);
-				break;
-				
-			case VOID:
-				break;
-			}
-			return ret;
-		} finally {
-			seq.reset();
-		}
+		return compiler.compile(var, seq, codeBlock);
 	}
 	
-	private ExpressionInvoker invoker;
-	
-	private ReturnType rt;
+	private ExpressionCompiler compiler;
 	
 	private final String name;
-	
-	public static enum ReturnType
-	{
-		BOOLEAN,
-		VARIABLE,
-		VOID
-	}
 }

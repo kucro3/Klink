@@ -4,11 +4,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import org.kucro3.klink.Environment;
 import org.kucro3.klink.Klink;
-import org.kucro3.klink.Variables.Variable;
+import org.kucro3.klink.Variables.Var;
 import org.kucro3.klink.exception.ScriptException;
-import org.kucro3.klink.expression.Expression.ReturnType;
 import org.kucro3.klink.syntax.Flow;
 import org.kucro3.klink.syntax.Sequence;
 
@@ -47,31 +45,22 @@ public class ExpressionLoader {
 			// check argument
 			Class<?>[] params = mthd.getParameterTypes();
 			if(params.length != 3
-			|| params[0] != Environment.class
-			|| params[1] != Variable.class
-			|| params[2] != Sequence.class)
+			|| params[0] != Var[].class
+			|| params[1] != Sequence.class
+			|| params[2] != Flow.class)
 			{
 				sys.getMessenger().warn("In class: " + clz.getCanonicalName() +
 						", Ignored: " + mthd.toGenericString() + ", Cause: Illegal Argument Type");
 				continue;
 			}
 			
-			ReturnType rt;
-			Class<?> crt = mthd.getReturnType();
-			if(crt == boolean.class)
-				rt = ReturnType.BOOLEAN;
-			else if(crt == void.class)
-				rt = ReturnType.VOID;
-			else
-				rt = ReturnType.VARIABLE;
-			
 			ReflectionInvoker invoker = new ReflectionInvoker(instance, mthd);
 			for(ExpressionFunction ef : efs)
-				lib.putExpression(new Expression(ef.name(), invoker, rt));
+				lib.putExpression(new Expression(ef.name(), invoker));
 		}
 	}
 	
-	static class ReflectionInvoker implements ExpressionInvoker
+	static class ReflectionInvoker implements ExpressionCompiler
 	{
 		ReflectionInvoker(Object instance, Method mthd)
 		{
@@ -80,10 +69,10 @@ public class ExpressionLoader {
 		}
 		
 		@Override
-		public Object call(Klink sys, Environment env, Variable[] var, Sequence seq, Flow codeBlock) 
+		public ExpressionInstance compile(Var[] var, Sequence seq, Flow codeBlock) 
 		{
 			try {
-				return mthd.invoke(instance, sys, env, var, seq, codeBlock);
+				return (ExpressionInstance) mthd.invoke(instance, var, seq, codeBlock);
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 				// unused
 				throw new ScriptException("Internal: Reflection Failure");

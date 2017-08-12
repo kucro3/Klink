@@ -2,18 +2,19 @@ package org.kucro3.klink.syntax;
 
 import org.kucro3.klink.Klink;
 import org.kucro3.klink.expression.Expression;
+import org.kucro3.klink.expression.ExpressionInstance;
 
 public class Operation implements Executable {
 	public Operation(Expression exp, Sequence seq, Flow codeBlock)
 	{
 		this.exp = exp;
 		this.seq = seq;
-		this.codeBlock = codeBlock;
+		this.instance = exp.compile(null, seq, codeBlock);
 	}
 	
 	public void execute(Klink sys)
 	{
-		exp.call(sys, sys.currentEnv(), sys.currentEnv().popVarSlot(), seq, codeBlock);
+		instance.call(sys, sys.currentEnv());
 	}
 	
 	public Expression getExpression()
@@ -26,9 +27,9 @@ public class Operation implements Executable {
 		return seq;
 	}
 	
+	private final ExpressionInstance instance;
+	
 	private final Expression exp;
 	
 	private final Sequence seq;
-	
-	private final Flow codeBlock;
 }
