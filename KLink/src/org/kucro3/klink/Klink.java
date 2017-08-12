@@ -153,7 +153,7 @@ public class Klink {
 	
 	private final LinkedList<Boolean> loopFlags = new LinkedList<>();
 	
-	private Environment currentEnv;
+	private Environment currentEnv = systemEnv;
 	
 	private final Map<String, Environment> env = new HashMap<>();
 	

@@ -4,10 +4,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.kucro3.klink.exception.ScriptException;
+import org.kucro3.klink.expression.internal.False;
+import org.kucro3.klink.expression.internal.True;
 
 public class ExpressionLibrary {
 	public ExpressionLibrary()
 	{
+		init();
+	}
+	
+	private final void init()
+	{
+		forceExpression(True.instance());
+		forceExpression(False.instance());
 	}
 	
 	public void removeExpression(String name)

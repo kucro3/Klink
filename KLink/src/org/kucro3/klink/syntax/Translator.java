@@ -8,7 +8,7 @@ import org.kucro3.klink.expression.Expression;
 import org.kucro3.klink.expression.ExpressionLibrary;
 
 public class Translator {
-	private Translator(Sequence globalSeq, ExpressionLibrary lib)
+	public Translator(Sequence globalSeq, ExpressionLibrary lib)
 	{
 		this.globalSeq = globalSeq;
 		this.lib = lib;
@@ -38,16 +38,18 @@ public class Translator {
 		{
 		case "if":
 		case "ifnot":
-			return pullJudge();
+			return pullBranch();
 			
 		case "for":
 			globalSeq.next();
 			return pullFor();
 			
 		case "while":
+			globalSeq.next();
 			return pullWhile();
 			
 		case "do-while":
+			globalSeq.next();
 			return pullDoWhile();
 		
 		default:
@@ -126,14 +128,17 @@ public class Translator {
 			boolean not , and = false;
 			LOOP0: while(true) 
 			{
-				current = globalSeq.next();
+				current = globalSeq.getNext();
 				not = false;
 				switch(current)
 				{
 				case "ifnot":
 					not = true;
 				case "if":
-					Expression exp = lib.requireExpression(current = globalSeq.next());
+					globalSeq.next();
+					current = globalSeq.getNext();
+					globalSeq.next();
+					Expression exp = lib.requireExpression(current);
 					ArrayList<String> strs = new ArrayList<>();
 					LOOP1: while(true) switch(current = globalSeq.getNext())
 					{
@@ -145,7 +150,7 @@ public class Translator {
 							return judgable;
 						else
 							return and ? new JudgeAnd(left, judgable) : new JudgeOr(left, judgable);
-						
+							
 					case "&":
 						and = true;
 					case "|":
@@ -155,7 +160,7 @@ public class Translator {
 							left = judgable;
 						else
 							left = and ? new JudgeAnd(left, judgable) : new JudgeOr(left, judgable);
-						globalSeq.next();
+							globalSeq.next();
 						continue LOOP0;
 					
 					default:
@@ -163,6 +168,10 @@ public class Translator {
 						globalSeq.next();
 						continue LOOP1;
 					}
+					
+				case ";":
+				case ":":
+					return new JudgeTrue();
 				
 				default:
 					throw JudgableExpressionRequired();
@@ -182,6 +191,7 @@ public class Translator {
 			switch(first)
 			{
 			case ";":
+				globalSeq.next();
 				break LOOP;
 				
 			default:

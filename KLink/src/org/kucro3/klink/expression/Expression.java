@@ -11,6 +11,7 @@ public class Expression implements ExpressionInvoker {
 	{
 		this.name = name;
 		this.invoker = invoker;
+		this.rt = rt;
 	}
 	
 	public String getName()

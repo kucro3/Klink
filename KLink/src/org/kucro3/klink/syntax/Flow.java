@@ -30,5 +30,5 @@ public class Flow implements Executable {
 		return flow.size();
 	}
 	
-	private CompoundList<Executable> flow;
+	private CompoundList<Executable> flow = new CompoundList<>();
 }

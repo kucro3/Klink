@@ -3,9 +3,17 @@ package org.kucro3.klink.util;
 import java.io.*;
 import java.util.ArrayList;
 
+import org.kucro3.klink.Klink;
 import org.kucro3.klink.syntax.*;
 
 public class FileUtil {
+	public static void main(String[] args) throws Exception
+	{
+		Sequence seq = readFrom("E:\\test.klnk");
+		Executable e = Translator.translate(Klink.getDefault(), seq, null);
+		e.execute(Klink.getDefault());
+	}
+	
 	public static Sequence readFrom(String filename) throws IOException
 	{
 		return readFrom(new File(filename));

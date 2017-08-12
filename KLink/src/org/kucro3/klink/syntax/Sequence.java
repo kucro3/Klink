@@ -61,6 +61,8 @@ public class Sequence implements Iterable<String>, Iterator<String> {
 	public void reset()
 	{
 		pointer = 0;
+		column = 0;
+		row = 0;
 	}
 	
 	public int current()
