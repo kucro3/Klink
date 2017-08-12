@@ -3,8 +3,9 @@ package org.kucro3.klink.syntax;
 import org.kucro3.klink.Klink;
 
 public class LoopFor extends Loop {
-	public LoopFor(Executable init, Judge judge, Executable control)
+	public LoopFor(Executable init, Judgable judge, Executable control, Executable body)
 	{
+		super(body);
 		this.init = init;
 		this.judge = judge;
 		this.control = control;
@@ -33,7 +34,7 @@ public class LoopFor extends Loop {
 	
 	protected final Executable init;
 	
-	protected final Judge judge;
+	protected final Judgable judge;
 	
 	protected final Executable control;
 }

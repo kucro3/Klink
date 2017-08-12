@@ -36,21 +36,25 @@ public class Expression implements ExpressionInvoker {
 	@Override
 	public Object call(Klink sys, Environment env, Variable[] var, Sequence seq, Flow codeBlock)
 	{
-		Object ret = invoker.call(sys, env, var, seq, codeBlock);
-		switch(rt)
-		{
-		case BOOLEAN:
-			env.setBooleanSlot((boolean) ret);
-			break;
-			
-		case VARIABLE:
-			env.setReturnSlot(ret);
-			break;
-			
-		case VOID:
-			break;
+		try {
+			Object ret = invoker.call(sys, env, var, seq, codeBlock);
+			switch(rt)
+			{
+			case BOOLEAN:
+				env.setBooleanSlot((boolean) ret);
+				break;
+				
+			case VARIABLE:
+				env.setReturnSlot(ret);
+				break;
+				
+			case VOID:
+				break;
+			}
+			return ret;
+		} finally {
+			seq.reset();
 		}
-		return ret;
 	}
 	
 	private ExpressionInvoker invoker;

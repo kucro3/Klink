@@ -58,6 +58,11 @@ public class Sequence implements Iterable<String>, Iterator<String> {
 		return seq[pointer++];
 	}
 	
+	public void reset()
+	{
+		pointer = 0;
+	}
+	
 	public int current()
 	{
 		return pointer - 1;

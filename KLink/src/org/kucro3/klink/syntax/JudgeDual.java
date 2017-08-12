@@ -3,23 +3,21 @@ package org.kucro3.klink.syntax;
 import org.kucro3.klink.Klink;
 
 public abstract class JudgeDual implements Judgable {
-	public JudgeDual(Judgable a, Judgable b)
+	public JudgeDual(Judgable left, Judgable right)
 	{
-		this.a = a;
-		this.b = b;
+		this.left = left;
+		this.right = right;
 	}
 	
 	@Override
 	public void execute(Klink sys)
 	{
-		a.execute(sys);
-		b.execute(sys);
+		left.execute(sys);
+		right.execute(sys);
 	}
 	
 	@Override
 	public abstract boolean passed();
 	
-	protected final Judgable a;
-	
-	protected final Judgable b;
+	protected final Judgable left, right;
 }

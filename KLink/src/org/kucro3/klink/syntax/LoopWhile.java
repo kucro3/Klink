@@ -3,8 +3,9 @@ package org.kucro3.klink.syntax;
 import org.kucro3.klink.Klink;
 
 public class LoopWhile extends Loop {
-	public LoopWhile(Judge judge)
+	public LoopWhile(Judgable judge, Executable body)
 	{
+		super(body);
 		this.judge = judge;
 	}
 	
@@ -25,5 +26,5 @@ public class LoopWhile extends Loop {
 		sys.popLoop();
 	}
 	
-	protected final Judge judge; 
+	protected final Judgable judge; 
 }

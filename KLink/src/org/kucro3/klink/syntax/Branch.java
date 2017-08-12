@@ -14,7 +14,8 @@ public class Branch implements Executable {
 	{
 		judgable.execute(sys);
 		if(judgable.passed())
-			branch.execute(sys);
+			if(branch != null)
+				branch.execute(sys);
 	}
 	
 	protected final Judgable judgable;

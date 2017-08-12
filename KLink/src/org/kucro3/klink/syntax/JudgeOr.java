@@ -9,6 +9,6 @@ public class JudgeOr extends JudgeDual {
 	@Override
 	public boolean passed()
 	{
-		return a.passed() | b.passed();
+		return left.passed() | right.passed();
 	}
 }

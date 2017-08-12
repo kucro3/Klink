@@ -3,6 +3,7 @@ package org.kucro3.klink.syntax;
 import java.util.ArrayList;
 
 import org.kucro3.klink.Klink;
+import org.kucro3.klink.exception.ScriptException;
 import org.kucro3.klink.expression.Expression;
 import org.kucro3.klink.expression.ExpressionLibrary;
 
@@ -29,19 +30,18 @@ public class Translator {
 	
 	public Executable pullOperation()
 	{
-		String first = globalSeq.next();
+		String first = globalSeq.getNext();
 		String current = null;
 		Flow codeblock = null;
 		
 		switch(first)
 		{
 		case "if":
-			return pullIf();
-			
 		case "ifnot":
-			return pullIfnot();
+			return pullJudge();
 			
 		case "for":
+			globalSeq.next();
 			return pullFor();
 			
 		case "while":
@@ -51,6 +51,7 @@ public class Translator {
 			return pullDoWhile();
 		
 		default:
+			globalSeq.next();
 			Expression expression = lib.requireExpression(first);
 			
 			ArrayList<String> strs = new ArrayList<>();
@@ -71,37 +72,105 @@ public class Translator {
 	
 	public LoopFor pullFor()
 	{
-		
+		Executable init = pullOperation();
+		Judgable judgable = pullJudge();
+		Executable control = pullOperation();
+		switch(globalSeq.next())
+		{
+		case ";":	return new LoopFor(init, judgable, control, null);
+		case ":":	return new LoopFor(init, judgable, control, pullCodeBlock());
+		default:	throw new RuntimeException("Should not reach here");
+		}
 	}
 	
 	public LoopWhile pullWhile()
 	{
-		
+		Judgable judgable = pullJudge();
+		switch(globalSeq.next())
+		{
+		case ";":	return new LoopWhile(judgable, null);
+		case ":":	return new LoopWhile(judgable, pullCodeBlock());
+		default:	throw new RuntimeException("Should not reach here");
+		}
 	}
 	
 	public LoopDoWhile pullDoWhile()
 	{
-		
+		Judgable judgable = pullJudge();
+		switch(globalSeq.next())
+		{
+		case ";":	return new LoopDoWhile(judgable, null);
+		case ":":	return new LoopDoWhile(judgable, pullCodeBlock());
+		default:	throw new RuntimeException("Should not reach here");
+		}
 	}
 	
-	public JudgeIf pullIf()
+	public Branch pullBranch()
 	{
-		
+		Judgable judgable = pullJudge();
+		switch(globalSeq.next())
+		{
+		case ";":	return new Branch(judgable, null);
+		case ":":	return new Branch(judgable, pullCodeBlock());
+		default:	throw new RuntimeException("Should not reach here");
+		}
 	}
 	
-	public JudgeIfnot pullIfnot()
+	public Judgable pullJudge()
 	{
-		
-	}
-	
-	public JudgeAnd pullAnd()
-	{
-		
-	}
-	
-	public JudgeOr pullOr()
-	{
-		
+		try {
+			String current;
+			Judgable judgable;
+			Operation operation;
+			
+			boolean not , and = false;
+			LOOP0: while(true) 
+			{
+				current = globalSeq.next();
+				not = false;
+				switch(current)
+				{
+				case "ifnot":
+					not = true;
+				case "if":
+					Expression exp = lib.requireExpression(current = globalSeq.next());
+					ArrayList<String> strs = new ArrayList<>();
+					LOOP1: while(true) switch(current = globalSeq.getNext())
+					{
+					case ":":
+					case ";":
+						operation = new Operation(exp, new Sequence(strs.toArray(new String[0])), null);
+						judgable = not ? new JudgeIfnot(operation) : new JudgeIf(operation);
+						if(left == null)
+							return judgable;
+						else
+							return and ? new JudgeAnd(left, judgable) : new JudgeOr(left, judgable);
+						
+					case "&":
+						and = true;
+					case "|":
+						operation = new Operation(exp, new Sequence(strs.toArray(new String[0])), null);
+						judgable = not ? new JudgeIfnot(operation) : new JudgeIf(operation);
+						if(left == null)
+							left = judgable;
+						else
+							left = and ? new JudgeAnd(left, judgable) : new JudgeOr(left, judgable);
+						globalSeq.next();
+						continue LOOP0;
+					
+					default:
+						strs.add(current);
+						globalSeq.next();
+						continue LOOP1;
+					}
+				
+				default:
+					throw JudgableExpressionRequired();
+				}
+			}
+		} finally {
+			left = null;
+		}
 	}
 	
 	public Flow pullCodeBlock()
@@ -127,6 +196,13 @@ public class Translator {
 	{
 		return globalSeq;
 	}
+	
+	public static ScriptException JudgableExpressionRequired()
+	{
+		throw new ScriptException("Judgable expression required");
+	}
+	
+	private Judgable left;
 	
 	private final ExpressionLibrary lib;
 	
