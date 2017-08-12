@@ -37,6 +37,7 @@ public class Translator {
 		switch(first)
 		{
 		case ";":
+			globalSeq.next();
 			return new Empty();
 		
 		case "if":
@@ -79,6 +80,7 @@ public class Translator {
 	{
 		Executable init = pullOperation();
 		Judgable judgable = pullJudge();
+		globalSeq.next();
 		Executable control = pullOperation();
 		switch(globalSeq.next())
 		{
@@ -163,7 +165,7 @@ public class Translator {
 							left = judgable;
 						else
 							left = and ? new JudgeAnd(left, judgable) : new JudgeOr(left, judgable);
-							globalSeq.next();
+						globalSeq.next();
 						continue LOOP0;
 					
 					default:
