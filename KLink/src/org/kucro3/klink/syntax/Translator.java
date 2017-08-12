@@ -36,6 +36,9 @@ public class Translator {
 		
 		switch(first)
 		{
+		case ";":
+			return new Empty();
+		
 		case "if":
 		case "ifnot":
 			return pullBranch();
@@ -51,7 +54,7 @@ public class Translator {
 		case "do-while":
 			globalSeq.next();
 			return pullDoWhile();
-		
+			
 		default:
 			globalSeq.next();
 			Expression expression = lib.requireExpression(first);
