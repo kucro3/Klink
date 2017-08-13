@@ -27,9 +27,9 @@ public class Expression implements ExpressionCompiler {
 	}
 	
 	@Override
-	public ExpressionInstance compile(Var[] var, Sequence seq, Flow codeBlock)
+	public ExpressionInstance compile(ExpressionLibrary lib, Var[] var, Sequence seq, Flow codeBlock)
 	{
-		return compiler.compile(var, seq, codeBlock);
+		return compiler.compile(lib, var, seq, codeBlock);
 	}
 	
 	private ExpressionCompiler compiler;

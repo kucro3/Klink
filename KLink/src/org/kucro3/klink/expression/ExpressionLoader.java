@@ -69,10 +69,10 @@ public class ExpressionLoader {
 		}
 		
 		@Override
-		public ExpressionInstance compile(Var[] var, Sequence seq, Flow codeBlock) 
+		public ExpressionInstance compile(ExpressionLibrary lib, Var[] var, Sequence seq, Flow codeBlock) 
 		{
 			try {
-				return (ExpressionInstance) mthd.invoke(instance, var, seq, codeBlock);
+				return (ExpressionInstance) mthd.invoke(instance, lib, var, seq, codeBlock);
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 				// unused
 				throw new ScriptException("Internal: Reflection Failure");

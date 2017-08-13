@@ -3,6 +3,7 @@ package org.kucro3.klink.syntax;
 import java.util.ArrayList;
 
 import org.kucro3.klink.Klink;
+import org.kucro3.klink.Variables.Var;
 import org.kucro3.klink.exception.ScriptException;
 import org.kucro3.klink.expression.Expression;
 import org.kucro3.klink.expression.ExpressionLibrary;
@@ -62,6 +63,11 @@ public class Translator {
 	
 	public Operation pullOperation()
 	{
+		return pullOperation(new Var[0]);
+	}
+	
+	public Operation pullOperation(Var[] vars)
+	{
 		String first = globalSeq.getNext();
 		String current = null;
 		Flow codeblock = null;
@@ -81,7 +87,7 @@ public class Translator {
 			codeblock = pullCodeBlock();
 			
 		case ";":
-			return new Operation(expression, new Sequence(strs.toArray(new String[0])), codeblock);
+			return new Operation(lib, expression, vars, new Sequence(strs.toArray(new String[0])), codeblock);
 		
 		default:
 			strs.add(current);
@@ -162,7 +168,7 @@ public class Translator {
 					{
 					case ":":
 					case ";":
-						operation = new Operation(exp, new Sequence(strs.toArray(new String[0])), null);
+						operation = new Operation(lib, exp, new Var[0], new Sequence(strs.toArray(new String[0])), null);
 						judgable = not ? new JudgeIfnot(operation) : new JudgeIf(operation);
 						if(left == null)
 							return judgable;
@@ -172,7 +178,7 @@ public class Translator {
 					case "&":
 						and = true;
 					case "|":
-						operation = new Operation(exp, new Sequence(strs.toArray(new String[0])), null);
+						operation = new Operation(lib, exp, new Var[0], new Sequence(strs.toArray(new String[0])), null);
 						judgable = not ? new JudgeIfnot(operation) : new JudgeIf(operation);
 						if(left == null)
 							left = judgable;
