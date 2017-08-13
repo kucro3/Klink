@@ -6,6 +6,8 @@ import java.util.Map;
 import org.kucro3.klink.exception.ScriptException;
 import org.kucro3.klink.expression.internal.False;
 import org.kucro3.klink.expression.internal.True;
+import org.kucro3.klink.expression.internal.VarCall;
+import org.kucro3.klink.expression.internal.VarControl;
 
 public class ExpressionLibrary {
 	public ExpressionLibrary()
@@ -17,6 +19,8 @@ public class ExpressionLibrary {
 	{
 		forceExpression(True.instance());
 		forceExpression(False.instance());
+		forceExpression(VarControl.instance());
+		forceExpression(VarCall.instance());
 	}
 	
 	public void removeExpression(String name)
