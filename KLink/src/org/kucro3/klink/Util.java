@@ -12,4 +12,13 @@ public class Util {
 		if(obj.length != required)
 			throw ScriptException.VarNotCompatible(required, obj.length);
 	}
+	
+	public static int parseInt(String s)
+	{
+		try {
+			return Integer.parseInt(s);
+		} catch (NumberFormatException e) {
+			throw new ScriptException("An integer expected");
+		}
+	}
 }

@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.kucro3.klink.exception.ScriptException;
+import org.kucro3.klink.expression.internal.Break;
+import org.kucro3.klink.expression.internal.Escape;
 import org.kucro3.klink.expression.internal.False;
 import org.kucro3.klink.expression.internal.PrintVar;
 import org.kucro3.klink.expression.internal.PrintlnVar;
@@ -25,6 +27,8 @@ public class ExpressionLibrary {
 		forceExpression(VarCall.instance());
 		forceExpression(PrintVar.instance());
 		forceExpression(PrintlnVar.instance());
+		forceExpression(Escape.instance());
+		forceExpression(Break.instance());
 	}
 	
 	public void removeExpression(String name)

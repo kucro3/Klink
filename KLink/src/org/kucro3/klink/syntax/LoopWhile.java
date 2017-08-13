@@ -1,6 +1,7 @@
 package org.kucro3.klink.syntax;
 
 import org.kucro3.klink.Klink;
+import org.kucro3.klink.exception.BreakLoop;
 
 public class LoopWhile extends Loop {
 	public LoopWhile(Judgable judge, Executable body)
@@ -12,9 +13,7 @@ public class LoopWhile extends Loop {
 	@Override
 	public void execute(Klink sys)
 	{
-		sys.pushLoop();
-		while(sys.inLoop())
-		{
+		while(true) try {
 			if(judge != null)
 			{
 				judge.execute(sys);
@@ -22,8 +21,9 @@ public class LoopWhile extends Loop {
 					break;
 			}
 			super.execute(sys);
+		} catch (BreakLoop e) {
+			break;
 		}
-		sys.popLoop();
 	}
 	
 	protected final Judgable judge; 

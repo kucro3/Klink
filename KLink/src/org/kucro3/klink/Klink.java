@@ -98,33 +98,6 @@ public class Klink {
 		return systemEnv;
 	}
 	
-	public void pushLoop()
-	{
-		loopFlags.addLast(true);
-	}
-	
-	public boolean inLoop()
-	{
-		if(loopFlags.isEmpty())
-			return false;
-		return loopFlags.getLast();
-	}
-	
-	public void popLoop()
-	{
-		if(loopFlags.isEmpty())
-			throw NotInLoop();
-		loopFlags.removeLast();
-	}
-	
-	public void interruptLoop()
-	{
-		if(loopFlags.isEmpty())
-			throw NotInLoop();
-		loopFlags.removeLast();
-		loopFlags.addLast(false);
-	}
-	
 	public static ScriptException NoSuchEnv(String name)
 	{
 		return new ScriptException("No such env: " + name);
@@ -150,8 +123,6 @@ public class Klink {
 	private final Environment systemEnv = new Environment(null);
 	
 	private final ExpressionLibrary exprLibrary = new ExpressionLibrary();
-	
-	private final LinkedList<Boolean> loopFlags = new LinkedList<>();
 	
 	private Environment currentEnv = systemEnv;
 	

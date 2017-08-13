@@ -1,6 +1,7 @@
 package org.kucro3.klink.syntax;
 
 import org.kucro3.klink.Klink;
+import org.kucro3.klink.exception.BreakLoop;
 
 public class LoopFor extends Loop {
 	public LoopFor(Executable init, Judgable judge, Executable control, Executable body)
@@ -14,11 +15,9 @@ public class LoopFor extends Loop {
 	@Override
 	public void execute(Klink sys)
 	{
-		sys.pushLoop();
 		if(init != null)
 			init.execute(sys);
-		while(sys.inLoop())
-		{
+		while(true) try {
 			if(judge != null)
 			{
 				judge.execute(sys);
@@ -28,8 +27,9 @@ public class LoopFor extends Loop {
 			super.execute(sys);
 			if(control != null)
 				control.execute(sys);
+		} catch (BreakLoop e) {
+			break;
 		}
-		sys.popLoop();
 	}
 	
 	protected final Executable init;
