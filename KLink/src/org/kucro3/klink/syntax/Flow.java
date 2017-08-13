@@ -12,7 +12,8 @@ public class Flow implements Executable {
 	public void execute(Klink sys) 
 	{
 		for(Executable operation : flow)
-			operation.execute(sys);
+			if(operation != null)
+				operation.execute(sys);
 	}
 	
 	public void append(Executable operation)

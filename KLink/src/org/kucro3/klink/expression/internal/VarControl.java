@@ -84,7 +84,7 @@ public class VarControl implements ExpressionCompiler {
 		@Override
 		public void call(Klink sys, Environment env) 
 		{
-			dst.get(env.getVars()).ref = src.get(env.getVars()).ref;
+			dst.require(env.getVars()).ref = src.require(env.getVars()).ref;
 		}
 		
 		private final Var src, dst;

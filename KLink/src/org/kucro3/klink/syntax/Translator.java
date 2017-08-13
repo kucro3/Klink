@@ -56,7 +56,6 @@ public class Translator {
 			return pullDoWhile();
 			
 		default:
-			globalSeq.next();
 			return pullOperation();
 		}
 	}
@@ -79,6 +78,8 @@ public class Translator {
 		}
 		
 		Expression expression = lib.requireExpression(first);
+		
+		globalSeq.next();
 		
 		ArrayList<String> strs = new ArrayList<>();
 		while(true) switch(current = globalSeq.next())

@@ -100,12 +100,13 @@ public class Sequence implements Iterable<String>, Iterator<String> {
 	public static Sequence appendTail(Sequence seq, String tail)
 	{
 		String[] newArray = new String[seq.seq.length + 1];
+		newArray[seq.seq.length] = tail;
 		System.arraycopy(seq.seq, 0, newArray, 0, seq.seq.length);
 		Sequence newSeq = new Sequence(newArray, seq.linemarks);
 		newSeq.linemarkPtr = seq.linemarkPtr;
 		newSeq.pointer = seq.pointer;
 		newSeq.row = seq.row;
 		newSeq.column = seq.column;
-		return seq;
+		return newSeq;
 	}
 }
