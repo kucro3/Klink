@@ -1,7 +1,7 @@
 package org.kucro3.klink;
 
 public class Registers {
-	public final Object OR[] = new Object[6];
+	public final Object OR[] = new Object[16];
 	
 	public final byte I08[] = new byte[6];
 	
