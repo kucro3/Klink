@@ -119,6 +119,14 @@ public class Variables {
 			return vars.requireVar(name);
 		}
 		
+		public Variable force(Variables vars)
+		{
+			Variable var = vars.getVar(name);
+			if(var == null)
+				var = vars.newVar(name);
+			return var;
+		}
+		
 		public void remove(Variables vars)
 		{
 			vars.removeVar(name);

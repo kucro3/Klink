@@ -84,7 +84,7 @@ public class VarControl implements ExpressionCompiler {
 		@Override
 		public void call(Klink sys, Environment env) 
 		{
-			dst.require(env.getVars()).ref = src.require(env.getVars()).ref;
+			dst.force(env.getVars()).ref = src.force(env.getVars()).ref;
 		}
 		
 		private final Var src, dst;
@@ -103,7 +103,7 @@ public class VarControl implements ExpressionCompiler {
 		public void call(Klink sys, Environment env) 
 		{
 			executable.execute(sys);
-			dst.get(env.getVars()).ref = requireObj ? env.popReturnSlot() : env.popBooleanSlot();
+			dst.force(env.getVars()).ref = requireObj ? env.popReturnSlot() : env.popBooleanSlot();
 		}
 		
 		private final Executable executable;

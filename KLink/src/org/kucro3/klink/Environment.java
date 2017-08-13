@@ -133,7 +133,7 @@ public class Environment {
 		return new ScriptException("No object returned");
 	}
 	
-	private Registers regs;
+	private Registers regs = new Registers();
 	
 	private Variable[] varSlot;
 	
@@ -143,7 +143,7 @@ public class Environment {
 	
 	private Variables varRoot = new Variables();
 	
-	private Source source;
+	private Source source = new SystemSource();
 	
 	private final String name;
 	
