@@ -7,20 +7,24 @@ public class ScriptException extends RuntimeException {
 	 */
 	private static final long serialVersionUID = -2934281618950012808L;
 	
-	public ScriptException(String name)
+	public ScriptException(String message)
 	{
-		super(name);
+		this.message = message;
 	}
 	
 	public void addLineInfo(int line)
 	{
+		if(this.lineInfo)
+			return;
+		
 		this.setMessage(new StringBuilder()
-				.append("[ ")
+				.append("[")
 				.append("At line ")
 				.append(line)
-				.append(" ] ")
+				.append("] ")
 				.append(this.getMessage())
 				.toString());
+		this.lineInfo = true;
 	}
 	
 	public void setMessage(String message)
@@ -35,6 +39,8 @@ public class ScriptException extends RuntimeException {
 	}
 	
 	protected String message;
+	
+	private boolean lineInfo;
 	
 	public static ScriptException VarNotCompatible()
 	{

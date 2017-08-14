@@ -10,8 +10,12 @@ public class FileUtil {
 	public static void main(String[] args) throws Exception
 	{
 		Sequence seq = readFrom("E:\\test.klnk");
-		Executable e = Translator.translate(Klink.getDefault(), seq, null);
-		e.execute(Klink.getDefault());
+		try {
+			Executable e = Translator.translate(Klink.getDefault(), seq, null);
+			e.execute(Klink.getDefault());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static Sequence readFrom(String filename) throws IOException
@@ -22,56 +26,33 @@ public class FileUtil {
 	public static Sequence readFrom(File file) throws IOException
 	{
 		BufferedReader reader = new BufferedReader(new FileReader(file));
-		int word;
 		ArrayList<String> strs = new ArrayList<>();
 		ArrayList<int[]> linemarks = new ArrayList<>();
-		StringBuilder sb = new StringBuilder();
+		String line;
 		
 		int[] currentLinemark = null;
 		
-		while((word = reader.read()) != -1)
-			switch(word)
+		while((line = reader.readLine()) != null)
+		{
+			line = line.trim();
+			if(line.length() != 0)
 			{
-			case '\n':
-			case '\r':
-				if(currentLinemark != null)
-					currentLinemark[1]++;
-				else {
-					currentLinemark = new int[2];
-					currentLinemark[0] = strs.size();
-					currentLinemark[1] = 1;
-				}
-				
-			case ' ':
 				if(currentLinemark != null)
 					linemarks.add(currentLinemark);
 				currentLinemark = null;
 				
-				sb.trimToSize();
-				
-				if(sb.length() != 0)
-				{
-					strs.add(sb.toString());
-					
-					sb = new StringBuilder();
-				}
-				
-				break;
-				
-			default:
-				if(currentLinemark != null)
-					linemarks.add(currentLinemark);
-				currentLinemark = null;
-				
-				sb.append((char) word);
+				String[] seq = line.split(" ");
+				for(String s : seq)
+					strs.add(s);
 			}
-		
-		sb.trimToSize();
-		if(sb.length() != 0)
-			strs.add(sb.toString());
+			
+			if(currentLinemark == null)
+				(currentLinemark = new int[2])[0] = strs.size();
+			currentLinemark[1]++;
+		}
 		
 		reader.close();
 		
-		return new Sequence(strs.toArray(new String[0]), linemarks.toArray(new int[0][0]));
+		return new Sequence(strs.toArray(new String[0]), (int[][]) linemarks.toArray(new int[0][]));
 	}
 }

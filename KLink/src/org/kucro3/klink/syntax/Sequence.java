@@ -16,6 +16,13 @@ public class Sequence implements Iterable<String>, Iterator<String> {
 		this.linemarks = linemarks;
 	}
 	
+	public Sequence(String[] seq, int row, int column)
+	{
+		this(seq, null);
+		this.row = row;
+		this.column = column;
+	}
+	
 	@Override
 	public Iterator<String> iterator()
 	{
@@ -50,6 +57,7 @@ public class Sequence implements Iterable<String>, Iterator<String> {
 			{
 				column = 0;
 				row += linemark[1];
+				linemarkPtr++;
 			}
 			else
 				;
@@ -72,12 +80,12 @@ public class Sequence implements Iterable<String>, Iterator<String> {
 	
 	public int currentRow()
 	{
-		return row;
+		return row + 1;
 	}
 	
 	public int currentColumn()
 	{
-		return column - 1;
+		return column + 1;
 	}
 	
 	public static ScriptException EOF()

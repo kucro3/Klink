@@ -87,7 +87,8 @@ public class Translator {
 			codeblock = pullCodeBlock();
 			
 		case ";":
-			return new LinedOperation(lib, expression, vars, new Sequence(strs.toArray(new String[0])), codeblock, globalSeq.currentRow());
+			return LinedOperation.construct(lib, expression, vars,
+					new Sequence(strs.toArray(new String[0]), globalSeq.currentRow(), 0), codeblock, globalSeq.currentRow());
 		
 		default:
 			strs.add(current);
@@ -168,7 +169,8 @@ public class Translator {
 					{
 					case ":":
 					case ";":
-						operation = new LinedOperation(lib, exp, new Var[0], new Sequence(strs.toArray(new String[0])), null, globalSeq.currentRow());
+						operation = LinedOperation.construct(lib, exp, new Var[0],
+								new Sequence(strs.toArray(new String[0]), globalSeq.currentRow() - 1, 0), null, globalSeq.currentRow());
 						judgable = not ? new LinedJudgeIfnot(operation, globalSeq.currentRow()) : new LinedJudgeIf(operation, globalSeq.currentRow());
 						if(left == null)
 							return judgable;
@@ -178,7 +180,8 @@ public class Translator {
 					case "&":
 						and = true;
 					case "|":
-						operation = new LinedOperation(lib, exp, new Var[0], new Sequence(strs.toArray(new String[0])), null, globalSeq.currentRow());
+						operation = LinedOperation.construct(lib, exp, new Var[0],
+								new Sequence(strs.toArray(new String[0]), globalSeq.currentRow() - 1, 0), null, globalSeq.currentRow());
 						judgable = not ? new LinedJudgeIfnot(operation, globalSeq.currentRow()) : new LinedJudgeIf(operation, globalSeq.currentRow());
 						if(left == null)
 							left = judgable;
@@ -261,10 +264,31 @@ public class Translator {
 	
 	public static class LinedOperation extends Operation implements Lined
 	{
-		public LinedOperation(ExpressionLibrary lib, String exp, Var[] vars, Sequence seq, Flow codeBlock, int line) 
+		public static LinedOperation construct(ExpressionLibrary lib, String exp, Var[] vars, Sequence seq, Flow codeBlock, int line)
+		{
+			try {
+				return new LinedOperation(lib, exp, vars, seq, codeBlock, line);
+			} catch (ScriptException e) {
+				e.addLineInfo(line);
+				throw e;
+			}
+		}
+		
+		private LinedOperation(ExpressionLibrary lib, String exp, Var[] vars, Sequence seq, Flow codeBlock, int line) 
 		{
 			super(lib, exp, vars, seq, codeBlock);
 			this.line = line;
+		}
+		
+		@Override
+		public void execute(Klink sys)
+		{
+			try {
+				super.execute(sys);
+			} catch (ScriptException e) {
+				e.addLineInfo(line);
+				throw e;
+			}
 		}
 
 		@Override
@@ -285,7 +309,7 @@ public class Translator {
 		}
 
 		@Override
-		public int line() 
+		public int line()
 		{
 			return line;
 		}
