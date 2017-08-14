@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.kucro3.klink.Klink;
 import org.kucro3.klink.Variables.Var;
 import org.kucro3.klink.exception.ScriptException;
-import org.kucro3.klink.expression.Expression;
 import org.kucro3.klink.expression.ExpressionLibrary;
 
 public class Translator {
@@ -77,7 +76,7 @@ public class Translator {
 			return null;
 		}
 		
-		Expression expression = lib.requireExpression(first);
+		String expression = first;
 		
 		globalSeq.next();
 		
@@ -88,7 +87,7 @@ public class Translator {
 			codeblock = pullCodeBlock();
 			
 		case ";":
-			return new Operation(lib, expression, vars, new Sequence(strs.toArray(new String[0])), codeblock);
+			return new LinedOperation(lib, expression, vars, new Sequence(strs.toArray(new String[0])), codeblock, globalSeq.currentRow());
 		
 		default:
 			strs.add(current);
@@ -163,14 +162,14 @@ public class Translator {
 					globalSeq.next();
 					current = globalSeq.getNext();
 					globalSeq.next();
-					Expression exp = lib.requireExpression(current);
+					String exp = current;
 					ArrayList<String> strs = new ArrayList<>();
 					LOOP1: while(true) switch(current = globalSeq.getNext())
 					{
 					case ":":
 					case ";":
-						operation = new Operation(lib, exp, new Var[0], new Sequence(strs.toArray(new String[0])), null);
-						judgable = not ? new JudgeIfnot(operation) : new JudgeIf(operation);
+						operation = new LinedOperation(lib, exp, new Var[0], new Sequence(strs.toArray(new String[0])), null, globalSeq.currentRow());
+						judgable = not ? new LinedJudgeIfnot(operation, globalSeq.currentRow()) : new LinedJudgeIf(operation, globalSeq.currentRow());
 						if(left == null)
 							return judgable;
 						else
@@ -179,8 +178,8 @@ public class Translator {
 					case "&":
 						and = true;
 					case "|":
-						operation = new Operation(lib, exp, new Var[0], new Sequence(strs.toArray(new String[0])), null);
-						judgable = not ? new JudgeIfnot(operation) : new JudgeIf(operation);
+						operation = new LinedOperation(lib, exp, new Var[0], new Sequence(strs.toArray(new String[0])), null, globalSeq.currentRow());
+						judgable = not ? new LinedJudgeIfnot(operation, globalSeq.currentRow()) : new LinedJudgeIf(operation, globalSeq.currentRow());
 						if(left == null)
 							left = judgable;
 						else
@@ -199,7 +198,7 @@ public class Translator {
 					return new JudgeTrue();
 				
 				default:
-					throw JudgableExpressionRequired();
+					throw JudgableExpressionRequired(globalSeq.currentRow());
 				}
 			}
 		} finally {
@@ -232,9 +231,11 @@ public class Translator {
 		return globalSeq;
 	}
 	
-	public static ScriptException JudgableExpressionRequired()
+	public static ScriptException JudgableExpressionRequired(int line)
 	{
-		throw new ScriptException("Judgable expression required");
+		ScriptException e = new ScriptException("Judgable expression required");
+		e.addLineInfo(line);
+		return e;
 	}
 	
 	private Judgable left;
@@ -256,5 +257,56 @@ public class Translator {
 		}
 		
 		Translator ref;
+	}
+	
+	public static class LinedOperation extends Operation implements Lined
+	{
+		public LinedOperation(ExpressionLibrary lib, String exp, Var[] vars, Sequence seq, Flow codeBlock, int line) 
+		{
+			super(lib, exp, vars, seq, codeBlock);
+			this.line = line;
+		}
+
+		@Override
+		public int line()
+		{
+			return line;
+		}
+		
+		private final int line;
+	}
+	
+	public static class LinedJudgeIf extends JudgeIf implements Lined
+	{
+		public LinedJudgeIf(Operation operation, int line)
+		{
+			super(operation);
+			this.line = line;
+		}
+
+		@Override
+		public int line() 
+		{
+			return line;
+		}
+		
+		private final int line;
+	}
+	
+	public static class LinedJudgeIfnot extends JudgeIfnot implements Lined
+	{
+		public LinedJudgeIfnot(Operation operation, int line) 
+		{
+			super(operation);
+			this.line = line;
+		}
+
+		@Override
+		public int line()
+		{
+			return line;
+		}
+		
+		private final int line;
 	}
 }

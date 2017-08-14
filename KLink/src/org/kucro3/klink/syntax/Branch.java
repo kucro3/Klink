@@ -13,6 +13,7 @@ public class Branch implements Executable {
 	public void execute(Klink sys)
 	{
 		judgable.execute(sys);
+			
 		if(judgable.passed())
 			if(branch != null)
 				branch.execute(sys);

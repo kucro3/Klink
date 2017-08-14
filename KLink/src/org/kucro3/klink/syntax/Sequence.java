@@ -48,13 +48,13 @@ public class Sequence implements Iterable<String>, Iterator<String> {
 			int[] linemark = linemarks[linemarkPtr];
 			if(pointer == linemark[0])
 			{
-				row = 0;
-				column += linemark[1];
+				column = 0;
+				row += linemark[1];
 			}
 			else
 				;
 		}
-		row++;
+		column++;
 		return seq[pointer++];
 	}
 	
@@ -72,12 +72,12 @@ public class Sequence implements Iterable<String>, Iterator<String> {
 	
 	public int currentRow()
 	{
-		return row - 1;
+		return row;
 	}
 	
 	public int currentColumn()
 	{
-		return column;
+		return column - 1;
 	}
 	
 	public static ScriptException EOF()
