@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.ArrayList;
 
 import org.kucro3.klink.Klink;
+import org.kucro3.klink.exception.ScriptException;
 import org.kucro3.klink.syntax.*;
 
 public class FileUtil {
@@ -13,6 +14,8 @@ public class FileUtil {
 		try {
 			Executable e = Translator.translate(Klink.getDefault(), seq, null);
 			e.execute(Klink.getDefault());
+		} catch (ScriptException e) {
+			System.err.println(e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

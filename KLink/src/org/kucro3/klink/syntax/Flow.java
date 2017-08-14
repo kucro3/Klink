@@ -2,6 +2,7 @@ package org.kucro3.klink.syntax;
 
 import org.kucro3.collection.CompoundList;
 import org.kucro3.klink.Klink;
+import org.kucro3.klink.exception.JumpOut;
 
 public class Flow implements Executable {
 	public Flow()
@@ -11,9 +12,12 @@ public class Flow implements Executable {
 	@Override
 	public void execute(Klink sys) 
 	{
-		for(Executable operation : flow)
-			if(operation != null)
-				operation.execute(sys);
+		try {
+			for(Executable operation : flow)
+				if(operation != null)
+					operation.execute(sys);
+		} catch (JumpOut signal) {
+		}
 	}
 	
 	public void append(Executable operation)
