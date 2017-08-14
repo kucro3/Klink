@@ -2,6 +2,7 @@ package org.kucro3.klink.expression.internal;
 
 import org.kucro3.klink.Environment;
 import org.kucro3.klink.Klink;
+import org.kucro3.klink.Ref;
 import org.kucro3.klink.Variables.Var;
 import org.kucro3.klink.exception.ScriptException;
 import org.kucro3.klink.expression.Expression;
@@ -15,7 +16,7 @@ import org.kucro3.klink.syntax.Translator;
 
 public class VarControl implements ExpressionCompiler {
 	@Override
-	public ExpressionInstance compile(ExpressionLibrary lib, Var[] vars, Sequence seq, Flow codeBlock) 
+	public ExpressionInstance compile(ExpressionLibrary lib, Ref[] refs, Sequence seq, Flow codeBlock) 
 	{
 		String leftName = seq.next();
 		Var leftVar = new Var(leftName);
@@ -42,6 +43,8 @@ public class VarControl implements ExpressionCompiler {
 			Executable executable = translator.pull();
 			return new GetFromExpression(leftVar, executable, requireObj);
 			
+		case "?":
+			
 		default:
 			throw UnknownControlSymbol(control);
 		}
@@ -67,7 +70,7 @@ public class VarControl implements ExpressionCompiler {
 		@Override
 		public void call(Klink sys, Environment env) 
 		{
-			var.define(env.getVars());
+			var.define(env);
 		}
 		
 		private final Var var;
@@ -84,7 +87,7 @@ public class VarControl implements ExpressionCompiler {
 		@Override
 		public void call(Klink sys, Environment env) 
 		{
-			dst.force(env.getVars()).ref = src.force(env.getVars()).ref;
+			dst.force(env, src.get(env));
 		}
 		
 		private final Var src, dst;
@@ -103,7 +106,7 @@ public class VarControl implements ExpressionCompiler {
 		public void call(Klink sys, Environment env) 
 		{
 			executable.execute(sys);
-			dst.force(env.getVars()).ref = requireObj ? env.popReturnSlot() : env.popBooleanSlot();
+			dst.force(env, requireObj ? env.popReturnSlot() : env.popBooleanSlot());
 		}
 		
 		private final Executable executable;

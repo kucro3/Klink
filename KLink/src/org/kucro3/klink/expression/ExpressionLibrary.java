@@ -6,6 +6,7 @@ import java.util.Map;
 import org.kucro3.klink.exception.ScriptException;
 import org.kucro3.klink.expression.internal.Break;
 import org.kucro3.klink.expression.internal.Escape;
+import org.kucro3.klink.expression.internal.Exit;
 import org.kucro3.klink.expression.internal.False;
 import org.kucro3.klink.expression.internal.PrintVar;
 import org.kucro3.klink.expression.internal.PrintlnVar;
@@ -16,7 +17,13 @@ import org.kucro3.klink.expression.internal.VarControl;
 public class ExpressionLibrary {
 	public ExpressionLibrary()
 	{
-		init();
+		this(true);
+	}
+	
+	public ExpressionLibrary(boolean sys)
+	{
+		if(sys)
+			init();
 	}
 	
 	private final void init()
@@ -27,6 +34,7 @@ public class ExpressionLibrary {
 		forceExpression(VarCall.instance());
 		forceExpression(PrintVar.instance());
 		forceExpression(PrintlnVar.instance());
+		forceExpression(Exit.instance());
 		forceExpression(Escape.instance());
 		forceExpression(Break.instance());
 	}

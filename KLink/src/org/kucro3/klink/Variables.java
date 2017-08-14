@@ -25,13 +25,33 @@ public class Variables {
 		vars.remove(name);
 	}
 	
+	public Variable newVarIfAbsent(String name)
+	{
+		Variable var = vars.get(name);
+		if(var == null)
+			vars.put(name, var = new DefaultVariable(name));
+		return var;
+	}
+	
 	public Variable newVar(String name)
 	{
 		if(hasVar(name))
 			throw VariableRedefinition(name);
-		Variable var = new Variable(name);
+		Variable var = new DefaultVariable(name);
 		vars.put(name, var);
 		return var;
+	}
+	
+	public void putVar(Variable var)
+	{
+		if(hasVar(var.getName()))
+			throw VariableRedefinition(var.getName());
+		vars.put(var.getName(), var);
+	}
+	
+	public void forceVar(Variable var)
+	{
+		vars.put(var.getName(), var);
 	}
 	
 	public Variable requireVar(String name)
@@ -80,24 +100,46 @@ public class Variables {
 	
 	private final Map<String, Variable> vars = new HashMap<>();
 	
-	public class Variable
+	public static interface Variable
 	{
-		public Variable(String name)
+		public Object get();
+		
+		public void set(Object ref);
+		
+		public String getName();
+	}
+	
+	public static class DefaultVariable implements Variable
+	{
+		public DefaultVariable(String name)
 		{
 			this.name = name;
 		}
 		
+		@Override
 		public String getName()
 		{
 			return name;
 		}
 		
+		@Override
+		public Object get()
+		{
+			return ref;
+		}
+		
+		@Override
+		public void set(Object ref)
+		{
+			this.ref = ref;
+		}
+		
 		private final String name;
 		
-		public Object ref;
+		private Object ref;
 	}
 	
-	public static class Var
+	public static class Var implements Ref
 	{
 		public Var(String name)
 		{
@@ -109,37 +151,54 @@ public class Variables {
 			return name;
 		}
 		
-		public Variable get(Variables vars)
+		public Variable require(Environment env)
 		{
-			return vars.getVar(name);
+			return env.getVars().requireVar(name);
 		}
 		
-		public Variable require(Variables vars)
+		public void remove(Environment env)
 		{
-			return vars.requireVar(name);
+			env.getVars().removeVar(name);
 		}
 		
-		public Variable force(Variables vars)
+		public void delete(Environment env)
 		{
-			Variable var = vars.getVar(name);
-			if(var == null)
-				var = vars.newVar(name);
-			return var;
+			env.getVars().deleteVar(name);
 		}
 		
-		public void remove(Variables vars)
+		public Variable define(Environment env)
 		{
-			vars.removeVar(name);
+			return env.getVars().newVar(name);
 		}
 		
-		public void delete(Variables vars)
+		@Override
+		public Object get(Environment env)
 		{
-			vars.deleteVar(name);
+			return env.getVars().requireVar(name).get();
+		}
+
+		@Override
+		public void set(Environment env, Object obj) 
+		{
+			env.getVars().requireVar(name).set(obj);
+		}
+
+		@Override
+		public boolean isVar()
+		{
+			return true;
 		}
 		
-		public Variable define(Variables vars)
+		@Override
+		public boolean isReg() 
 		{
-			return vars.newVar(name);
+			return false;
+		}
+		
+		@Override
+		public void force(Environment env, Object obj) 
+		{
+			env.getVars().newVarIfAbsent(name).set(obj);
 		}
 		
 		private final String name;
