@@ -3,6 +3,7 @@ package org.kucro3.klink.syntax;
 import java.util.ArrayList;
 
 import org.kucro3.klink.Klink;
+import org.kucro3.klink.Ref;
 import org.kucro3.klink.Variables.Var;
 import org.kucro3.klink.exception.ScriptException;
 import org.kucro3.klink.expression.ExpressionLibrary;
@@ -61,10 +62,10 @@ public class Translator {
 	
 	public Operation pullOperation()
 	{
-		return pullOperation(new Var[0]);
+		return pullOperation(new Ref[0]);
 	}
 	
-	public Operation pullOperation(Var[] vars)
+	public Operation pullOperation(Ref[] refs)
 	{
 		String first = globalSeq.getNext();
 		String current = null;
@@ -87,7 +88,7 @@ public class Translator {
 			codeblock = pullCodeBlock();
 			
 		case ";":
-			return LinedOperation.construct(lib, expression, vars,
+			return LinedOperation.construct(lib, expression, refs,
 					new Sequence(strs.toArray(new String[0]), globalSeq.currentRow(), 0), codeblock, globalSeq.currentRow());
 		
 		default:
@@ -264,19 +265,19 @@ public class Translator {
 	
 	public static class LinedOperation extends Operation implements Lined
 	{
-		public static LinedOperation construct(ExpressionLibrary lib, String exp, Var[] vars, Sequence seq, Flow codeBlock, int line)
+		public static LinedOperation construct(ExpressionLibrary lib, String exp, Ref[] refs, Sequence seq, Flow codeBlock, int line)
 		{
 			try {
-				return new LinedOperation(lib, exp, vars, seq, codeBlock, line);
+				return new LinedOperation(lib, exp, refs, seq, codeBlock, line);
 			} catch (ScriptException e) {
 				e.addLineInfo(line);
 				throw e;
 			}
 		}
 		
-		private LinedOperation(ExpressionLibrary lib, String exp, Var[] vars, Sequence seq, Flow codeBlock, int line) 
+		private LinedOperation(ExpressionLibrary lib, String exp, Ref[] refs, Sequence seq, Flow codeBlock, int line) 
 		{
-			super(lib, exp, vars, seq, codeBlock);
+			super(lib, exp, refs, seq, codeBlock);
 			this.line = line;
 		}
 		

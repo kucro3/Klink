@@ -1,17 +1,17 @@
 package org.kucro3.klink.syntax;
 
 import org.kucro3.klink.Klink;
-import org.kucro3.klink.Variables.Var;
+import org.kucro3.klink.Ref;
 import org.kucro3.klink.expression.Expression;
 import org.kucro3.klink.expression.ExpressionInstance;
 import org.kucro3.klink.expression.ExpressionLibrary;
 
 public class Operation implements Executable {
-	public Operation(ExpressionLibrary lib, String exp, Var[] vars, Sequence seq, Flow codeBlock)
+	public Operation(ExpressionLibrary lib, String exp, Ref[] refs, Sequence seq, Flow codeBlock)
 	{
 		this.exp = lib.requireExpression(exp);
 		this.seq = seq;
-		this.instance = this.exp.compile(lib, vars, seq, codeBlock);
+		this.instance = this.exp.compile(lib, refs, seq, codeBlock);
 	}
 	
 	public void execute(Klink sys)

@@ -31,9 +31,21 @@ public class Registers {
 		throw RegisterSetOutOfRange(index);
 	}
 	
+	public static Number asNumber(Object obj)
+	{
+		if(obj instanceof Number)
+			return (Number) obj;
+		throw NotANumber();
+	}
+	
 	public static ScriptException RegisterSetOutOfRange(int index)
 	{
 		throw new ScriptException("Register set out of range: " + index);
+	}
+	
+	public static ScriptException NotANumber()
+	{
+		return new ScriptException("Not a number");
 	}
 	
 	public interface Adapter
@@ -55,6 +67,96 @@ public class Registers {
 		public void at(Registers regs, int index, Object obj) 
 		{
 			regs.OR[checkRangeForOR(index)] = obj;
+		}
+	}
+	
+	public static class AdapterForI08 implements Adapter
+	{
+		@Override
+		public Object at(Registers regs, int index)
+		{
+			return regs.I08[checkRange(index)];
+		}
+
+		@Override
+		public void at(Registers regs, int index, Object obj)
+		{
+			regs.I08[checkRange(index)] = asNumber(obj).byteValue();
+		}
+	}
+	
+	public static class AdapterForI16 implements Adapter
+	{
+		@Override
+		public Object at(Registers regs, int index)
+		{
+			return regs.I16[checkRange(index)];
+		}
+
+		@Override
+		public void at(Registers regs, int index, Object obj)
+		{
+			regs.I16[checkRange(index)] = asNumber(obj).shortValue();
+		}
+	}
+	
+	public static class AdapterForI32 implements Adapter
+	{
+		@Override
+		public Object at(Registers regs, int index)
+		{
+			return regs.I32[checkRange(index)];
+		}
+
+		@Override
+		public void at(Registers regs, int index, Object obj)
+		{
+			regs.I32[checkRange(index)] = asNumber(obj).intValue();
+		}
+	}
+	
+	public static class AdapterForI64 implements Adapter
+	{
+		@Override
+		public Object at(Registers regs, int index)
+		{
+			return regs.I64[checkRange(index)];
+		}
+
+		@Override
+		public void at(Registers regs, int index, Object obj)
+		{
+			regs.I64[checkRange(index)] = asNumber(obj).longValue();
+		}
+	}
+	
+	public static class AdapterForF32 implements Adapter
+	{
+		@Override
+		public Object at(Registers regs, int index)
+		{
+			return regs.F32[checkRange(index)];
+		}
+
+		@Override
+		public void at(Registers regs, int index, Object obj)
+		{
+			regs.F32[checkRange(index)] = asNumber(obj).floatValue();
+		}
+	}
+	
+	public static class AdapterForF64 implements Adapter
+	{
+		@Override
+		public Object at(Registers regs, int index)
+		{
+			return regs.F64[checkRange(index)];
+		}
+
+		@Override
+		public void at(Registers regs, int index, Object obj)
+		{
+			regs.F64[checkRange(index)] = asNumber(obj).doubleValue();
 		}
 	}
 	
