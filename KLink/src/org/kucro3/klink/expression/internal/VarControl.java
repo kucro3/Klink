@@ -3,6 +3,7 @@ package org.kucro3.klink.expression.internal;
 import org.kucro3.klink.Environment;
 import org.kucro3.klink.Klink;
 import org.kucro3.klink.Ref;
+import org.kucro3.klink.Util;
 import org.kucro3.klink.Variables.Var;
 import org.kucro3.klink.exception.ScriptException;
 import org.kucro3.klink.expression.Expression;
@@ -43,7 +44,29 @@ public class VarControl implements ExpressionCompiler {
 			Executable executable = translator.pull();
 			return new GetFromExpression(leftVar, executable, requireObj);
 			
-		case "?":
+		case "<=boolean":
+			return (sys, env) -> {leftVar.set(env, Util.parseBoolean(seq.next()));};
+			
+		case "<=long":
+			return (sys, env) -> {leftVar.set(env, Util.parseLong(seq.next()));};
+			
+		case "<=int":
+			return (sys, env) -> {leftVar.set(env, Util.parseInt(seq.next()));};
+			
+		case "<=short":
+			return (sys, env) -> {leftVar.set(env, Util.parseShort(seq.next()));};
+			
+		case "<=byte":
+			return (sys, env) -> {leftVar.set(env, Util.parseByte(seq.next()));};
+			
+		case "<=double":
+			return (sys, env) -> {leftVar.set(env, Util.parseDouble(seq.next()));};
+			
+		case "<=float":
+			return (sys, env) -> {leftVar.set(env, Util.parseFloat(seq.next()));};
+			
+		case "<=string":
+			return (sys, env) -> {leftVar.set(env, seq.leftToString());};
 			
 		default:
 			throw UnknownControlSymbol(control);

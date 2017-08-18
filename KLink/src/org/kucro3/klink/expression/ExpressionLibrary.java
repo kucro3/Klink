@@ -5,6 +5,14 @@ import java.util.Map;
 
 import org.kucro3.klink.exception.ScriptException;
 import org.kucro3.klink.expression.internal.Break;
+import org.kucro3.klink.expression.internal.ConstBoolean;
+import org.kucro3.klink.expression.internal.ConstByte;
+import org.kucro3.klink.expression.internal.ConstDouble;
+import org.kucro3.klink.expression.internal.ConstFloat;
+import org.kucro3.klink.expression.internal.ConstInt;
+import org.kucro3.klink.expression.internal.ConstLong;
+import org.kucro3.klink.expression.internal.ConstShort;
+import org.kucro3.klink.expression.internal.ConstString;
 import org.kucro3.klink.expression.internal.Escape;
 import org.kucro3.klink.expression.internal.Exit;
 import org.kucro3.klink.expression.internal.False;
@@ -37,6 +45,14 @@ public class ExpressionLibrary {
 		forceExpression(Exit.instance());
 		forceExpression(Escape.instance());
 		forceExpression(Break.instance());
+		forceExpression(ConstBoolean.instance());
+		forceExpression(ConstByte.instance());
+		forceExpression(ConstDouble.instance());
+		forceExpression(ConstFloat.instance());
+		forceExpression(ConstInt.instance());
+		forceExpression(ConstLong.instance());
+		forceExpression(ConstShort.instance());
+		forceExpression(ConstString.instance());
 	}
 	
 	public void removeExpression(String name)

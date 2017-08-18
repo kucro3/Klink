@@ -41,14 +41,4 @@ public class ScriptException extends RuntimeException {
 	protected String message;
 	
 	private boolean lineInfo;
-	
-	public static ScriptException VarNotCompatible()
-	{
-		throw new ScriptException("Variable not compatible");
-	}
-	
-	public static ScriptException VarNotCompatible(int requiredCount, int currentCount)
-	{
-		throw new ScriptException("Variable not compatible: " + currentCount + " provided, " + requiredCount + " required");
-	}
 }

@@ -88,6 +88,24 @@ public class Sequence implements Iterable<String>, Iterator<String> {
 		return column + 1;
 	}
 	
+	public String toString(int shift)
+	{
+		StringBuilder sb = new StringBuilder();
+		for(int i = shift; i < seq.length; )
+			sb.append(seq[i++]).append(i + 1 < seq.length ? " " : "");
+		return sb.toString();
+	}
+	
+	public String leftToString()
+	{
+		return toString(pointer);
+	}
+	
+	public String toString()
+	{
+		return toString(0);
+	}
+
 	public static ScriptException EOF()
 	{
 		return new ScriptException("Unexpected End of file");

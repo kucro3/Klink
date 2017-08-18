@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import org.kucro3.klink.Klink;
 import org.kucro3.klink.Ref;
-import org.kucro3.klink.Variables.Var;
+import org.kucro3.klink.Util;
 import org.kucro3.klink.exception.ScriptException;
 import org.kucro3.klink.expression.ExpressionLibrary;
 
@@ -62,7 +62,7 @@ public class Translator {
 	
 	public Operation pullOperation()
 	{
-		return pullOperation(new Ref[0]);
+		return pullOperation(Util.NULL_REFS);
 	}
 	
 	public Operation pullOperation(Ref[] refs)
@@ -170,7 +170,7 @@ public class Translator {
 					{
 					case ":":
 					case ";":
-						operation = LinedOperation.construct(lib, exp, new Var[0],
+						operation = LinedOperation.construct(lib, exp, Util.NULL_REFS,
 								new Sequence(strs.toArray(new String[0]), globalSeq.currentRow() - 1, 0), null, globalSeq.currentRow());
 						judgable = not ? new LinedJudgeIfnot(operation, globalSeq.currentRow()) : new LinedJudgeIf(operation, globalSeq.currentRow());
 						if(left == null)
@@ -181,7 +181,7 @@ public class Translator {
 					case "&":
 						and = true;
 					case "|":
-						operation = LinedOperation.construct(lib, exp, new Var[0],
+						operation = LinedOperation.construct(lib, exp, Util.NULL_REFS,
 								new Sequence(strs.toArray(new String[0]), globalSeq.currentRow() - 1, 0), null, globalSeq.currentRow());
 						judgable = not ? new LinedJudgeIfnot(operation, globalSeq.currentRow()) : new LinedJudgeIf(operation, globalSeq.currentRow());
 						if(left == null)
