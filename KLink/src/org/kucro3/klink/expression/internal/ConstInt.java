@@ -11,6 +11,6 @@ public class ConstInt extends Const {
 	
 	public static Expression instance()
 	{
-		return new Expression("<=boolean", new ConstBoolean());
+		return new Expression("<=int", new ConstInt());
 	}
 }

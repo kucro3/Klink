@@ -89,7 +89,7 @@ public class Translator {
 			
 		case ";":
 			return LinedOperation.construct(lib, expression, refs,
-					new Sequence(strs.toArray(new String[0]), globalSeq.currentRow(), 0), codeblock, globalSeq.currentRow());
+					new Sequence(strs.toArray(new String[0]), globalSeq.currentRow() - 1, 0), codeblock, globalSeq.currentRow());
 		
 		default:
 			strs.add(current);

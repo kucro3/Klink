@@ -23,6 +23,11 @@ public class Sequence implements Iterable<String>, Iterator<String> {
 		this.column = column;
 	}
 	
+	public String[] getSequence()
+	{
+		return seq;
+	}
+	
 	@Override
 	public Iterator<String> iterator()
 	{
@@ -86,6 +91,26 @@ public class Sequence implements Iterable<String>, Iterator<String> {
 	public int currentColumn()
 	{
 		return column + 1;
+	}
+	
+	public void incRow()
+	{
+		row++;
+	}
+	
+	public void decRow()
+	{
+		row--;
+	}
+	
+	public void incColumn()
+	{
+		column++;
+	}
+	
+	public void decColumn()
+	{
+		column--;
 	}
 	
 	public String toString(int shift)
