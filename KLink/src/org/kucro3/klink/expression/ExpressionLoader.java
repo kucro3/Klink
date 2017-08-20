@@ -45,10 +45,11 @@ public class ExpressionLoader {
 			
 			// check argument
 			Class<?>[] params = mthd.getParameterTypes();
-			if(params.length != 3
-			|| params[0] != Var[].class
-			|| params[1] != Sequence.class
-			|| params[2] != Flow.class)
+			if(params.length != 4
+			|| params[0] != ExpressionLibrary.class
+			|| params[1] != Var[].class
+			|| params[2] != Sequence.class
+			|| params[3] != Flow.class)
 			{
 				sys.getMessenger().warn("In class: " + clz.getCanonicalName() +
 						", Ignored: " + mthd.toGenericString() + ", Cause: Illegal Argument Type");

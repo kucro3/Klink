@@ -98,6 +98,11 @@ public class Klink {
 		return systemEnv;
 	}
 	
+	public Namespace getNamespace()
+	{
+		return namespace;
+	}
+	
 	public static ScriptException NoSuchEnv(String name)
 	{
 		return new ScriptException("No such env: " + name);
@@ -119,6 +124,8 @@ public class Klink {
 	}
 	
 	private static final Klink DEFAULT = new Klink();
+	
+	private final Namespace namespace = new Namespace("default");
 	
 	private final Environment systemEnv = new Environment(null);
 	

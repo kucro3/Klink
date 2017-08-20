@@ -130,6 +130,16 @@ public class Sequence implements Iterable<String>, Iterator<String> {
 	{
 		return toString(0);
 	}
+	
+	public String getName()
+	{
+		return name;
+	}
+	
+	public void setName(String name)
+	{
+		this.name = name;
+	}
 
 	public static ScriptException EOF()
 	{
@@ -148,6 +158,8 @@ public class Sequence implements Iterable<String>, Iterator<String> {
 	
 	private int column = 0;
 	
+	private String name;
+	
 	public static Sequence appendTail(Sequence seq, String tail)
 	{
 		String[] newArray = new String[seq.seq.length + 1];
@@ -158,6 +170,7 @@ public class Sequence implements Iterable<String>, Iterator<String> {
 		newSeq.pointer = seq.pointer;
 		newSeq.row = seq.row;
 		newSeq.column = seq.column;
+		newSeq.name = seq.name;
 		return newSeq;
 	}
 }

@@ -1,4 +1,4 @@
-package org.kucro3.klink.util;
+package org.kucro3.klink;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -7,7 +7,7 @@ import org.kucro3.klink.Klink;
 import org.kucro3.klink.exception.ScriptException;
 import org.kucro3.klink.syntax.*;
 
-public class FileUtil {
+public class SequenceUtil {
 	public static void main(String[] args) throws Exception
 	{
 		Sequence seq = readFrom("E:\\test.klnk");
@@ -26,9 +26,18 @@ public class FileUtil {
 		return readFrom(new File(filename));
 	}
 	
+	public static Sequence readFrom(InputStream is) throws IOException
+	{
+		return readFrom(new BufferedReader(new InputStreamReader(is)));
+	}
+	
 	public static Sequence readFrom(File file) throws IOException
 	{
-		BufferedReader reader = new BufferedReader(new FileReader(file));
+		return readFrom(new BufferedReader(new FileReader(file)));
+	}
+	
+	public static Sequence readFrom(BufferedReader reader) throws IOException
+	{
 		ArrayList<String> strs = new ArrayList<>();
 		ArrayList<int[]> linemarks = new ArrayList<>();
 		String line;
