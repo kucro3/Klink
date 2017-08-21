@@ -19,6 +19,7 @@ import org.kucro3.klink.expression.internal.Exit;
 import org.kucro3.klink.expression.internal.False;
 import org.kucro3.klink.expression.internal.LoadDocument;
 import org.kucro3.klink.expression.internal.LoadDocumentAndRun;
+import org.kucro3.klink.expression.internal.LoadExpressionPack;
 import org.kucro3.klink.expression.internal.PrintVar;
 import org.kucro3.klink.expression.internal.PrintlnVar;
 import org.kucro3.klink.expression.internal.Run;
@@ -61,6 +62,7 @@ public class ExpressionLibrary {
 		forceExpression(LoadDocument.instance());
 		forceExpression(LoadDocumentAndRun.instance());
 		forceExpression(ExecuteDocument.instance());
+		forceExpression(LoadExpressionPack.instance());
 	}
 	
 	public void removeExpression(String name)
