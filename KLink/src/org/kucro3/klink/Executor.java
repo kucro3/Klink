@@ -4,14 +4,12 @@ import org.kucro3.klink.exception.Interruption;
 import org.kucro3.klink.exception.ScriptException;
 import org.kucro3.klink.syntax.Executable;
 
-public class Executor implements Executable {
-	public Executor(Executable entity)
+public class Executor {
+	public Executor()
 	{
-		this.entity = entity;
 	}
 
-	@Override
-	public void execute(Klink sys) 
+	public void execute(Executable entity, Klink sys) 
 	{
 		try {
 			entity.execute(sys);
@@ -47,8 +45,6 @@ public class Executor implements Executable {
 	protected ScriptExceptionHandler scriptExceptionHandler;
 	
 	protected InterruptionHandler interruptionHandler;
-	
-	private final Executable entity;
 	
 	public static interface ScriptExceptionHandler
 	{

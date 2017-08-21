@@ -1,9 +1,12 @@
 package org.kucro3.klink;
 
+import java.io.File;
 import java.util.*;
 
 import org.kucro3.klink.exception.ScriptException;
 import org.kucro3.klink.expression.ExpressionLibrary;
+import org.kucro3.klink.syntax.Executable;
+import org.kucro3.klink.syntax.Translator;
 
 public class Klink {
 	public Klink()
@@ -101,6 +104,48 @@ public class Klink {
 	public Namespace getNamespace()
 	{
 		return namespace;
+	}
+	
+	public Executable compile(String filename)
+	{
+		return compile(null, filename);
+	}
+	
+	public Executable compile(File file)
+	{
+		return compile(null, file);
+	}
+	
+	public Executable compile(String name, String filename)
+	{
+		return compile(null, new File(filename));
+	}
+	
+	public Executable compile(String name, File file)
+	{
+		return Translator.translate(this, SequenceUtil.readFrom(file), null);
+	}
+	
+	public Executable execute(String filename)
+	{
+		return execute(null, filename);
+	}
+	
+	public Executable execute(File file)
+	{
+		return execute(null, file);
+	}
+	
+	public Executable execute(String name, String filename)
+	{
+		return execute(name, new File(filename));
+	}
+	
+	public Executable execute(String name, File file)
+	{
+		Executable exec = compile(name, file);
+		exec.execute(this);
+		return exec;
 	}
 	
 	public static ScriptException NoSuchEnv(String name)
