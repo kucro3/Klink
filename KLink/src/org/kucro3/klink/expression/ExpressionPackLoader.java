@@ -23,6 +23,8 @@ public class ExpressionPackLoader {
 			try {
 				cl = new URLClassLoader(new URL[] {zip.toURI().toURL()});
 				InputStream is = cl.getResourceAsStream(RESOURCE_CATALOG);
+				if(is == null)
+					throw CatalogNotFound(zip);
 				Sequence catalog = SequenceUtil.readFrom(is);
 				while(catalog.hasNext())
 					ExpressionLoader.load(sys, lib, cl.loadClass(catalog.next()));
@@ -35,6 +37,11 @@ public class ExpressionPackLoader {
 		} catch (IOException e) {
 			throw Util.IOException(e);
 		}
+	}
+	
+	public static ScriptException CatalogNotFound(File zip)
+	{
+		return new ScriptException("Catalog not found in file: " + zip.getName());
 	}
 	
 	public static final String RESOURCE_CATALOG = "catalog";
