@@ -126,6 +126,11 @@ public class Util {
 		throw new ScriptException("Variable not compatible: " + currentCount + " provided, " + requiredCount + " required");
 	}
 	
+	public static ScriptException IOException(java.io.IOException e)
+	{
+		throw new ScriptException("IOException: " + e.getMessage());
+	}
+	
 	public static final Ref[] NULL_REFS = new Ref[0];
 	
 	private static final Map<String, RegParser> PARSERS;

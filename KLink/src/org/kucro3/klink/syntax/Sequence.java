@@ -18,9 +18,15 @@ public class Sequence implements Iterable<String>, Iterator<String> {
 	
 	public Sequence(String[] seq, int row, int column)
 	{
+		this(seq, row, column, null);
+	}
+	
+	public Sequence(String[] seq, int row, int column, String name)
+	{
 		this(seq, null);
 		this.row = row;
 		this.column = column;
+		this.name = name;
 	}
 	
 	public String[] getSequence()
@@ -116,8 +122,8 @@ public class Sequence implements Iterable<String>, Iterator<String> {
 	public String toString(int shift)
 	{
 		StringBuilder sb = new StringBuilder();
-		for(int i = shift; i < seq.length; )
-			sb.append(seq[i++]).append(i + 1 < seq.length ? " " : "");
+		for(int i = shift; i < seq.length;)
+			sb.append(seq[i++]).append(i < seq.length ? " " : "");
 		return sb.toString();
 	}
 	

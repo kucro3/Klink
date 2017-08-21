@@ -89,7 +89,8 @@ public class Translator {
 			
 		case ";":
 			return LinedOperation.construct(lib, expression, refs,
-					new Sequence(strs.toArray(new String[0]), globalSeq.currentRow() - 1, 0), codeblock, globalSeq.currentRow());
+					new Sequence(strs.toArray(new String[0]), globalSeq.currentRow() - 1, 0, globalSeq.getName())
+				, codeblock, globalSeq.currentRow());
 		
 		default:
 			strs.add(current);
@@ -171,7 +172,8 @@ public class Translator {
 					case ":":
 					case ";":
 						operation = LinedOperation.construct(lib, exp, Util.NULL_REFS,
-								new Sequence(strs.toArray(new String[0]), globalSeq.currentRow() - 1, 0), null, globalSeq.currentRow());
+								new Sequence(strs.toArray(new String[0]), globalSeq.currentRow() - 1, 0, globalSeq.getName())
+							, null, globalSeq.currentRow());
 						judgable = not ? new LinedJudgeIfnot(operation, globalSeq.currentRow()) : new LinedJudgeIf(operation, globalSeq.currentRow());
 						if(left == null)
 							return judgable;
@@ -182,7 +184,8 @@ public class Translator {
 						and = true;
 					case "|":
 						operation = LinedOperation.construct(lib, exp, Util.NULL_REFS,
-								new Sequence(strs.toArray(new String[0]), globalSeq.currentRow() - 1, 0), null, globalSeq.currentRow());
+								new Sequence(strs.toArray(new String[0]), globalSeq.currentRow() - 1, 0, globalSeq.getName())
+							, null, globalSeq.currentRow());
 						judgable = not ? new LinedJudgeIfnot(operation, globalSeq.currentRow()) : new LinedJudgeIf(operation, globalSeq.currentRow());
 						if(left == null)
 							left = judgable;
@@ -271,6 +274,8 @@ public class Translator {
 				return new LinedOperation(lib, exp, refs, seq, codeBlock, line);
 			} catch (ScriptException e) {
 				e.addLineInfo(line);
+				if(seq.getName() != null)
+					e.addNameInfo(seq.getName());
 				throw e;
 			}
 		}
@@ -288,6 +293,8 @@ public class Translator {
 				super.execute(sys);
 			} catch (ScriptException e) {
 				e.addLineInfo(line);
+				if(super.getSequence().getName() != null)
+					e.addNameInfo(super.getSequence().getName());
 				throw e;
 			}
 		}

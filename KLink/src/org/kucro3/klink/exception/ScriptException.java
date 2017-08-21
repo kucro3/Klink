@@ -12,6 +12,20 @@ public class ScriptException extends RuntimeException {
 		this.message = message;
 	}
 	
+	public void addNameInfo(String name)
+	{
+		if(this.nameInfo)
+			return;
+		
+		this.setMessage(new StringBuilder()
+				.append("[")
+				.append(name)
+				.append("] ")
+				.append(this.getMessage())
+				.toString());
+		this.nameInfo = true;
+	}
+	
 	public void addLineInfo(int line)
 	{
 		if(this.lineInfo)
@@ -41,4 +55,6 @@ public class ScriptException extends RuntimeException {
 	protected String message;
 	
 	private boolean lineInfo;
+	
+	private boolean nameInfo;
 }

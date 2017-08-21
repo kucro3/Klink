@@ -6,6 +6,7 @@ import java.net.URLClassLoader;
 
 import org.kucro3.klink.Klink;
 import org.kucro3.klink.SequenceUtil;
+import org.kucro3.klink.Util;
 import org.kucro3.klink.exception.ScriptException;
 import org.kucro3.klink.syntax.Sequence;
 
@@ -32,7 +33,7 @@ public class ExpressionPackLoader {
 					cl.close();
 			}
 		} catch (IOException e) {
-			throw new ScriptException("IOException: " + e.getMessage());
+			throw Util.IOException(e);
 		}
 	}
 	
