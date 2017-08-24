@@ -12,6 +12,12 @@ public class ScriptException extends RuntimeException {
 		this.message = message;
 	}
 	
+	public ScriptException(String message, Throwable cause)
+	{
+		this.message = message;
+		super.initCause(cause);
+	}
+	
 	public void addNameInfo(String name)
 	{
 		if(this.nameInfo)

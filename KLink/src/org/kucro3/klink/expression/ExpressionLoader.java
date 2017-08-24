@@ -6,7 +6,6 @@ import java.lang.reflect.Modifier;
 
 import org.kucro3.klink.Klink;
 import org.kucro3.klink.Ref;
-import org.kucro3.klink.Variables.Var;
 import org.kucro3.klink.exception.ScriptException;
 import org.kucro3.klink.syntax.Flow;
 import org.kucro3.klink.syntax.Sequence;
@@ -47,7 +46,7 @@ public class ExpressionLoader {
 			Class<?>[] params = mthd.getParameterTypes();
 			if(params.length != 4
 			|| params[0] != ExpressionLibrary.class
-			|| params[1] != Var[].class
+			|| params[1] != Ref[].class
 			|| params[2] != Sequence.class
 			|| params[3] != Flow.class)
 			{
@@ -76,8 +75,10 @@ public class ExpressionLoader {
 			try {
 				return (ExpressionInstance) mthd.invoke(instance, lib, refs, seq, codeBlock);
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				if(e.getCause() instanceof ScriptException)
+					throw (ScriptException) e;
 				// unused
-				throw new ScriptException("Internal: Reflection Failure");
+				throw new ScriptException("Internal: Reflection Failure", e);
 			}
 		}
 		

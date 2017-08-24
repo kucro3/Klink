@@ -26,6 +26,7 @@ public class LoadDocument implements ExpressionCompiler {
 			_seq.setName(name);
 			Executable exec = Translator.translate(sys, _seq, null);
 			sys.getNamespace().put(name, exec);
+			sys.getMessenger().info("Loaded script document: " + name + " (" + file + ")");
 		};
 	}
 	

@@ -5,6 +5,7 @@ import java.util.*;
 
 import org.kucro3.klink.exception.ScriptException;
 import org.kucro3.klink.expression.ExpressionLibrary;
+import org.kucro3.klink.expression.ExpressionPackLoader;
 import org.kucro3.klink.syntax.Executable;
 import org.kucro3.klink.syntax.Translator;
 
@@ -148,6 +149,16 @@ public class Klink {
 		return exec;
 	}
 	
+	public PackLoader getPackLoader()
+	{
+		return packloader;
+	}
+	
+	public void setPackLoader(PackLoader loader)
+	{
+		packloader = Objects.requireNonNull(loader);
+	}
+	
 	public static ScriptException NoSuchEnv(String name)
 	{
 		return new ScriptException("No such env: " + name);
@@ -158,15 +169,12 @@ public class Klink {
 		return new ScriptException("ENV already exist: " + name);
 	}
 	
-	public static ScriptException NotInLoop()
-	{
-		return new ScriptException("Not in a loop");
-	}
-	
 	public static Klink getDefault()
 	{
 		return DEFAULT;
 	}
+	
+	private PackLoader packloader = ExpressionPackLoader.getInstance();
 	
 	private static final Klink DEFAULT = new Klink();
 	
