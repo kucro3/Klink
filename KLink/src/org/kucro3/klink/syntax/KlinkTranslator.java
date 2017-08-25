@@ -1,34 +1,56 @@
 package org.kucro3.klink.syntax;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
+import org.kucro3.klink.Executable;
+import org.kucro3.klink.Judgable;
 import org.kucro3.klink.Klink;
 import org.kucro3.klink.Ref;
+import org.kucro3.klink.Snapshot;
+import org.kucro3.klink.Translator;
 import org.kucro3.klink.Util;
 import org.kucro3.klink.exception.ScriptException;
 import org.kucro3.klink.expression.ExpressionLibrary;
+import org.kucro3.klink.flow.*;
 
-public class Translator {
-	public Translator(Sequence globalSeq, ExpressionLibrary lib)
+public class KlinkTranslator implements Translator {
+	public KlinkTranslator(Sequence globalSeq, ExpressionLibrary lib)
 	{
 		this.globalSeq = globalSeq;
 		this.lib = lib;
 	}
 	
+	public KlinkTranslator(ExpressionLibrary lib)
+	{
+		this(new Sequence(), lib);
+	}
+	
+	public KlinkTranslator()
+	{
+		this(new ExpressionLibrary());
+	}
+	
+	@Deprecated
 	public static Executable translate(Klink sys, Sequence globalSeq, TranslatorReference tRef)
 	{
-		Translator instance = new Translator(globalSeq, sys.getExpressions());
+		KlinkTranslator instance = new KlinkTranslator(globalSeq, sys.getExpressions());
 		if(tRef != null)
 			tRef.set(instance);
 		
-		Flow body = new Flow();
-		
 		while(instance.globalSeq.hasNext())
-			body.append(instance.pull());
+			instance.pull();
 		
-		return body;
+		return instance.getContext();
 	}
 	
+	@Override
+	public Snapshot snapshot()
+	{
+		return new Snapshot(this, this.getContext().snapshot());
+	}
+	
+	@Override
 	public Executable pull()
 	{
 		String first = globalSeq.getNext();
@@ -38,7 +60,10 @@ public class Translator {
 		case ";":
 			globalSeq.next();
 			return new Empty();
-		
+	
+		case "else":
+			globalSeq.next();
+			elseBranch = true;
 		case "if":
 		case "ifnot":
 			return pullBranch();
@@ -60,12 +85,13 @@ public class Translator {
 		}
 	}
 	
-	public Operation pullOperation()
+	@Override
+	public Operation pullOperation(Ref[] refs)
 	{
-		return pullOperation(Util.NULL_REFS);
+		return record(pullOperation0(refs));
 	}
 	
-	public Operation pullOperation(Ref[] refs)
+	Operation pullOperation0(Ref[] refs)
 	{
 		String first = globalSeq.getNext();
 		String current = null;
@@ -85,12 +111,12 @@ public class Translator {
 		while(true) switch(current = globalSeq.next())
 		{
 		case ":":
-			codeblock = pullCodeBlock();
+			codeblock = pullCodeBlock0();
 			
 		case ";":
 			return LinedOperation.construct(lib, expression, refs,
 					new Sequence(strs.toArray(new String[0]), globalSeq.currentRow() - 1, 0, globalSeq.getName())
-				, codeblock, globalSeq.currentRow());
+				, codeblock, snapshot(), globalSeq.currentRow());
 		
 		default:
 			strs.add(current);
@@ -98,62 +124,78 @@ public class Translator {
 		}
 	}
 	
+	@Override
 	public LoopFor pullFor()
 	{
-		Executable init = pullOperation();
-		Judgable judgable = pullJudge();
+		Executable init = pullOperation0(Util.NULL_REFS);
+		Judgable judgable = pullJudge0();
 		globalSeq.next();
-		Executable control = pullOperation();
+		Executable control = pullOperation0(Util.NULL_REFS);
 		switch(globalSeq.next())
 		{
-		case ";":	return new LoopFor(init, judgable, control, null);
-		case ":":	return new LoopFor(init, judgable, control, pullCodeBlock());
+		case ";":	return record(new LoopFor(init, judgable, control, null));
+		case ":":	return record(new LoopFor(init, judgable, control, pullCodeBlock0()));
 		default:	throw new RuntimeException("Should not reach here");
 		}
 	}
 	
+	@Override
 	public LoopWhile pullWhile()
 	{
-		Judgable judgable = pullJudge();
+		Judgable judgable = pullJudge0();
 		switch(globalSeq.next())
 		{
-		case ";":	return new LoopWhile(judgable, null);
-		case ":":	return new LoopWhile(judgable, pullCodeBlock());
+		case ";":	return record(new LoopWhile(judgable, null));
+		case ":":	return record(new LoopWhile(judgable, pullCodeBlock0()));
 		default:	throw new RuntimeException("Should not reach here");
 		}
 	}
 	
+	@Override
 	public LoopDoWhile pullDoWhile()
 	{
-		Judgable judgable = pullJudge();
+		Judgable judgable = pullJudge0();
 		switch(globalSeq.next())
 		{
-		case ";":	return new LoopDoWhile(judgable, null);
-		case ":":	return new LoopDoWhile(judgable, pullCodeBlock());
+		case ";":	return record(new LoopDoWhile(judgable, null));
+		case ":":	return record(new LoopDoWhile(judgable, pullCodeBlock0()));
 		default:	throw new RuntimeException("Should not reach here");
 		}
 	}
 	
+	@Override
 	public Branch pullBranch()
 	{
-		Judgable judgable = pullJudge();
-		switch(globalSeq.next())
-		{
-		case ";":	return new Branch(judgable, null);
-		case ":":	return new Branch(judgable, pullCodeBlock());
-		default:	throw new RuntimeException("Should not reach here");
+		try {
+			Judgable judgable = pullJudge0();
+			switch(globalSeq.next())
+			{
+			case ";":	
+				return record(elseBranch ? new BranchElse(getContext().tail(), judgable, null) : new Branch(judgable, null));
+			case ":":	
+				return record(elseBranch ? new BranchElse(getContext().tail(), judgable, pullCodeBlock0()) : new Branch(judgable, pullCodeBlock0()));
+			default:	throw new RuntimeException("Should not reach here");
+			}
+		} finally {
+			elseBranch = false;
 		}
 	}
 	
+	@Override
 	public Judgable pullJudge()
+	{
+		return record(pullJudge0());
+	}
+	
+	Judgable pullJudge0()
 	{
 		try {
 			String current;
 			Judgable judgable;
 			Operation operation;
 			
-			boolean not , and = false;
-			LOOP0: while(true) 
+			boolean not, and = false;
+			LOOP0: while(true)
 			{
 				current = globalSeq.getNext();
 				not = false;
@@ -173,7 +215,7 @@ public class Translator {
 					case ";":
 						operation = LinedOperation.construct(lib, exp, Util.NULL_REFS,
 								new Sequence(strs.toArray(new String[0]), globalSeq.currentRow() - 1, 0, globalSeq.getName())
-							, null, globalSeq.currentRow());
+							, null, snapshot(), globalSeq.currentRow());
 						judgable = not ? new LinedJudgeIfnot(operation, globalSeq.currentRow()) : new LinedJudgeIf(operation, globalSeq.currentRow());
 						if(left == null)
 							return judgable;
@@ -185,7 +227,7 @@ public class Translator {
 					case "|":
 						operation = LinedOperation.construct(lib, exp, Util.NULL_REFS,
 								new Sequence(strs.toArray(new String[0]), globalSeq.currentRow() - 1, 0, globalSeq.getName())
-							, null, globalSeq.currentRow());
+							, null, snapshot(), globalSeq.currentRow());
 						judgable = not ? new LinedJudgeIfnot(operation, globalSeq.currentRow()) : new LinedJudgeIf(operation, globalSeq.currentRow());
 						if(left == null)
 							left = judgable;
@@ -213,29 +255,57 @@ public class Translator {
 		}
 	}
 	
+	@Override
 	public Flow pullCodeBlock()
 	{
+		return record(pullCodeBlock0());
+	}
+	
+	Flow pullCodeBlock0()
+	{
 		Flow codeblock = new Flow();
-		LOOP: while(true)
+		temporary(codeblock, globalSeq, (trans) ->
 		{
-			String first = globalSeq.getNext();
-			switch(first)
+			LOOP: while(true)
 			{
-			case ";":
-				globalSeq.next();
-				break LOOP;
-				
-			default:
-				codeblock.append(pull());
-				continue;
+				String first = globalSeq.getNext();
+				switch(first)
+				{
+				case ";":
+					globalSeq.next();
+					break LOOP;
+					
+				default:
+					trans.pull();
+					continue;
+				}
 			}
-		}
+		});
 		return codeblock;
 	}
 	
+	@Override
+	public void setLibrary(ExpressionLibrary lib)
+	{
+		this.lib = Objects.requireNonNull(lib);
+	}
+	
+	@Override
+	public ExpressionLibrary getLibrary()
+	{
+		return lib;
+	}
+	
+	@Override
 	public Sequence getGlobal()
 	{
 		return globalSeq;
+	}
+	
+	@Override
+	public void setGlobal(Sequence seq)
+	{
+		this.globalSeq = Objects.requireNonNull(seq);
 	}
 	
 	public static ScriptException JudgableExpressionRequired(int line)
@@ -245,11 +315,53 @@ public class Translator {
 		return e;
 	}
 	
+	@Override
+	public Flow pullAll()
+	{
+		while(globalSeq.hasNext())
+			pull();
+		return this.currentFlow;
+	}
+	
+	@Override
+	public boolean finished()
+	{
+		return !globalSeq.hasNext();
+	}
+	
+	@Override
+	public void resetContext()
+	{
+		this.currentFlow.clear();
+	}
+	
+	@Override
+	public Flow getContext()
+	{
+		return currentFlow;
+	}
+	
+	@Override
+	public void setContext(Flow flow)
+	{
+		this.currentFlow = flow;
+	}
+	
+	<T extends Executable> T record(T t)
+	{
+		currentFlow.append(t);
+		return t;
+	}
+	
+	private boolean elseBranch;
+	
 	private Judgable left;
 	
-	private final ExpressionLibrary lib;
+	private ExpressionLibrary lib;
 	
-	private final Sequence globalSeq;
+	private Sequence globalSeq;
+	
+	private Flow currentFlow = new Flow();
 	
 	public static class TranslatorReference
 	{
@@ -268,10 +380,10 @@ public class Translator {
 	
 	public static class LinedOperation extends Operation implements Lined
 	{
-		public static LinedOperation construct(ExpressionLibrary lib, String exp, Ref[] refs, Sequence seq, Flow codeBlock, int line)
+		public static LinedOperation construct(ExpressionLibrary lib, String exp, Ref[] refs, Sequence seq, Flow codeBlock, Snapshot snapshot, int line)
 		{
 			try {
-				return new LinedOperation(lib, exp, refs, seq, codeBlock, line);
+				return new LinedOperation(lib, exp, refs, seq, codeBlock, snapshot, line);
 			} catch (ScriptException e) {
 				e.addLineInfo(line);
 				if(seq.getName() != null)
@@ -280,9 +392,9 @@ public class Translator {
 			}
 		}
 		
-		private LinedOperation(ExpressionLibrary lib, String exp, Ref[] refs, Sequence seq, Flow codeBlock, int line) 
+		private LinedOperation(ExpressionLibrary lib, String exp, Ref[] refs, Sequence seq, Flow codeBlock, Snapshot snapshot, int line) 
 		{
-			super(lib, exp, refs, seq, codeBlock);
+			super(lib, exp, refs, seq, codeBlock, snapshot);
 			this.line = line;
 		}
 		

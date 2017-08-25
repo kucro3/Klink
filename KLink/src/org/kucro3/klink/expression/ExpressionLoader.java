@@ -6,8 +6,9 @@ import java.lang.reflect.Modifier;
 
 import org.kucro3.klink.Klink;
 import org.kucro3.klink.Ref;
+import org.kucro3.klink.Snapshot;
 import org.kucro3.klink.exception.ScriptException;
-import org.kucro3.klink.syntax.Flow;
+import org.kucro3.klink.flow.Flow;
 import org.kucro3.klink.syntax.Sequence;
 
 public class ExpressionLoader {
@@ -44,11 +45,20 @@ public class ExpressionLoader {
 			
 			// check argument
 			Class<?>[] params = mthd.getParameterTypes();
-			if(params.length != 4
-			|| params[0] != ExpressionLibrary.class
-			|| params[1] != Ref[].class
-			|| params[2] != Sequence.class
-			|| params[3] != Flow.class)
+			if(params.length == 4
+			|| params[0] == ExpressionLibrary.class
+			|| params[1] == Ref[].class
+			|| params[2] == Sequence.class
+			|| params[3] == Flow.class)
+				;
+			else if(params.length == 5
+			|| params[0] == ExpressionLibrary.class
+			|| params[1] == Ref[].class
+			|| params[2] == Sequence.class
+			|| params[3] == Flow.class
+			|| params[4] == Snapshot.class)
+				;
+			else
 			{
 				sys.getMessenger().warn("In class: " + clz.getCanonicalName() +
 						", Ignored: " + mthd.toGenericString() + ", Cause: Illegal Argument Type");
@@ -70,10 +80,13 @@ public class ExpressionLoader {
 		}
 		
 		@Override
-		public ExpressionInstance compile(ExpressionLibrary lib, Ref[] refs, Sequence seq, Flow codeBlock) 
+		public ExpressionInstance compile(ExpressionLibrary lib, Ref[] refs, Sequence seq, Flow codeBlock, Snapshot snapshot) 
 		{
 			try {
-				return (ExpressionInstance) mthd.invoke(instance, lib, refs, seq, codeBlock);
+				if(mthd.getParameterCount() == 4)
+					return (ExpressionInstance) mthd.invoke(instance, lib, refs, seq, codeBlock);
+				else
+					return (ExpressionInstance) mthd.invoke(instance, lib, refs, seq, codeBlock, snapshot);
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 				if(e.getCause() instanceof ScriptException)
 					throw (ScriptException) e;

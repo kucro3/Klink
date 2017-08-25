@@ -1,4 +1,6 @@
-package org.kucro3.klink.syntax;
+package org.kucro3.klink.flow;
+
+import org.kucro3.klink.Judgable;
 
 public class JudgeOr extends JudgeDual {
 	public JudgeOr(Judgable a, Judgable b)

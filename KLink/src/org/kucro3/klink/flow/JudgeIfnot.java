@@ -1,4 +1,4 @@
-package org.kucro3.klink.syntax;
+package org.kucro3.klink.flow;
 
 public class JudgeIfnot extends Judge {
 	public JudgeIfnot(Operation operation)

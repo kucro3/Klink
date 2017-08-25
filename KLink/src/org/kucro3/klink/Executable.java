@@ -1,4 +1,4 @@
-package org.kucro3.klink.syntax;
+package org.kucro3.klink;
 
 import org.kucro3.klink.Klink;
 

@@ -10,12 +10,12 @@ import org.kucro3.klink.syntax.*;
 public class SequenceUtil {
 	public static void main(String[] args) throws Exception
 	{
-		Sequence seq = readFrom("E:\\test.klnk");
 		try {
-			Executable e = Translator.translate(Klink.getDefault(), seq, null);
+			Executable e = Klink.getDefault().compile("E:\\test.klnk");
 			e.execute(Klink.getDefault());
 		} catch (ScriptException e) {
 			System.err.println(e.getMessage());
+			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

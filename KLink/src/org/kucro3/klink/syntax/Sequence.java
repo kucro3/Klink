@@ -5,6 +5,11 @@ import java.util.Iterator;
 import org.kucro3.klink.exception.ScriptException;
 
 public class Sequence implements Iterable<String>, Iterator<String> {
+	public Sequence()
+	{
+		this(new String[0]);
+	}
+	
 	public Sequence(String[] seq)
 	{
 		this(seq, null);

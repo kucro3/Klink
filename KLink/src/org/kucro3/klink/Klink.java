@@ -6,8 +6,8 @@ import java.util.*;
 import org.kucro3.klink.exception.ScriptException;
 import org.kucro3.klink.expression.ExpressionLibrary;
 import org.kucro3.klink.expression.ExpressionPackLoader;
-import org.kucro3.klink.syntax.Executable;
-import org.kucro3.klink.syntax.Translator;
+import org.kucro3.klink.syntax.KlinkTranslator;
+import org.kucro3.klink.syntax.Sequence;
 
 public class Klink {
 	public Klink()
@@ -124,7 +124,19 @@ public class Klink {
 	
 	public Executable compile(String name, File file)
 	{
-		return Translator.translate(this, SequenceUtil.readFrom(file), null);
+		return compile(name, SequenceUtil.readFrom(file));
+	}
+	
+	public Executable compile(Sequence seq)
+	{
+		return compile(seq.getName(), seq);
+	}
+	
+	public Executable compile(String name, Sequence seq)
+	{
+		Translator translator = getTranslatorProviderWithLibrary().provide();
+		translator.setGlobal(seq);
+		return translator.pullAll();
 	}
 	
 	public Executable execute(String filename)
@@ -144,7 +156,17 @@ public class Klink {
 	
 	public Executable execute(String name, File file)
 	{
-		Executable exec = compile(name, file);
+		return execute(name, SequenceUtil.readFrom(file));
+	}
+	
+	public Executable execute(Sequence seq)
+	{
+		return execute(seq.getName(), seq);
+	}
+	
+	public Executable execute(String name, Sequence seq)
+	{
+		Executable exec = compile(name, seq);
 		exec.execute(this);
 		return exec;
 	}
@@ -152,6 +174,25 @@ public class Klink {
 	public PackLoader getPackLoader()
 	{
 		return packloader;
+	}
+	
+	public void setTranslatorProvider(TranslatorProvider provider)
+	{
+		this.translatorProvider = Objects.requireNonNull(provider);
+	}
+	
+	public TranslatorProvider getTranslatorProvider()
+	{
+		return this.translatorProvider;
+	}
+	
+	public TranslatorProvider getTranslatorProviderWithLibrary()
+	{
+		return () -> {
+			Translator provided = this.translatorProvider.provide();
+			provided.setLibrary(exprLibrary);
+			return provided;
+		};
 	}
 	
 	public void setPackLoader(PackLoader loader)
@@ -174,6 +215,10 @@ public class Klink {
 		return DEFAULT;
 	}
 	
+	private TranslatorProvider translatorProvider = () -> {
+		return new KlinkTranslator();
+	};
+	
 	private PackLoader packloader = ExpressionPackLoader.getInstance();
 	
 	private static final Klink DEFAULT = new Klink();
@@ -188,9 +233,12 @@ public class Klink {
 	
 	private final Map<String, Environment> env = new HashMap<>();
 	
-	private Messenger messenger;
+	private Messenger messenger = new NullMessenger();
 	
-	private static final Messenger NULL_MESSENGER = new Messenger() {
+	private static final Messenger NULL_MESSENGER = new NullMessenger();
+	
+	private static class NullMessenger implements Messenger
+	{
 		@Override
 		public void warn(String msg) {
 		}
@@ -198,5 +246,5 @@ public class Klink {
 		@Override
 		public void info(String msg) {
 		}
-	};
+	}
 }

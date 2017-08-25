@@ -2,7 +2,6 @@ package org.kucro3.klink;
 
 import org.kucro3.klink.exception.Interruption;
 import org.kucro3.klink.exception.ScriptException;
-import org.kucro3.klink.syntax.Executable;
 
 public class Executor {
 	public Executor()
@@ -13,12 +12,12 @@ public class Executor {
 	{
 		try {
 			entity.execute(sys);
-		} catch (ScriptException e) {
-			if(scriptExceptionHandler != null)
-				scriptExceptionHandler.handle(e);
 		} catch (Interruption i) {
 			if(interruptionHandler != null)
 				interruptionHandler.handle(i);
+		} catch (ScriptException e) {
+			if(scriptExceptionHandler != null)
+				scriptExceptionHandler.handle(e);
 		}
 	}
 	

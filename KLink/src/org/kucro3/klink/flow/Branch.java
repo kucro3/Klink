@@ -1,8 +1,10 @@
-package org.kucro3.klink.syntax;
+package org.kucro3.klink.flow;
 
+import org.kucro3.klink.Executable;
+import org.kucro3.klink.Judgable;
 import org.kucro3.klink.Klink;
 
-public class Branch implements Executable {
+public class Branch implements Executable, Judgable {
 	public Branch(Judgable judgable, Executable branch)
 	{
 		this.judgable = judgable;
@@ -14,9 +16,15 @@ public class Branch implements Executable {
 	{
 		judgable.execute(sys);
 			
-		if(judgable.passed())
+		if(passed())
 			if(branch != null)
 				branch.execute(sys);
+	}
+	
+	@Override
+	public boolean passed() 
+	{
+		return judgable.passed();
 	}
 	
 	protected final Judgable judgable;

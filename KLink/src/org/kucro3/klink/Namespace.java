@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.kucro3.klink.exception.ScriptException;
-import org.kucro3.klink.syntax.Executable;
 
 public class Namespace {
 	public Namespace(String name)

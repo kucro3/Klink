@@ -1,5 +1,6 @@
-package org.kucro3.klink.syntax;
+package org.kucro3.klink.flow;
 
+import org.kucro3.klink.Executable;
 import org.kucro3.klink.Klink;
 
 public class Empty implements Executable {

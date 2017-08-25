@@ -1,8 +1,10 @@
 package org.kucro3.klink.expression.internal;
 
 import org.kucro3.klink.Environment;
+import org.kucro3.klink.Executable;
 import org.kucro3.klink.Klink;
 import org.kucro3.klink.Ref;
+import org.kucro3.klink.Snapshot;
 import org.kucro3.klink.Util;
 import org.kucro3.klink.Variables.Var;
 import org.kucro3.klink.exception.ScriptException;
@@ -10,14 +12,13 @@ import org.kucro3.klink.expression.Expression;
 import org.kucro3.klink.expression.ExpressionCompiler;
 import org.kucro3.klink.expression.ExpressionInstance;
 import org.kucro3.klink.expression.ExpressionLibrary;
-import org.kucro3.klink.syntax.Executable;
-import org.kucro3.klink.syntax.Flow;
+import org.kucro3.klink.flow.Flow;
 import org.kucro3.klink.syntax.Sequence;
-import org.kucro3.klink.syntax.Translator;
+import org.kucro3.util.Reference;
 
 public class VarControl implements ExpressionCompiler {
 	@Override
-	public ExpressionInstance compile(ExpressionLibrary lib, Ref[] refs, Sequence seq, Flow codeBlock) 
+	public ExpressionInstance compile(ExpressionLibrary lib, Ref[] refs, Sequence seq, Flow codeBlock, Snapshot context) 
 	{
 		String leftName = seq.next();
 		Var leftVar = new Var(leftName);
@@ -40,9 +41,11 @@ public class VarControl implements ExpressionCompiler {
 		case "<=":
 			requireObj = true;
 		case "<?":
-			Translator translator = new Translator(Sequence.appendTail(seq, ";"), lib);
-			Executable executable = translator.pull();
-			return new GetFromExpression(leftVar, executable, requireObj);
+			Reference<Executable> executable = new Reference<>();
+			context.getTranslator().temporary(Sequence.appendTail(seq, ";"), (trans) -> {
+				executable.set(trans.pull());
+			});
+			return new GetFromExpression(leftVar, executable.get(), requireObj);
 			
 		case "<=boolean":
 			return (sys, env) -> {leftVar.set(env, Util.parseBoolean(seq.next()));};

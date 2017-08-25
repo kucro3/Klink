@@ -1,6 +1,6 @@
 package org.kucro3.klink.exception;
 
-public class Interruption extends RuntimeException {
+public class Interruption extends ScriptException {
 
 	/**
 	 * 
@@ -9,6 +9,7 @@ public class Interruption extends RuntimeException {
 	
 	public Interruption(int code)
 	{
+		super("Interruption code: " + code);
 		this.code = code;
 	}
 	
