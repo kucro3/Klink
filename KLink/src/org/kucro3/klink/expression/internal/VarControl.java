@@ -48,28 +48,36 @@ public class VarControl implements ExpressionCompiler {
 			return new GetFromExpression(leftVar, executable.get(), requireObj);
 			
 		case "<=boolean":
-			return (sys, env) -> {leftVar.set(env, Util.parseBoolean(seq.next()));};
+			final boolean zv = Util.parseBoolean(seq.next());
+			return (sys, env) -> {leftVar.set(env, zv);};
 			
 		case "<=long":
-			return (sys, env) -> {leftVar.set(env, Util.parseLong(seq.next()));};
+			final long lv = Util.parseLong(seq.next());
+			return (sys, env) -> {leftVar.set(env, lv);};
 			
 		case "<=int":
-			return (sys, env) -> {leftVar.set(env, Util.parseInt(seq.next()));};
+			final int iv = Util.parseInt(seq.next());
+			return (sys, env) -> {leftVar.set(env, iv);};
 			
 		case "<=short":
-			return (sys, env) -> {leftVar.set(env, Util.parseShort(seq.next()));};
+			final short sv = Util.parseShort(seq.next());
+			return (sys, env) -> {leftVar.set(env, sv);};
 			
 		case "<=byte":
-			return (sys, env) -> {leftVar.set(env, Util.parseByte(seq.next()));};
+			final byte bv = Util.parseByte(seq.next());
+			return (sys, env) -> {leftVar.set(env, bv);};
 			
 		case "<=double":
-			return (sys, env) -> {leftVar.set(env, Util.parseDouble(seq.next()));};
+			final double dv = Util.parseDouble(seq.next());
+			return (sys, env) -> {leftVar.set(env, dv);};
 			
 		case "<=float":
-			return (sys, env) -> {leftVar.set(env, Util.parseFloat(seq.next()));};
+			final float fv = Util.parseFloat(seq.next());
+			return (sys, env) -> {leftVar.set(env, fv);};
 			
 		case "<=string":
-			return (sys, env) -> {leftVar.set(env, seq.leftToString());};
+			final String strv = seq.leftToString();
+			return (sys, env) -> {leftVar.set(env, strv);};
 			
 		default:
 			throw UnknownControlSymbol(control);

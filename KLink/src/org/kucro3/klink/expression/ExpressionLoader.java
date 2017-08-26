@@ -7,6 +7,7 @@ import java.lang.reflect.Modifier;
 import org.kucro3.klink.Klink;
 import org.kucro3.klink.Ref;
 import org.kucro3.klink.Snapshot;
+import org.kucro3.klink.Util;
 import org.kucro3.klink.exception.ScriptException;
 import org.kucro3.klink.flow.Flow;
 import org.kucro3.klink.syntax.Sequence;
@@ -45,7 +46,16 @@ public class ExpressionLoader {
 			
 			// check argument
 			Class<?>[] params = mthd.getParameterTypes();
-			if(params.length == 4
+			if(params.length == 2
+			|| params[0] == ExpressionLibrary.class
+			|| params[1] == Sequence.class)
+				;
+			else if(params.length == 3
+			|| params[0] == ExpressionLibrary.class
+			|| params[1] == Ref[].class
+			|| params[2] == Sequence.class)
+				;
+			else if(params.length == 4
 			|| params[0] == ExpressionLibrary.class
 			|| params[1] == Ref[].class
 			|| params[2] == Sequence.class
@@ -83,10 +93,19 @@ public class ExpressionLoader {
 		public ExpressionInstance compile(ExpressionLibrary lib, Ref[] refs, Sequence seq, Flow codeBlock, Snapshot snapshot) 
 		{
 			try {
-				if(mthd.getParameterCount() == 4)
+				switch(mthd.getParameterCount())
+				{
+				case 2:
+					return (ExpressionInstance) mthd.invoke(instance, lib, seq);
+				case 3:
+					return (ExpressionInstance) mthd.invoke(instance, lib, refs, seq);
+				case 4:
 					return (ExpressionInstance) mthd.invoke(instance, lib, refs, seq, codeBlock);
-				else
+				case 5:
 					return (ExpressionInstance) mthd.invoke(instance, lib, refs, seq, codeBlock, snapshot);
+				default:
+					throw Util.ShouldNotReachHere();
+				}
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 				if(e.getCause() instanceof ScriptException)
 					throw (ScriptException) e;

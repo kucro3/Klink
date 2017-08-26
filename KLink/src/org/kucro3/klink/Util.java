@@ -131,6 +131,11 @@ public class Util {
 		throw new ScriptException("IOException: " + e.getMessage());
 	}
 	
+	public static ScriptException ShouldNotReachHere()
+	{
+		throw new ScriptException("Should not reach here");
+	}
+	
 	public static final Ref[] NULL_REFS = new Ref[0];
 	
 	private static final Map<String, RegParser> PARSERS;
