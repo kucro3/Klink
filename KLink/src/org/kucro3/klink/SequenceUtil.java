@@ -3,24 +3,9 @@ package org.kucro3.klink;
 import java.io.*;
 import java.util.ArrayList;
 
-import org.kucro3.klink.Klink;
-import org.kucro3.klink.exception.ScriptException;
 import org.kucro3.klink.syntax.*;
 
 public class SequenceUtil {
-	public static void main(String[] args) throws Exception
-	{
-		try {
-			Executable e = Klink.getDefault().compile("E:\\test.klnk");
-			e.execute(Klink.getDefault());
-		} catch (ScriptException e) {
-			System.err.println(e.getMessage());
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
 	public static Sequence readFrom(String filename)
 	{
 		return readFrom(new File(filename));

@@ -49,35 +49,35 @@ public class VarControl implements ExpressionCompiler {
 			
 		case "<=boolean":
 			final boolean zv = Util.parseBoolean(seq.next());
-			return (sys, env) -> {leftVar.set(env, zv);};
+			return (sys, env) -> {leftVar.force(env, zv);};
 			
 		case "<=long":
 			final long lv = Util.parseLong(seq.next());
-			return (sys, env) -> {leftVar.set(env, lv);};
+			return (sys, env) -> {leftVar.force(env, lv);};
 			
 		case "<=int":
 			final int iv = Util.parseInt(seq.next());
-			return (sys, env) -> {leftVar.set(env, iv);};
+			return (sys, env) -> {leftVar.force(env, iv);};
 			
 		case "<=short":
 			final short sv = Util.parseShort(seq.next());
-			return (sys, env) -> {leftVar.set(env, sv);};
+			return (sys, env) -> {leftVar.force(env, sv);};
 			
 		case "<=byte":
 			final byte bv = Util.parseByte(seq.next());
-			return (sys, env) -> {leftVar.set(env, bv);};
+			return (sys, env) -> {leftVar.force(env, bv);};
 			
 		case "<=double":
 			final double dv = Util.parseDouble(seq.next());
-			return (sys, env) -> {leftVar.set(env, dv);};
+			return (sys, env) -> {leftVar.force(env, dv);};
 			
 		case "<=float":
 			final float fv = Util.parseFloat(seq.next());
-			return (sys, env) -> {leftVar.set(env, fv);};
+			return (sys, env) -> {leftVar.force(env, fv);};
 			
 		case "<=string":
 			final String strv = seq.leftToString();
-			return (sys, env) -> {leftVar.set(env, strv);};
+			return (sys, env) -> {leftVar.force(env, strv);};
 			
 		default:
 			throw UnknownControlSymbol(control);

@@ -1,104 +1,31 @@
 package org.kucro3.klink;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collection;
 
-import org.kucro3.klink.exception.ScriptException;
-
-public class Variables {
-	public Variables()
-	{
-	}
+public interface Variables {
+	public void clearVars();
 	
-	public Variables(Variables parent)
-	{
-		this.parent = parent;
-	}
+	public void deleteVar(String name);
 	
-	public void clearVars()
-	{
-		vars.clear();
-	}
+	public void forceVar(Variable var);
 	
-	public void removeVar(String name)
-	{
-		vars.remove(name);
-	}
+	public Variables getParent();
 	
-	public Variable newVarIfAbsent(String name)
-	{
-		Variable var = vars.get(name);
-		if(var == null)
-			vars.put(name, var = new DefaultVariable(name));
-		return var;
-	}
+	public Variable getVar(String name);
 	
-	public Variable newVar(String name)
-	{
-		if(hasVar(name))
-			throw VariableRedefinition(name);
-		Variable var = new DefaultVariable(name);
-		vars.put(name, var);
-		return var;
-	}
+	public Collection<Variable> getVars();
 	
-	public void putVar(Variable var)
-	{
-		if(hasVar(var.getName()))
-			throw VariableRedefinition(var.getName());
-		vars.put(var.getName(), var);
-	}
+	public boolean hasVar(String name);
 	
-	public void forceVar(Variable var)
-	{
-		vars.put(var.getName(), var);
-	}
+	public Variable newVar(String name);
 	
-	public Variable requireVar(String name)
-	{
-		Variable var;
-		if((var = getVar(name)) == null)
-			throw NoSuchVariable(name);
-		return var;
-	}
+	public Variable newVarIfAbsent(String name);
 	
-	public Variable getVar(String name)
-	{
-		return vars.get(name);
-	}
+	public void putVar(Variable var);
 	
-	public void deleteVar(String name)
-	{
-		if(vars.remove(name) == null)
-			throw NoSuchVariable(name);
-	}
+	public void removeVar(String name);
 	
-	public boolean hasVar(String name)
-	{
-		if(parent != null)
-			if(parent.hasVar(name))
-				return true;
-		return vars.containsKey(name);
-	}
-	
-	public Variables getParent()
-	{
-		return parent;
-	}
-	
-	public static ScriptException NoSuchVariable(String name)
-	{
-		return new ScriptException("No such variable: " + name);
-	}
-	
-	public static ScriptException VariableRedefinition(String name)
-	{
-		return new ScriptException("Variable redefinition: " + name);
-	}
-	
-	Variables parent;
-	
-	private final Map<String, Variable> vars = new HashMap<>();
+	public Variable requireVar(String name);
 	
 	public static interface Variable
 	{
@@ -107,36 +34,6 @@ public class Variables {
 		public void set(Object ref);
 		
 		public String getName();
-	}
-	
-	public static class DefaultVariable implements Variable
-	{
-		public DefaultVariable(String name)
-		{
-			this.name = name;
-		}
-		
-		@Override
-		public String getName()
-		{
-			return name;
-		}
-		
-		@Override
-		public Object get()
-		{
-			return ref;
-		}
-		
-		@Override
-		public void set(Object ref)
-		{
-			this.ref = ref;
-		}
-		
-		private final String name;
-		
-		private Object ref;
 	}
 	
 	public static class Var implements Ref

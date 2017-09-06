@@ -95,7 +95,7 @@ public class Environment {
 	
 	public Variables pushVars()
 	{
-		Variables child = new Variables(varRoot);
+		Variables child = new MappedVariables(varRoot);
 		this.varRoot = child;
 		return child;
 	}
@@ -141,7 +141,7 @@ public class Environment {
 	
 	private Boolean booleanSlot;
 	
-	private Variables varRoot = new Variables();
+	private Variables varRoot = new MappedVariables();
 	
 	private Source source = new SystemSource();
 	

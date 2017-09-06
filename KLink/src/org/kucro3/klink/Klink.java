@@ -72,7 +72,8 @@ public class Klink {
 	
 	public void destroyEnv(String name)
 	{
-		env.remove(name);
+		if(currentEnv == env.remove(name))
+			currentEnv = systemEnv;
 	}
 	
 	public Messenger getMessenger()
@@ -94,7 +95,10 @@ public class Klink {
 	
 	public void currentEnv(String name)
 	{
-		currentEnv = requireEnv(name);
+		if(name == null)
+			currentEnv = systemEnv;
+		else
+			currentEnv = requireEnv(name);
 	}
 	
 	public Environment systemEnv()
