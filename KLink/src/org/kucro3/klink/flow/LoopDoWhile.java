@@ -19,12 +19,9 @@ public class LoopDoWhile extends Loop {
 			super.execute(sys);
 			while(true)
 			{
-				if(judge != null)
-				{
-					judge.execute(sys);
-					if(!judge.passed())
-						break;
-				}
+				judge.execute(sys);
+				if(!judge.passed())
+					break;
 				super.execute(sys);
 			}
 		} catch (BreakLoop e) {

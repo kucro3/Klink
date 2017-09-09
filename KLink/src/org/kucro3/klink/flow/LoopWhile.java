@@ -16,12 +16,9 @@ public class LoopWhile extends Loop {
 	public void execute(Klink sys)
 	{
 		while(true) try {
-			if(judge != null)
-			{
-				judge.execute(sys);
-				if(!judge.passed())
-					break;
-			}
+			judge.execute(sys);
+			if(!judge.passed())
+				break;
 			super.execute(sys);
 		} catch (BreakLoop e) {
 			break;

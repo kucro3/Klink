@@ -3,16 +3,29 @@ package org.kucro3.klink;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.kucro3.klink.exception.ScriptException;
 
 public class MappedVariables implements Variables {
 	public MappedVariables()
 	{
+		this(DefaultVariable::new);
+	}
+	
+	public MappedVariables(VariableFactory factory)
+	{
+		this(factory, null);
 	}
 	
 	public MappedVariables(Variables parent)
 	{
+		this(DefaultVariable::new, parent);
+	}
+	
+	public MappedVariables(VariableFactory factory, Variables parent)
+	{
+		this.factory = factory;
 		this.parent = parent;
 	}
 	
@@ -33,7 +46,7 @@ public class MappedVariables implements Variables {
 	{
 		Variable var = vars.get(name);
 		if(var == null)
-			vars.put(name, var = new DefaultVariable(name));
+			vars.put(name, var = factory.produce(name));
 		return var;
 	}
 	
@@ -42,7 +55,7 @@ public class MappedVariables implements Variables {
 	{
 		if(hasVar(name))
 			throw VariableRedefinition(name);
-		Variable var = new DefaultVariable(name);
+		Variable var = factory.produce(name);
 		vars.put(name, var);
 		return var;
 	}
@@ -64,16 +77,16 @@ public class MappedVariables implements Variables {
 	@Override
 	public Variable requireVar(String name)
 	{
-		Variable var;
-		if((var = getVar(name)) == null)
+		Optional<Variable> var;
+		if(!(var = getVar(name)).isPresent())
 			throw NoSuchVariable(name);
-		return var;
+		return var.get();
 	}
 	
 	@Override
-	public Variable getVar(String name)
+	public Optional<Variable> getVar(String name)
 	{
-		return vars.get(name);
+		return Optional.ofNullable(vars.get(name));
 	}
 	
 	@Override
@@ -93,9 +106,9 @@ public class MappedVariables implements Variables {
 	}
 	
 	@Override
-	public Variables getParent()
+	public Optional<Variables> getParent()
 	{
-		return parent;
+		return Optional.ofNullable(parent);
 	}
 	
 	@Override
@@ -115,6 +128,8 @@ public class MappedVariables implements Variables {
 	}
 	
 	Variables parent;
+	
+	private final VariableFactory factory;
 	
 	private final Map<String, Variable> vars = new HashMap<>();
 	

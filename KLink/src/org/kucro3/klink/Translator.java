@@ -1,5 +1,6 @@
 package org.kucro3.klink;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.kucro3.klink.expression.ExpressionLibrary;
@@ -33,12 +34,12 @@ public interface Translator {
 	
 	public Judgable pullJudge();
 	
-	public default Operation pullOperation() 
+	public default Optional<Operation> pullOperation() 
 	{
 		return pullOperation(Util.NULL_REFS);
 	}
 	
-	public Operation pullOperation(Ref[] refs);
+	public Optional<Operation> pullOperation(Ref[] refs);
 	
 	public Flow pullAll();
 

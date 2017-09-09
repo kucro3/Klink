@@ -104,7 +104,7 @@ public class Environment {
 	{
 		if(varRoot.getParent() == null)
 			throw VarsStackUnderflow();
-		this.varRoot = varRoot.getParent();
+		this.varRoot = varRoot.getParent().orElse(null);
 		return this.varRoot;
 	}
 	

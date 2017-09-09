@@ -1,6 +1,7 @@
 package org.kucro3.klink.flow;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import org.kucro3.collection.CompoundList;
 import org.kucro3.klink.Executable;
@@ -16,14 +17,13 @@ public class Flow implements Executable {
 	public void execute(Klink sys) 
 	{
 		try {
-			for(Executable operation : flow)
-				if(operation != null)
-					operation.execute(sys);
+			for(Optional<Executable> operation : flow)
+				operation.ifPresent((e) -> e.execute(sys));
 		} catch (JumpOut signal) {
 		}
 	}
 	
-	public void append(Executable operation)
+	public void append(Optional<Executable> operation)
 	{
 		flow.add(operation);
 	}
@@ -38,7 +38,7 @@ public class Flow implements Executable {
 		return flow.size();
 	}
 	
-	public Executable tail()
+	public Optional<Executable> tail()
 	{
 		return flow.get(flow.size() - 1);
 	}
@@ -46,7 +46,7 @@ public class Flow implements Executable {
 	public Flow copy()
 	{
 		Flow copy = new Flow();
-		for(Executable e : flow)
+		for(Optional<Executable> e : flow)
 			copy.flow.add(e);
 		return copy;
 	}
@@ -56,5 +56,5 @@ public class Flow implements Executable {
 		return new FlowSnapshot(this, Collections.unmodifiableList(flow));
 	}
 	
-	private CompoundList<Executable> flow = new CompoundList<>();
+	private CompoundList<Optional<Executable>> flow = new CompoundList<>();
 }

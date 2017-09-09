@@ -2,6 +2,7 @@ package org.kucro3.klink.syntax;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.kucro3.klink.Executable;
 import org.kucro3.klink.Judgable;
@@ -81,17 +82,17 @@ public class KlinkTranslator implements Translator {
 			return pullDoWhile();
 			
 		default:
-			return pullOperation();
+			return pullOperation().get(); // non-null
 		}
 	}
 	
 	@Override
-	public Operation pullOperation(Ref[] refs)
+	public Optional<Operation> pullOperation(Ref[] refs)
 	{
 		return record(pullOperation0(refs));
 	}
 	
-	Operation pullOperation0(Ref[] refs)
+	Optional<Operation> pullOperation0(Ref[] refs)
 	{
 		String first = globalSeq.getNext();
 		String current = null;
@@ -100,7 +101,7 @@ public class KlinkTranslator implements Translator {
 		if(first.equals(";"))
 		{
 			globalSeq.next();
-			return null;
+			return Optional.empty();
 		}
 		
 		String expression = first;
@@ -114,9 +115,9 @@ public class KlinkTranslator implements Translator {
 			codeblock = pullCodeBlock0();
 			
 		case ";":
-			return LinedOperation.construct(lib, expression, refs,
+			return Optional.of(LinedOperation.construct(lib, expression, refs,
 					new Sequence(strs.toArray(new String[0]), globalSeq.currentRow() - 1, 0, globalSeq.getName())
-				, codeblock, snapshot(), globalSeq.currentRow());
+				, codeblock, snapshot(), globalSeq.currentRow()));
 		
 		default:
 			strs.add(current);
@@ -124,16 +125,17 @@ public class KlinkTranslator implements Translator {
 		}
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public LoopFor pullFor()
 	{
-		Executable init = pullOperation0(Util.NULL_REFS);
+		Optional<Executable> init = (Optional) pullOperation0(Util.NULL_REFS);
 		Judgable judgable = pullJudge0();
 		globalSeq.next();
-		Executable control = pullOperation0(Util.NULL_REFS);
+		Optional<Executable> control = (Optional) pullOperation0(Util.NULL_REFS);
 		switch(globalSeq.next())
 		{
-		case ";":	return record(new LoopFor(init, judgable, control, null));
+		case ";":	return record(new LoopFor(init, judgable, control, new Empty()));
 		case ":":	return record(new LoopFor(init, judgable, control, pullCodeBlock0()));
 		default:	throw new RuntimeException("Should not reach here");
 		}
@@ -145,7 +147,7 @@ public class KlinkTranslator implements Translator {
 		Judgable judgable = pullJudge0();
 		switch(globalSeq.next())
 		{
-		case ";":	return record(new LoopWhile(judgable, null));
+		case ";":	return record(new LoopWhile(judgable, new Empty()));
 		case ":":	return record(new LoopWhile(judgable, pullCodeBlock0()));
 		default:	throw new RuntimeException("Should not reach here");
 		}
@@ -157,7 +159,7 @@ public class KlinkTranslator implements Translator {
 		Judgable judgable = pullJudge0();
 		switch(globalSeq.next())
 		{
-		case ";":	return record(new LoopDoWhile(judgable, null));
+		case ";":	return record(new LoopDoWhile(judgable, new Empty()));
 		case ":":	return record(new LoopDoWhile(judgable, pullCodeBlock0()));
 		default:	throw new RuntimeException("Should not reach here");
 		}
@@ -171,9 +173,11 @@ public class KlinkTranslator implements Translator {
 			switch(globalSeq.next())
 			{
 			case ";":	
-				return record(elseBranch ? new BranchElse(getContext().tail(), judgable, null) : new Branch(judgable, null));
+				return record(elseBranch ? new BranchElse(getContext().tail().orElse(new Empty()), 
+						judgable, new Empty()) : new Branch(judgable, null));
 			case ":":	
-				return record(elseBranch ? new BranchElse(getContext().tail(), judgable, pullCodeBlock0()) : new Branch(judgable, pullCodeBlock0()));
+				return record(elseBranch ? new BranchElse(getContext().tail().orElse(new Empty()), 
+						judgable, pullCodeBlock0()) : new Branch(judgable, pullCodeBlock0()));
 			default:	throw new RuntimeException("Should not reach here");
 			}
 		} finally {
@@ -258,7 +262,7 @@ public class KlinkTranslator implements Translator {
 	@Override
 	public Flow pullCodeBlock()
 	{
-		return record(pullCodeBlock0());
+		return record(Optional.of(pullCodeBlock0())).get();
 	}
 	
 	Flow pullCodeBlock0()
@@ -347,10 +351,16 @@ public class KlinkTranslator implements Translator {
 		this.currentFlow = flow;
 	}
 	
+	@SuppressWarnings("unchecked")
+	<T extends Executable> Optional<T> record(Optional<T> t)
+	{
+		currentFlow.append((Optional<Executable>) t);
+		return t;
+	}
+	
 	<T extends Executable> T record(T t)
 	{
-		currentFlow.append(t);
-		return t;
+		return record(Optional.of(t)).get();
 	}
 	
 	private boolean elseBranch;

@@ -1,11 +1,12 @@
 package org.kucro3.klink.flow;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.kucro3.klink.Executable;
 
 public class FlowSnapshot {
-	FlowSnapshot(Flow owner, List<Executable> content)
+	FlowSnapshot(Flow owner, List<Optional<Executable>> content)
 	{
 		this.content = content;
 		this.owner = owner;
@@ -16,7 +17,7 @@ public class FlowSnapshot {
 		return owner;
 	}
 	
-	public List<Executable> getFlow()
+	public List<Optional<Executable>> getFlow()
 	{
 		return content;
 	}
@@ -26,12 +27,12 @@ public class FlowSnapshot {
 		return content.size();
 	}
 	
-	public Executable last()
+	public Optional<Executable> last()
 	{
 		return content.get(content.size() - 1);
 	}
 	
 	private final Flow owner;
 	
-	private final List<Executable> content;
+	private final List<Optional<Executable>> content;
 }

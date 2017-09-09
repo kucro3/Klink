@@ -1,6 +1,7 @@
 package org.kucro3.klink;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public interface Variables {
 	public void clearVars();
@@ -9,9 +10,9 @@ public interface Variables {
 	
 	public void forceVar(Variable var);
 	
-	public Variables getParent();
+	public Optional<Variables> getParent();
 	
-	public Variable getVar(String name);
+	public Optional<Variable> getVar(String name);
 	
 	public Collection<Variable> getVars();
 	

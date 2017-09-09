@@ -19,17 +19,17 @@ public class Klink {
 		return exprLibrary;
 	}
 	
-	public Environment getEnv(String name)
+	public Optional<Environment> getEnv(String name)
 	{
-		return env.get(name);
+		return Optional.ofNullable(env.get(name));
 	}
 	
 	public Environment requireEnv(String name)
 	{
-		Environment env;
-		if((env = getEnv(name)) == null)
+		Optional<Environment> env;
+		if(!(env = getEnv(name)).isPresent())
 			throw NoSuchEnv(name);
-		return env;
+		return env.get();
 	}
 	
 	public Environment createEnv(String name)

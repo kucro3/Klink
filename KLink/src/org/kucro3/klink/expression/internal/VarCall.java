@@ -1,5 +1,7 @@
 package org.kucro3.klink.expression.internal;
 
+import java.util.Optional;
+
 import org.kucro3.klink.Environment;
 import org.kucro3.klink.Klink;
 import org.kucro3.klink.Ref;
@@ -34,7 +36,7 @@ public class VarCall implements ExpressionCompiler {
 		
 		seq.decRow();
 		Translator translator = context.getTranslator();
-		final Reference<Operation> operation = new Reference<>();
+		final Reference<Optional<Operation>> operation = new Reference<>();
 		translator.temporary(Sequence.appendTail(seq, ";"), (trans) -> {
 			operation.set(translator.pullOperation(v));
 		});
@@ -49,7 +51,7 @@ public class VarCall implements ExpressionCompiler {
 	
 	public static class Compiled implements ExpressionInstance
 	{
-		public Compiled(Operation operation)
+		public Compiled(Optional<Operation> operation)
 		{
 			this.operation = operation;
 		}
@@ -57,10 +59,9 @@ public class VarCall implements ExpressionCompiler {
 		@Override
 		public void call(Klink sys, Environment env) 
 		{
-			if(operation != null)
-				this.operation.execute(sys);
+			this.operation.ifPresent((e) -> e.execute(sys));
 		}
 		
-		private final Operation operation;
+		private final Optional<Operation> operation;
 	}
 }

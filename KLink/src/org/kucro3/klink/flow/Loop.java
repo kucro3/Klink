@@ -12,8 +12,7 @@ public abstract class Loop implements Executable {
 	@Override
 	public void execute(Klink sys)
 	{
-		if(body != null)
-			body.execute(sys);
+		body.execute(sys);
 	}
 	
 	protected final Executable body;
