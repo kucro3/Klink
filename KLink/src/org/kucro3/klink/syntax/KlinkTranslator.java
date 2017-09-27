@@ -89,10 +89,16 @@ public class KlinkTranslator implements Translator {
 	@Override
 	public Optional<Operation> pullOperation(Ref[] refs)
 	{
-		return record(pullOperation0(refs));
+		return record(pullOperation0(refs, null));
 	}
 	
-	Optional<Operation> pullOperation0(Ref[] refs)
+	@Override
+	public Optional<Operation> pullOperation(Ref[] refs, Flow defaultCodeBlock)
+	{
+		return record(pullOperation0(refs, defaultCodeBlock));
+	}
+	
+	Optional<Operation> pullOperation0(Ref[] refs, Flow defaultCodeBlock)
 	{
 		String first = globalSeq.getNext();
 		String current = null;
@@ -117,7 +123,7 @@ public class KlinkTranslator implements Translator {
 		case ";":
 			return Optional.of(LinedOperation.construct(lib, expression, refs,
 					new Sequence(strs.toArray(new String[0]), globalSeq.currentRow() - 1, 0, globalSeq.getName())
-				, codeblock, snapshot(), globalSeq.currentRow()));
+				, codeblock == null ? defaultCodeBlock : codeblock, snapshot(), globalSeq.currentRow()));
 		
 		default:
 			strs.add(current);
@@ -129,10 +135,10 @@ public class KlinkTranslator implements Translator {
 	@Override
 	public LoopFor pullFor()
 	{
-		Optional<Executable> init = (Optional) pullOperation0(Util.NULL_REFS);
+		Optional<Executable> init = (Optional) pullOperation0(Util.NULL_REFS, null);
 		Judgable judgable = pullJudge0();
 		globalSeq.next();
-		Optional<Executable> control = (Optional) pullOperation0(Util.NULL_REFS);
+		Optional<Executable> control = (Optional) pullOperation0(Util.NULL_REFS, null);
 		switch(globalSeq.next())
 		{
 		case ";":	return record(new LoopFor(init, judgable, control, new Empty()));

@@ -25,4 +25,24 @@ public interface ExpressionCompiler {
 	{
 		return compile(lib, refs, seq, codeBlock);
 	}
+	
+	public interface Level0 extends ExpressionCompiler
+	{
+		public ExpressionInstance compile(ExpressionLibrary lib, Sequence seq);
+	}
+	
+	public interface Level1 extends ExpressionCompiler
+	{
+		public ExpressionInstance compile(ExpressionLibrary lib, Ref[] refs, Sequence seq);
+	}
+	
+	public interface Level2 extends ExpressionCompiler
+	{
+		public ExpressionInstance compile(ExpressionLibrary lib, Ref[] refs, Sequence seq, Flow codeBlock);
+	}
+	
+	public interface Level3 extends ExpressionCompiler
+	{
+		public ExpressionInstance compile(ExpressionLibrary lib, Ref[] refs, Sequence seq, Flow codeBlock, Snapshot context);
+	}
 }

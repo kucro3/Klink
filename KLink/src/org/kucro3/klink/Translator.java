@@ -41,6 +41,8 @@ public interface Translator {
 	
 	public Optional<Operation> pullOperation(Ref[] refs);
 	
+	public Optional<Operation> pullOperation(Ref[] refs, Flow defaultCodeBlock);
+	
 	public Flow pullAll();
 
 	void setLibrary(ExpressionLibrary lib);

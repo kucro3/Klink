@@ -18,8 +18,14 @@ public class SequenceUtil {
 	
 	public static Sequence readFrom(File file)
 	{
+		BufferedReader closeable = null;
 		try {
-			return readFrom(new BufferedReader(new FileReader(file)));
+			try {
+				return readFrom(closeable = new BufferedReader(new FileReader(file)));
+			} finally {
+				if(closeable != null)
+					closeable.close();
+			}
 		} catch (IOException e) {
 			throw Util.IOException(e);
 		}

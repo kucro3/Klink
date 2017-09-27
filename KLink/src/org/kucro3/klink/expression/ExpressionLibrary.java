@@ -97,9 +97,8 @@ public class ExpressionLibrary {
 	public void putExpression(Expression expression)
 	{
 		String name = expression.getName();
-		if(identifiers.containsKey(name))
+		if(identifiers.putIfAbsent(name, expression) != null)
 			throw IdentifierRedefinition(name);
-		identifiers.put(name, expression);
 	}
 	
 	public static ScriptException NoSuchIdentifier(String name)

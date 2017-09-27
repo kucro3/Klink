@@ -64,23 +64,23 @@ public class Environment {
 	
 	public boolean getBooleanSlot()
 	{
-		if(this.booleanSlot == null)
+		if(returnSlot == null || !(returnSlot instanceof Boolean))
 			throw UnknownBooleanState();
-		return this.booleanSlot;
+		return (Boolean) returnSlot;
 	}
 	
 	public boolean popBooleanSlot()
 	{
-		if(this.booleanSlot == null)
+		if(this.returnSlot == null || !(returnSlot instanceof Boolean))
 			throw UnknownBooleanState();
-		boolean bool = this.booleanSlot;
-		this.booleanSlot = null;
+		boolean bool = (Boolean) this.returnSlot;
+		this.returnSlot = null;
 		return bool;
 	}
 	
 	public void setBooleanSlot(boolean bool)
 	{
-		this.booleanSlot = bool;
+		this.returnSlot = bool;
 	}
 	
 	public Variables getVars()
@@ -138,8 +138,6 @@ public class Environment {
 	private Variable[] varSlot;
 	
 	private Object returnSlot;
-	
-	private Boolean booleanSlot;
 	
 	private Variables varRoot = new MappedVariables();
 	

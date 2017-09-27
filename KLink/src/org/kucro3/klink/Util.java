@@ -41,7 +41,7 @@ public class Util {
 		try {
 			return Long.parseLong(s);
 		} catch (NumberFormatException e) {
-			throw new ScriptException("Illegal number format: " + e.getMessage());
+			throw new ScriptException("Illegal number format for long integer: " + e.getMessage());
 		}
 	}
 	
@@ -50,7 +50,7 @@ public class Util {
 		try {
 			return Integer.parseInt(s);
 		} catch (NumberFormatException e) {
-			throw new ScriptException("Illegal number format: " + e.getMessage());
+			throw new ScriptException("Illegal number format for integer: " + e.getMessage());
 		}
 	}
 	
@@ -59,7 +59,7 @@ public class Util {
 		try {
 			return Short.parseShort(s);
 		} catch (NumberFormatException e) {
-			throw new ScriptException("Illegal number format: " + e.getMessage());
+			throw new ScriptException("Illegal number format for short integer: " + e.getMessage());
 		}
 	}
 	
@@ -68,7 +68,7 @@ public class Util {
 		try {
 			return Byte.parseByte(s);
 		} catch (NumberFormatException e) {
-			throw new ScriptException("Illegal number format: " + e.getMessage());
+			throw new ScriptException("Illegal number format for byte: " + e.getMessage());
 		}
 	}
 	
@@ -77,7 +77,7 @@ public class Util {
 		try {
 			return Float.parseFloat(s);
 		} catch (NumberFormatException e) {
-			throw new ScriptException("Illegal number format: " + e.getMessage());
+			throw new ScriptException("Illegal number format for float: " + e.getMessage());
 		}
 	}
 	
@@ -86,7 +86,7 @@ public class Util {
 		try {
 			return Double.parseDouble(s);
 		} catch (NumberFormatException e) {
-			throw new ScriptException("Illegal number format: " + e.getMessage());
+			throw new ScriptException("Illegal number format for double float: " + e.getMessage());
 		}
 	}
 	
@@ -128,7 +128,7 @@ public class Util {
 	
 	public static ScriptException IOException(java.io.IOException e)
 	{
-		throw new ScriptException("IOException: " + e.getMessage());
+		throw new ScriptException("IOException: " + e.getMessage(), e);
 	}
 	
 	public static ScriptException ShouldNotReachHere()

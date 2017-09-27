@@ -38,7 +38,7 @@ public class VarCall implements ExpressionCompiler {
 		Translator translator = context.getTranslator();
 		final Reference<Optional<Operation>> operation = new Reference<>();
 		translator.temporary(Sequence.appendTail(seq, ";"), (trans) -> {
-			operation.set(translator.pullOperation(v));
+			operation.set(translator.pullOperation(v, codeBlock));
 		});
 		
 		return new Compiled(operation.get());

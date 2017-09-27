@@ -198,6 +198,12 @@ public class Registers {
 			return true;
 		}
 		
+		@Override
+		public String getName()
+		{
+			return null;
+		}
+		
 		private final int index;
 		
 		private final Adapter adapter;

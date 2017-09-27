@@ -10,4 +10,6 @@ public interface Ref {
 	boolean isVar();
 	
 	boolean isReg();
+	
+	String getName();
 }
