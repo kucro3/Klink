@@ -4,6 +4,8 @@ import org.kucro3.klink.exception.ScriptException;
 
 public class Registers {
 	public final Object OR[] = new Object[16];
+
+	public final Object RV[] = new Object[8];
 	
 	public final byte I08[] = new byte[6];
 	
@@ -16,10 +18,40 @@ public class Registers {
 	public final float F32[] = new float[6];
 	
 	public final double F64[] = new double[6];
-	
+
+	public void clearReturnValues()
+	{
+		RV[0] = RV[1] = RV[2] = RV[3] = RV[4] = RV[5] = RV[6] = RV[7] = null;
+	}
+
+	public Object[] popReturnValues()
+	{
+		Object[] objs = new Object[8];
+
+		objs[0] = RV[0];
+		objs[1] = RV[1];
+		objs[2] = RV[2];
+		objs[3] = RV[3];
+		objs[4] = RV[4];
+		objs[5] = RV[5];
+		objs[6] = RV[6];
+		objs[7] = RV[7];
+
+		clearReturnValues();
+
+		return objs;
+	}
+
 	public static int checkRange(int index)
 	{
 		if(index <= 5 && index >= 0)
+			return index;
+		throw RegisterSetOutOfRange(index);
+	}
+
+	public static int checkRangeForRV(int index)
+	{
+		if(index <= 7 && index >= 0)
 			return index;
 		throw RegisterSetOutOfRange(index);
 	}
@@ -53,6 +85,21 @@ public class Registers {
 		Object at(Registers regs, int index);
 		
 		void at(Registers regs, int index, Object obj);
+	}
+
+	public static class AdapterForRV implements Adapter
+	{
+		@Override
+		public Object at(Registers regs, int index)
+		{
+			return null;
+		}
+
+		@Override
+		public void at(Registers regs, int index, Object obj)
+		{
+
+		}
 	}
 	
 	public static class AdapterForOR implements Adapter
