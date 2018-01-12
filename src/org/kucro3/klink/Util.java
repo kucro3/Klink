@@ -3,14 +3,7 @@ package org.kucro3.klink;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kucro3.klink.Registers.AdapterForF32;
-import org.kucro3.klink.Registers.AdapterForF64;
-import org.kucro3.klink.Registers.AdapterForI08;
-import org.kucro3.klink.Registers.AdapterForI16;
-import org.kucro3.klink.Registers.AdapterForI32;
-import org.kucro3.klink.Registers.AdapterForI64;
-import org.kucro3.klink.Registers.AdapterForOR;
-import org.kucro3.klink.Registers.Register;
+import org.kucro3.klink.Registers.*;
 import org.kucro3.klink.Variables.Var;
 import org.kucro3.klink.exception.ScriptException;
 
@@ -142,6 +135,15 @@ public class Util {
 	
 	static {
 		HashMap<String, RegParser> map = new HashMap<>();
+
+		map.put("RV0", () -> new Register(new AdapterForRV(), 0));
+		map.put("RV1", () -> new Register(new AdapterForRV(), 1));
+		map.put("RV2", () -> new Register(new AdapterForRV(), 2));
+		map.put("RV3", () -> new Register(new AdapterForRV(), 3));
+		map.put("RV4", () -> new Register(new AdapterForRV(), 4));
+		map.put("RV5", () -> new Register(new AdapterForRV(), 5));
+		map.put("RV6", () -> new Register(new AdapterForRV(), 6));
+		map.put("RV7", () -> new Register(new AdapterForRV(), 7));
 		
 		map.put("OR0", () -> new Register(new AdapterForOR(), 0));
 		map.put("OR1", () -> new Register(new AdapterForOR(), 1));

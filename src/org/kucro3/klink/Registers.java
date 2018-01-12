@@ -92,13 +92,13 @@ public class Registers {
 		@Override
 		public Object at(Registers regs, int index)
 		{
-			return null;
+			return regs.RV[checkRangeForRV(index)];
 		}
 
 		@Override
 		public void at(Registers regs, int index, Object obj)
 		{
-
+            regs.RV[checkRangeForRV(index)] = obj;
 		}
 	}
 	
