@@ -22,6 +22,11 @@ public class Flow implements Executable {
 		} catch (JumpOut signal) {
 		}
 	}
+
+	public void append(Executable operation)
+	{
+		append(Optional.ofNullable(operation));
+	}
 	
 	public void append(Optional<Executable> operation)
 	{

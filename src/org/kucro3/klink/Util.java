@@ -2,10 +2,15 @@ package org.kucro3.klink;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.kucro3.klink.Registers.*;
 import org.kucro3.klink.Variables.Var;
 import org.kucro3.klink.exception.ScriptException;
+import org.kucro3.klink.flow.Flow;
+import org.kucro3.klink.flow.Operation;
+import org.kucro3.klink.syntax.Sequence;
+import org.kucro3.util.Reference;
 
 public class Util {
 	private Util()
@@ -97,6 +102,18 @@ public class Util {
 			return new Var(var.substring(1));
 		else
 			throw InvalidReference(var);
+	}
+
+	public static Executable pullExecutable(Sequence seq, Ref[] refs, Flow codeBlock, Snapshot context)
+	{
+		seq.decRow();
+		Translator translator = context.getTranslator();
+		final Reference<Optional<Operation>> operation = new Reference<>();
+		translator.temporary(Sequence.appendTail(seq, ";"), (trans) ->
+			operation.set(translator.pullOperation(refs, codeBlock))
+		);
+
+		return operation.get().orElse(null);
 	}
 	
 	public static ScriptException InvalidReference(String ref)
