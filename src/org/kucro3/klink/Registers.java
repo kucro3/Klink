@@ -5,7 +5,7 @@ import org.kucro3.klink.exception.ScriptException;
 public class Registers {
 	public final Object OR[] = new Object[16];
 
-	public final Object RV[] = new Object[8];
+	public final Object RV[] = new Object[16];
 	
 	public final byte I08[] = new byte[6];
 	

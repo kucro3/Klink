@@ -161,7 +161,15 @@ public class Util {
 		map.put("RV5", () -> new Register(new AdapterForRV(), 5));
 		map.put("RV6", () -> new Register(new AdapterForRV(), 6));
 		map.put("RV7", () -> new Register(new AdapterForRV(), 7));
-		
+		map.put("RV8", () -> new Register(new AdapterForRV(), 8));
+		map.put("RV9", () -> new Register(new AdapterForRV(), 9));
+		map.put("RVA", () -> new Register(new AdapterForRV(), 10));
+		map.put("RVB", () -> new Register(new AdapterForRV(), 11));
+		map.put("RVC", () -> new Register(new AdapterForRV(), 12));
+		map.put("RVD", () -> new Register(new AdapterForRV(), 13));
+		map.put("RVE", () -> new Register(new AdapterForRV(), 14));
+		map.put("RVF", () -> new Register(new AdapterForRV(), 15));
+
 		map.put("OR0", () -> new Register(new AdapterForOR(), 0));
 		map.put("OR1", () -> new Register(new AdapterForOR(), 1));
 		map.put("OR2", () -> new Register(new AdapterForOR(), 2));
