@@ -234,10 +234,8 @@ public class Klink {
 	{
 		return DEFAULT;
 	}
-	
-	private TranslatorProvider translatorProvider = () -> {
-		return new KlinkTranslator();
-	};
+
+	private TranslatorProvider translatorProvider = () -> new KlinkTranslator();
 
 	private final Map<Class<?>, Object> services = new HashMap<>();
 	
