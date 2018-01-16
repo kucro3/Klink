@@ -203,7 +203,23 @@ public class Klink {
 	{
 		packloader = Objects.requireNonNull(loader);
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	public <T> Optional<T> getService(Class<T> type)
+	{
+		Objects.requireNonNull(type, "type");
+
+		return Optional.ofNullable((T) services.get(type));
+	}
+
+	public <T> void provideService(Class<T> type, T service)
+	{
+		Objects.requireNonNull(type, "type");
+		Objects.requireNonNull(service, "service");
+
+		services.put(type, service);
+	}
+
 	public static ScriptException NoSuchEnv(String name)
 	{
 		return new ScriptException("No such env: " + name);
@@ -222,6 +238,8 @@ public class Klink {
 	private TranslatorProvider translatorProvider = () -> {
 		return new KlinkTranslator();
 	};
+
+	private final Map<Class<?>, Object> services = new HashMap<>();
 	
 	private PackLoader packloader = ExpressionPackLoader.getInstance();
 	
