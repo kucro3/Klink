@@ -5,7 +5,23 @@ import java.util.Map;
 import java.util.Optional;
 
 public abstract class RegisterHelper {
+    RegisterHelper(String name)
+    {
+        this.name = name;
+    }
 
+    public abstract void leftShiftRegisters();
+
+    public abstract void rightShiftRegisters();
+
+    public abstract void clearRegisters();
+
+    public abstract void fillRegisters(Object object);
+
+    public String getName()
+    {
+        return name;
+    }
 
     public static Optional<RegisterHelper> getHelper(String name)
     {
@@ -16,4 +32,6 @@ public abstract class RegisterHelper {
     {
 
     };
+
+    private final String name;
 }
