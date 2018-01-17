@@ -4,30 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.kucro3.klink.exception.ScriptException;
-import org.kucro3.klink.expression.internal.Break;
-import org.kucro3.klink.expression.internal.ConstBoolean;
-import org.kucro3.klink.expression.internal.ConstByte;
-import org.kucro3.klink.expression.internal.ConstDouble;
-import org.kucro3.klink.expression.internal.ConstFloat;
-import org.kucro3.klink.expression.internal.ConstInt;
-import org.kucro3.klink.expression.internal.ConstLong;
-import org.kucro3.klink.expression.internal.ConstShort;
-import org.kucro3.klink.expression.internal.ConstString;
-import org.kucro3.klink.expression.internal.Escape;
-import org.kucro3.klink.expression.internal.ExecuteDocument;
-import org.kucro3.klink.expression.internal.Exit;
-import org.kucro3.klink.expression.internal.False;
-import org.kucro3.klink.expression.internal.LoadDocument;
-import org.kucro3.klink.expression.internal.LoadDocumentAndRun;
-import org.kucro3.klink.expression.internal.LoadExpressionPack;
-import org.kucro3.klink.expression.internal.PrintVar;
-import org.kucro3.klink.expression.internal.PrintlnVar;
-import org.kucro3.klink.expression.internal.Run;
-import org.kucro3.klink.expression.internal.True;
-import org.kucro3.klink.expression.internal.VarAssignment;
-import org.kucro3.klink.expression.internal.VarAssignmentFromExpression;
-import org.kucro3.klink.expression.internal.VarCall;
-import org.kucro3.klink.expression.internal.VarControl;
+import org.kucro3.klink.expression.internal.*;
 
 public class ExpressionLibrary {
 	public ExpressionLibrary()
@@ -68,6 +45,7 @@ public class ExpressionLibrary {
 		forceExpression(LoadDocumentAndRun.instance());
 		forceExpression(ExecuteDocument.instance());
 		forceExpression(LoadExpressionPack.instance());
+		forceExpression(Once.instance());
 	}
 	
 	public void removeExpression(String name)

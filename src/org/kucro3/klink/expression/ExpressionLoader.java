@@ -43,6 +43,7 @@ public class ExpressionLoader {
 							", Ignored: " + mthd.toGenericString() + ", Cause: Nonstatic method in static class");
 					continue;
 				}
+
 			
 			// check argument
 			Class<?>[] params = mthd.getParameterTypes();
