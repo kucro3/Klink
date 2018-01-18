@@ -7,9 +7,9 @@ public interface Function extends Callable {
 
     public int getParameterCount();
 
-    public List<Parameter> getParameters();
+    public <T extends Type> List<Parameter<T>> getParameters();
 
-    public List<Parameter> getEssentialParameters();
+    public <T extends Type> List<Parameter<T>> getEssentialParameters();
 
-    public List<Parameter> getOptionalParameters();
+    public <T extends Type> List<Parameter<T>> getOptionalParameters();
 }

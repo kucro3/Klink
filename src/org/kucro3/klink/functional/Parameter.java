@@ -1,7 +1,7 @@
 package org.kucro3.klink.functional;
 
-public interface Parameter<T> {
-    public Type<T> getType();
+public interface Parameter<T extends Type> {
+    public T getType();
 
     public boolean isReference();
 
