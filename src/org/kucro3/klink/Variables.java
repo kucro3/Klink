@@ -1,10 +1,14 @@
 package org.kucro3.klink;
 
+import org.kucro3.klink.exception.ScriptException;
+
 import java.util.Collection;
 import java.util.Optional;
 
 public interface Variables {
 	public void clearVars();
+
+	public void clearAllVars();
 	
 	public void deleteVar(String name);
 	
@@ -24,9 +28,19 @@ public interface Variables {
 	
 	public void putVar(Variable var);
 	
-	public void removeVar(String name);
+	public boolean removeVar(String name);
 	
 	public Variable requireVar(String name);
+
+	public static ScriptException NoSuchVariable(String name)
+	{
+		return new ScriptException("No such variable: " + name);
+	}
+
+	public static ScriptException VariableRedefinition(String name)
+	{
+		return new ScriptException("Variable redefinition: " + name);
+	}
 	
 	public static interface Variable
 	{

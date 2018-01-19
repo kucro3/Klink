@@ -36,9 +36,12 @@ public class MappedVariables implements Variables {
 	}
 	
 	@Override
-	public void removeVar(String name)
+	public boolean removeVar(String name)
 	{
-		vars.remove(name);
+		if(vars.remove(name) == null)
+			if(parent == null || !parent.removeVar(name))
+				return false;
+		return true;
 	}
 	
 	@Override
@@ -54,7 +57,7 @@ public class MappedVariables implements Variables {
 	public Variable newVar(String name)
 	{
 		if(hasVar(name))
-			throw VariableRedefinition(name);
+			throw Variables.VariableRedefinition(name);
 		Variable var = factory.produce(name);
 		vars.put(name, var);
 		return var;
@@ -64,7 +67,7 @@ public class MappedVariables implements Variables {
 	public void putVar(Variable var)
 	{
 		if(hasVar(var.getName()))
-			throw VariableRedefinition(var.getName());
+			throw Variables.VariableRedefinition(var.getName());
 		vars.put(var.getName(), var);
 	}
 	
@@ -79,21 +82,29 @@ public class MappedVariables implements Variables {
 	{
 		Optional<Variable> var;
 		if(!(var = getVar(name)).isPresent())
-			throw NoSuchVariable(name);
+			throw Variables.NoSuchVariable(name);
 		return var.get();
 	}
 	
 	@Override
 	public Optional<Variable> getVar(String name)
 	{
-		return Optional.ofNullable(vars.get(name));
+		Variable var = null;
+		if(parent != null)
+			var = parent.getVar(name).orElse(null);
+		if(var == null)
+			var = vars.get(name);
+		return Optional.ofNullable(var);
 	}
 	
 	@Override
 	public void deleteVar(String name)
 	{
 		if(vars.remove(name) == null)
-			throw NoSuchVariable(name);
+			if(parent == null)
+				throw Variables.NoSuchVariable(name);
+			else
+				parent.deleteVar(name);
 	}
 	
 	@Override
@@ -103,6 +114,14 @@ public class MappedVariables implements Variables {
 			if(parent.hasVar(name))
 				return true;
 		return vars.containsKey(name);
+	}
+
+	@Override
+	public void clearAllVars()
+	{
+		if(parent != null)
+			parent.clearAllVars();
+		vars.clear();
 	}
 	
 	@Override
@@ -116,22 +135,12 @@ public class MappedVariables implements Variables {
 	{
 		return vars.values();
 	}
-	
-	public static ScriptException NoSuchVariable(String name)
-	{
-		return new ScriptException("No such variable: " + name);
-	}
-	
-	public static ScriptException VariableRedefinition(String name)
-	{
-		return new ScriptException("Variable redefinition: " + name);
-	}
-	
+
 	Variables parent;
 	
-	private final VariableFactory factory;
+	protected final VariableFactory factory;
 	
-	private final Map<String, Variable> vars = new HashMap<>();
+	protected final Map<String, Variable> vars = new HashMap<>();
 	
 	public static class DefaultVariable implements Variable
 	{
