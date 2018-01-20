@@ -54,9 +54,13 @@ public class KlinkFunction implements Function {
             if (refs.length < essentialParams.size())
                 throw NeedMoreArguments();
 
-            for (int i = 0; i < essentialParams.size(); i++)
+            if(refs.length > params.size())
+                throw TooManyArguments();
+
+            int i = 0;
+            for (; i < params.size(); i++)
             {
-                Parameter<Type> param = essentialParams.get(i);
+                Parameter<Type> param = params.get(i);
                 Object object = refs[i].get(env);
 
                 if (param != null && !param.getType().isType(object))
@@ -70,6 +74,11 @@ public class KlinkFunction implements Function {
                 replacement.putVar(var);
             }
 
+            for(; i < optionalParams.size(); i++)
+                replacement.putVar(new HeapVariable(params.get(i).getName(), null));
+
+            env.setVars(replacement);
+            flow.execute(klink);
         } finally {
             // recover scene
             if (env.getVars() == replacement)
@@ -110,6 +119,11 @@ public class KlinkFunction implements Function {
     public static ScriptException NeedMoreArguments()
     {
         return new ScriptException("Need more arguments");
+    }
+
+    public static ScriptException TooManyArguments()
+    {
+        return new ScriptException("Too many arguments");
     }
 
     public static ScriptException IncompatibleArgumentType(String name, int index)
