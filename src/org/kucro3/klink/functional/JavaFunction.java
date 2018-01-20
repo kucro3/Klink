@@ -1,6 +1,7 @@
 package org.kucro3.klink.functional;
 
 import org.kucro3.klink.Environment;
+import org.kucro3.klink.Klink;
 
 import java.util.List;
 
@@ -36,7 +37,8 @@ public class JavaFunction implements Function {
     }
 
     @Override
-    public void call(Environment env, Ref[] refs, CallInfo context) {
+    public void call(Klink klink, Environment env, Ref[] refs, CallInfo context)
+    {
 
     }
 }

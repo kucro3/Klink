@@ -32,6 +32,8 @@ public interface Variables {
 	
 	public Variable requireVar(String name);
 
+	public VariableFactory getFactory();
+
 	public static ScriptException NoSuchVariable(String name)
 	{
 		return new ScriptException("No such variable: " + name);

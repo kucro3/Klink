@@ -1,6 +1,9 @@
 package org.kucro3.klink.functional;
 
 import org.kucro3.klink.Environment;
+import org.kucro3.klink.Klink;
+import org.kucro3.klink.OverridableVariables;
+import org.kucro3.klink.Variables;
 import org.kucro3.klink.exception.ScriptException;
 import org.kucro3.klink.flow.Flow;
 
@@ -40,9 +43,24 @@ public class KlinkFunction implements Function {
     }
 
     @Override
-    public void call(Environment env, Ref[] refs, CallInfo context)
+    public void call(Klink klink, Environment env, Ref[] refs, CallInfo context)
     {
-        // TODO
+        // protect scene
+        Variables vars = env.getVars();
+        Variables replacement = new OverridableVariables(vars);
+
+        try {
+            // call
+            if (refs.length < essentialParams.size())
+                throw NeedMoreArguments();
+
+
+
+        } finally {
+            // recover scene
+            if (env.getVars() == replacement)
+                env.setVars(vars);
+        }
     }
 
     @Override
@@ -58,30 +76,105 @@ public class KlinkFunction implements Function {
     }
 
     @Override
-    public <T extends Type> List<Parameter<T>> getParameters()
+    public List<Parameter<Type>> getParameters()
     {
         return Collections.unmodifiableList(params);
     }
 
     @Override
-    public <T extends Type> List<Parameter<T>> getEssentialParameters()
+    public List<Parameter<Type>> getEssentialParameters()
     {
         return Collections.unmodifiableList(essentialParams);
     }
 
     @Override
-    public <T extends Type> List<Parameter<T>> getOptionalParameters()
+    public List<Parameter<Type>> getOptionalParameters()
     {
         return Collections.unmodifiableList(optionalParams);
     }
 
+    public static ScriptException NeedMoreArguments()
+    {
+        return new ScriptException("Need more arguments");
+    }
+
+    public static ScriptException IncompatibleArgumentType(String name, int index)
+    {
+        return new ScriptException("Incompatible argument type at index " + index + " (Type of \" " + name + " \" needed)");
+    }
+
     private final String identifier;
 
-    private final List<Parameter> params;
+    private final List<Parameter<Type>> params;
 
-    private final ArrayList<Parameter> essentialParams;
+    private final ArrayList<Parameter<Type>> essentialParams;
 
-    private final ArrayList<Parameter> optionalParams;
+    private final ArrayList<Parameter<Type>> optionalParams;
 
     private final Flow flow;
+
+    public static class HeapVariable implements Variables.Variable
+    {
+        public HeapVariable(String name, Object obj)
+        {
+            this.name = name;
+            this.object = obj;
+        }
+
+        @Override
+        public Object get()
+        {
+            return object;
+        }
+
+        @Override
+        public void set(Object object)
+        {
+            this.object = object;
+        }
+
+        @Override
+        public String getName()
+        {
+            return name;
+        }
+
+        protected Object object;
+
+        private final String name;
+    }
+
+    public static class RefVariable implements Variables.Variable
+    {
+        public RefVariable(String name, Environment env, org.kucro3.klink.Ref ref)
+        {
+            this.name = name;
+            this.env = env;
+            this.ref = ref;
+        }
+
+        @Override
+        public Object get()
+        {
+            return ref.get(env);
+        }
+
+        @Override
+        public void set(Object object)
+        {
+            ref.set(env, object);
+        }
+
+        @Override
+        public String getName()
+        {
+            return name;
+        }
+
+        protected final Environment env;
+
+        protected org.kucro3.klink.Ref ref;
+
+        private final String name;
+    }
 }

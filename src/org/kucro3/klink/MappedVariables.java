@@ -20,7 +20,7 @@ public class MappedVariables implements Variables {
 	
 	public MappedVariables(Variables parent)
 	{
-		this(DefaultVariable::new, parent);
+		this(parent.getFactory(), parent);
 	}
 	
 	public MappedVariables(VariableFactory factory, Variables parent)
@@ -136,6 +136,12 @@ public class MappedVariables implements Variables {
 	public Collection<Variable> getVars()
 	{
 		return vars.values();
+	}
+
+	@Override
+	public VariableFactory getFactory()
+	{
+		return factory;
 	}
 
 	Variables parent;

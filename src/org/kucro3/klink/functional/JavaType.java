@@ -18,5 +18,17 @@ public final class JavaType implements Type<Class<?>> {
         return type;
     }
 
+    @Override
+    public boolean isType(Object object)
+    {
+        return type.isInstance(object);
+    }
+
+    @Override
+    public String getName()
+    {
+        return type.getCanonicalName();
+    }
+
     private final Class<?> type;
 }
