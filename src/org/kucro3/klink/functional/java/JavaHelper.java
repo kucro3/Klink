@@ -4,13 +4,19 @@ import org.kucro3.klink.functional.*;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class JavaHelper {
     public static Collection<JavaFunction> exportFunctions(Class<?> clazz)
     {
-        // TODO
-        return null;
+        List<JavaFunction> list = new ArrayList<>();
+
+        for(Method method : clazz.getMethods())
+            exportFunction(method).ifPresent(list::add);
+
+        return list;
     }
 
     @SuppressWarnings("unchecked")
@@ -22,9 +28,8 @@ public class JavaHelper {
             return java.util.Optional.empty();
 
         int access = method.getModifiers();
-        boolean virtual = Modifier.isStatic(access);
 
-        if(!Modifier.isPublic(access))
+        if(!Modifier.isPublic(access) || !Modifier.isStatic(access))
             return java.util.Optional.empty();
 
         boolean frontCallInfo;
@@ -54,7 +59,7 @@ public class JavaHelper {
             if(!generic[j].isOptional())
                 return java.util.Optional.empty();
 
-        return java.util.Optional.of(new JavaFunction(identifier, method, generic));
+        return java.util.Optional.of(new JavaFunction(identifier, method, generic, frontCallInfo));
     }
 
     public static class JavaParameter implements Parameter<JavaType>

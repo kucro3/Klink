@@ -3,7 +3,7 @@ package org.kucro3.klink.functional;
 import org.kucro3.klink.exception.ScriptException;
 
 public class CallInfo {
-    CallInfo()
+    public CallInfo()
     {
     }
 

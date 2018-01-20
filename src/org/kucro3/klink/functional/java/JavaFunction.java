@@ -2,6 +2,8 @@ package org.kucro3.klink.functional.java;
 
 import org.kucro3.klink.Environment;
 import org.kucro3.klink.Klink;
+import org.kucro3.klink.exception.ScriptException;
+import org.kucro3.klink.functional.CallInfo;
 import org.kucro3.klink.functional.Function;
 import org.kucro3.klink.functional.Parameter;
 
@@ -13,13 +15,14 @@ import java.util.List;
 
 @SuppressWarnings("unchecked")
 public class JavaFunction implements Function {
-    public JavaFunction(String identifier, Method method, Parameter<JavaType>[] params)
+    public JavaFunction(String identifier, Method method, Parameter<JavaType>[] params, boolean frontCallInfo)
     {
         this.identifier = identifier;
         this.method = method;
         this.params = Arrays.asList(params);
         this.essentialParams = new ArrayList<>();
         this.optionalParams = new ArrayList<>();
+        this.frontCallInfo = frontCallInfo;
 
         int i = 0;
         for(; i < params.length && !params[i].isOptional(); i++)
@@ -62,9 +65,33 @@ public class JavaFunction implements Function {
     }
 
     @Override
-    public void call(Klink klink, Environment env, org.kucro3.klink.Ref[] refs)
+    public void call(Klink klink, Environment env, org.kucro3.klink.Ref[] refs, CallInfo callInfo)
     {
+        if (refs.length < essentialParams.size())
+            throw Function.NeedMoreArguments();
 
+        if (refs.length > params.size())
+            throw Function.TooManyArguments();
+
+        int i = frontCallInfo ? 1 : 0;
+        Object[] arguments = new Object[params.size() + 1];
+
+        for (; i < refs.length; i++)
+            if (!params.get(i).getType().isType(refs[i].get(env)))
+                throw Function.IncompatibleArgumentType(params.get(i).getType().getName(), i);
+            else
+                arguments[i] = refs[i].get(env);
+
+        for(; i < arguments.length; i++)
+            arguments[i] = null;
+
+        arguments[frontCallInfo ? 0 : arguments.length - 1] = callInfo;
+
+        try {
+            method.invoke(null, arguments);
+        } catch (Exception e) {
+            throw new ScriptException("Invocation failure", e);
+        }
     }
 
     private final String identifier;
@@ -76,4 +103,6 @@ public class JavaFunction implements Function {
     private final ArrayList<Parameter<JavaType>> essentialParams;
 
     private final ArrayList<Parameter<JavaType>> optionalParams;
+
+    private final boolean frontCallInfo;
 }

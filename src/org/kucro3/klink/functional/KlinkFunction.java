@@ -43,7 +43,7 @@ public class KlinkFunction implements Function {
     }
 
     @Override
-    public void call(Klink klink, Environment env, org.kucro3.klink.Ref[] refs)
+    public void call(Klink klink, Environment env, org.kucro3.klink.Ref[] refs, CallInfo callInfo)
     {
         // protect scene
         Variables vars = env.getVars();
@@ -52,10 +52,10 @@ public class KlinkFunction implements Function {
         try {
             // call
             if (refs.length < essentialParams.size())
-                throw NeedMoreArguments();
+                throw Function.NeedMoreArguments();
 
             if(refs.length > params.size())
-                throw TooManyArguments();
+                throw Function.TooManyArguments();
 
             int i = 0;
             for (; i < params.size(); i++)
@@ -64,7 +64,7 @@ public class KlinkFunction implements Function {
                 Object object = refs[i].get(env);
 
                 if (param != null && !param.getType().isType(object))
-                    throw IncompatibleArgumentType(param.getType().getName(), i);
+                    throw Function.IncompatibleArgumentType(param.getType().getName(), i);
 
                 Variables.Variable var =
                         param.isReference() ?
@@ -75,7 +75,7 @@ public class KlinkFunction implements Function {
             }
 
             for(; i < optionalParams.size(); i++)
-                replacement.putVar(new HeapVariable(params.get(i).getName(), null));
+                replacement.putVar(new HeapVariable(params.get(i).getType().getName(), null));
 
             env.setVars(replacement);
             flow.execute(klink);
@@ -114,21 +114,6 @@ public class KlinkFunction implements Function {
     public List<Parameter<Type>> getOptionalParameters()
     {
         return Collections.unmodifiableList(optionalParams);
-    }
-
-    public static ScriptException NeedMoreArguments()
-    {
-        return new ScriptException("Need more arguments");
-    }
-
-    public static ScriptException TooManyArguments()
-    {
-        return new ScriptException("Too many arguments");
-    }
-
-    public static ScriptException IncompatibleArgumentType(String name, int index)
-    {
-        return new ScriptException("Incompatible argument type at index " + index + " (Type of \" " + name + " \" needed)");
     }
 
     private final String identifier;
