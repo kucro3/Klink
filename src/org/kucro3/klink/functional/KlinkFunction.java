@@ -43,7 +43,7 @@ public class KlinkFunction implements Function {
     }
 
     @Override
-    public void call(Klink klink, Environment env, org.kucro3.klink.Ref[] refs, CallInfo context)
+    public void call(Klink klink, Environment env, org.kucro3.klink.Ref[] refs)
     {
         // protect scene
         Variables vars = env.getVars();
