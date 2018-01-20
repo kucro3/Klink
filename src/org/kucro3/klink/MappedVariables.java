@@ -91,9 +91,7 @@ public class MappedVariables implements Variables {
 	@Override
 	public Optional<Variable> getVar(String name)
 	{
-		Variable var = null;
-		if(var == null)
-			var = vars.get(name);
+		Variable var = vars.get(name);
 		if(var == null || parent != null)
 			var = parent.getVar(name).orElse(null);
 		return Optional.ofNullable(var);

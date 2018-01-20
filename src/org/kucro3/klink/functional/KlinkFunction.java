@@ -43,7 +43,7 @@ public class KlinkFunction implements Function {
     }
 
     @Override
-    public void call(Klink klink, Environment env, Ref[] refs, CallInfo context)
+    public void call(Klink klink, Environment env, org.kucro3.klink.Ref[] refs, CallInfo context)
     {
         // protect scene
         Variables vars = env.getVars();
@@ -54,7 +54,21 @@ public class KlinkFunction implements Function {
             if (refs.length < essentialParams.size())
                 throw NeedMoreArguments();
 
+            for (int i = 0; i < essentialParams.size(); i++)
+            {
+                Parameter<Type> param = essentialParams.get(i);
+                Object object = refs[i].get(env);
 
+                if (param != null && !param.getType().isType(object))
+                    throw IncompatibleArgumentType(param.getType().getName(), i);
+
+                Variables.Variable var =
+                        param.isReference() ?
+                                refs[i].isVar() ? new VarVariable(param.getName(), vars, refs[i]) : new RefVariable(param.getName(), env, refs[i])
+                        : new HeapVariable(param.getName(), object);
+
+                replacement.putVar(var);
+            }
 
         } finally {
             // recover scene
@@ -140,6 +154,40 @@ public class KlinkFunction implements Function {
         }
 
         protected Object object;
+
+        private final String name;
+    }
+
+    public static class VarVariable implements Variables.Variable
+    {
+        public VarVariable(String name, Variables vars, org.kucro3.klink.Ref ref)
+        {
+            this.name = name;
+            this.vars = vars;
+            this.ref = ref;
+        }
+
+        @Override
+        public Object get()
+        {
+            return vars.requireVar(ref.getName()).get();
+        }
+
+        @Override
+        public void set(Object object)
+        {
+            vars.requireVar(ref.getName()).set(object);
+        }
+
+        @Override
+        public String getName()
+        {
+            return name;
+        }
+
+        protected org.kucro3.klink.Ref ref;
+
+        protected Variables vars;
 
         private final String name;
     }

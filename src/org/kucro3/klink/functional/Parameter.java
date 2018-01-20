@@ -6,4 +6,6 @@ public interface Parameter<T extends Type> {
     public boolean isReference();
 
     public boolean isOptional();
+
+    public String getName();
 }
