@@ -49,7 +49,7 @@ public class JavaHelper {
         Parameter<JavaType>[] generic = new Parameter[params.length - 1];
 
         int start = frontCallInfo ? 1 : 0;
-        int end = frontCallInfo ? params.length - 1 : params.length - 2;
+        int end = frontCallInfo ? params.length : params.length - 1;
         for(int i = start, j = 0; i < end; i++, j++)
             generic[j] = new JavaParameter(params[i]);
 
