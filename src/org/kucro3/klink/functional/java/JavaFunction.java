@@ -3,9 +3,7 @@ package org.kucro3.klink.functional.java;
 import org.kucro3.klink.Environment;
 import org.kucro3.klink.Klink;
 import org.kucro3.klink.exception.ScriptException;
-import org.kucro3.klink.functional.CallInfo;
-import org.kucro3.klink.functional.Function;
-import org.kucro3.klink.functional.Parameter;
+import org.kucro3.klink.functional.*;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -14,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public class JavaFunction implements Function {
+public class JavaFunction implements NativeFunction {
     public JavaFunction(String identifier, Method method, Parameter<JavaType>[] params, boolean frontCallInfo)
     {
         this.identifier = identifier;
@@ -79,8 +77,10 @@ public class JavaFunction implements Function {
         for (; i < refs.length; i++)
             if (!params.get(i).getType().isType(refs[i].get(env)))
                 throw Function.IncompatibleArgumentType(params.get(i).getType().getName(), i);
-            else
+            else if(!params.get(i).isReference())
                 arguments[i] = refs[i].get(env);
+            else
+                arguments[i] = new RefImpl(env, refs[i]);
 
         for(; i < arguments.length; i++)
             arguments[i] = null;
@@ -94,6 +94,18 @@ public class JavaFunction implements Function {
         }
     }
 
+    @Override
+    public String getOriginalName()
+    {
+        return method.getName();
+    }
+
+    @Override
+    public String getSourceName()
+    {
+        return "Java";
+    }
+
     private final String identifier;
 
     private final Method method;
@@ -105,4 +117,29 @@ public class JavaFunction implements Function {
     private final ArrayList<Parameter<JavaType>> optionalParams;
 
     private final boolean frontCallInfo;
+
+    static class RefImpl implements Ref
+    {
+        RefImpl(Environment env, org.kucro3.klink.Ref ref)
+        {
+            this.env = env;
+            this.ref = ref;
+        }
+
+        @Override
+        public void set(Object value)
+        {
+            ref.set(env, value);
+        }
+
+        @Override
+        public Object get()
+        {
+            return ref.get(env);
+        }
+
+        private final Environment env;
+
+        private final org.kucro3.klink.Ref ref;
+    }
 }
