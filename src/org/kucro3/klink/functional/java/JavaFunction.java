@@ -1,7 +1,10 @@
-package org.kucro3.klink.functional;
+package org.kucro3.klink.functional.java;
 
 import org.kucro3.klink.Environment;
 import org.kucro3.klink.Klink;
+import org.kucro3.klink.functional.CallInfo;
+import org.kucro3.klink.functional.Function;
+import org.kucro3.klink.functional.Parameter;
 
 import java.util.List;
 

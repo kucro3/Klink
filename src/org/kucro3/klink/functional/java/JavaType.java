@@ -1,4 +1,7 @@
-package org.kucro3.klink.functional;
+package org.kucro3.klink.functional.java;
+
+import org.kucro3.klink.functional.Type;
+import org.kucro3.klink.functional.Typename;
 
 @Typename("Java")
 public final class JavaType implements Type<Class<?>> {
