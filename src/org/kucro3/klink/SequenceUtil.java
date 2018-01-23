@@ -66,4 +66,9 @@ public class SequenceUtil {
 			throw Util.IOException(e);
 		}
 	}
+
+	public static Sequence create(String str, String separator)
+	{
+		return new Sequence(str.split(separator));
+	}
 }

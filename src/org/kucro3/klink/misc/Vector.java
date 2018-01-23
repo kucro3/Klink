@@ -1,4 +1,4 @@
-package org.kucro3.klink.expression.internal.misc;
+package org.kucro3.klink.misc;
 
 import org.kucro3.klink.syntax.Sequence;
 
