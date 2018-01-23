@@ -4,7 +4,7 @@ import org.kucro3.klink.syntax.Sequence;
 
 import java.util.Objects;
 
-public class Vector {
+public class Vector implements Cloneable {
     public Vector(String prefix, String suffix, String separator)
     {
         this(prefix, suffix, separator, Integer.MAX_VALUE);
@@ -57,6 +57,14 @@ public class Vector {
         }
 
         String[] splitted = buffer.toString().split(separator);
+
+        if(splitted.length > limit)
+        {
+            this.excepted = true;
+            this.outOfLimit = true;
+            return this;
+        }
+
         this.parsed = new String[splitted.length];
 
         for(int i = 0; i < splitted.length; i++)
@@ -89,6 +97,12 @@ public class Vector {
     {
         excepted = false;
         parsed = null;
+    }
+
+    @Override
+    public Vector clone()
+    {
+        return new Vector(prefix, suffix, separator);
     }
 
     private final int limit;

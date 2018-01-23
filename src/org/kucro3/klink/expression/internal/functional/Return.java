@@ -7,54 +7,35 @@ import org.kucro3.klink.exception.ScriptException;
 import org.kucro3.klink.expression.ExpressionCompiler;
 import org.kucro3.klink.expression.ExpressionInstance;
 import org.kucro3.klink.expression.ExpressionLibrary;
+import org.kucro3.klink.misc.Vector;
 import org.kucro3.klink.syntax.Sequence;
 
 public class Return implements ExpressionCompiler.Level1 {
     @Override
     public ExpressionInstance compile(ExpressionLibrary lib, Ref[] refs, Sequence seq)
     {
-        String content;
-        String[] contents;
+        Vector vector = VECTOR.clone().parse(seq);
 
-        try {
-            String expr = seq.leftToString();
+        if(vector.isExcepted())
+            if(vector.outOfLimit())
+                throw new ScriptException("Too many return values (no more than 16)");
+            else
+                throw new ScriptException("Syntax error");
 
-            if(expr.trim().isEmpty())
-                return (sys, env) -> {throw new JumpOut();};
+        String[] contents = vector.getLastParsed();
 
-            int start = expr.indexOf('(');
-            int end = expr.lastIndexOf(')') + 1;
+        if(contents.length == 0)
+            return (sys, env) -> {throw new JumpOut();};
 
-            content = expr.substring(start + 1, end);
-            contents = content.split(",");
-        } catch (Exception e) {
-            throw new ScriptException("Syntax error");
-        }
-
-        if(contents.length > 16)
-            throw new ScriptException("Too many return values (no more than 16)");
-
-        if(contents.length == 1)
-        {
-            content = contents[0].trim();
-
-            if(content.isEmpty())
-                return (sys, env) -> {throw new JumpOut();};
-
-            final Ref callingRef = Util.toRef(content) ;
-
-            return (sys, env) ->
-                    env.getRegisters().RV[0] = callingRef.get(env);
-        }
-
-        final Ref[] callingRefs = new Ref[contents.length];
-        for(int i = 0; i < contents.length; i++)
-            callingRefs[i] = Util.toRef(contents[i] = contents[i].trim());
+        final Ref[] returns = new Ref[contents.length];
+        for(int i = 0; i < returns.length; i++)
+            returns[i] = Util.toRef(contents[i]);
 
         return (sys, env) -> {
-            for(int i = 0; i < callingRefs.length; i++)
-                env.getRegisters().RV[i] = callingRefs[i].get(env);
-            throw new JumpOut();
+            for(int i = 0; i < returns.length; i++)
+                env.getRegisters().RV[i] = returns[i];
         };
     }
+
+    private static final Vector VECTOR = new Vector("(", ")", ",", 16);
 }
