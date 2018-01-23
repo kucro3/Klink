@@ -154,7 +154,7 @@ public class Sequence implements Iterable<String>, Iterator<String> {
 
 	public static ScriptException EOF()
 	{
-		return new ScriptException("Unexpected End of file");
+		return new ScriptException("Unexpected End of file or expression");
 	}
 	
 	private final String[] seq;
