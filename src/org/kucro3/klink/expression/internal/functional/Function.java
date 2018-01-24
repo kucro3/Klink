@@ -7,6 +7,7 @@ import org.kucro3.klink.expression.ExpressionInstance;
 import org.kucro3.klink.expression.ExpressionLibrary;
 import org.kucro3.klink.flow.Flow;
 import org.kucro3.klink.functional.*;
+import org.kucro3.klink.misc.Vector;
 import org.kucro3.klink.syntax.Sequence;
 
 import java.util.*;
@@ -19,54 +20,31 @@ public class Function implements ExpressionCompiler.Level2 {
     {
         final Flow flow = codeBlock == null ? new Flow() : codeBlock;
 
+        // parse params
         Parameter<?>[] params;
+        Vector vector = VECTOR.clone();
 
-        String content = seq.next().trim();
-        if(!content.startsWith("("))
-            throw new ScriptException("Syntax error");
-
-        StringBuilder buffer = new StringBuilder(content.substring(1));
-
-        while(true)
-            if((content = seq.next().trim()).endsWith(")"))
-            {
-                buffer.append(" ").append(content.substring(0, content.length() - 1));
-                break;
-            }
+        if(vector.isExcepted())
+            if(vector.outOfLimit())
+                throw new ScriptException("Too many arguments (no more than 16)");
             else
-                buffer.append(" ").append(content);
+                throw new ScriptException("Syntax error");
 
-        content = buffer.toString().trim();
+        String[] parsed = vector.getLastParsed();
+        params = new Parameter[parsed.length];
+        for(int i = 0; i < params.length; i++)
+        {
+            ContextManipluator manipluator;
+            ParameterContext param = new ParameterContext();
+            String[] contents = parsed[i].split(" ");
 
-        if(content.isEmpty())
-            params = new Parameter[0];
-        else {
-            String[] contents = content.split(",");
-            params = new Parameter[content.length()];
+            for(int j = 0; j < contents.length - 1; j++)
+                if((manipluator = modifierManipluators.get(contents[j])) == null)
+                    throw new ScriptException("Illegal modifier: " + contents[j]);
+                else
+                    manipluator.manipluate(param);
 
-            for (int i = 0; i < contents.length; i++) {
-                ParameterContext param = new ParameterContext();
-
-                String[] tokens = contents[i].split(" ");
-                String name = tokens[tokens.length - 1];
-
-                for (int j = 0; j < tokens.length - 1; j++) {
-                    ContextManipluator manipluator = modifierManipluators.get(tokens[j]);
-                    if (manipluator != null)
-                        manipluator.manipluate(param);
-                    else
-                        throw new ScriptException("Invalid modifier: " + tokens[j]);
-                }
-
-                if (name.startsWith("&")) {
-                    param.reference = true;
-                    name = name.substring(1);
-                }
-
-                param.name = name;
-
-                params[i] = param;
-            }
+            params[i] = param;
         }
 
         final String functionName = seq.next();
@@ -138,4 +116,6 @@ public class Function implements ExpressionCompiler.Level2 {
             put("optional", (ctx) -> ctx.optional = true);
         }
     };
+
+    private static final Vector VECTOR = new Vector("(", ")", ",", 16);
 }

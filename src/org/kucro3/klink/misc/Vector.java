@@ -2,6 +2,9 @@ package org.kucro3.klink.misc;
 
 import org.kucro3.klink.syntax.Sequence;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 public class Vector implements Cloneable {
@@ -20,10 +23,9 @@ public class Vector implements Cloneable {
 
     public Vector parse(Sequence seq)
     {
-        excepted = false;
-        outOfLimit = false;
+        reset();
 
-        String content = seq.next().trim();
+        String content = record(seq.next()).trim();
 
         if(!content.startsWith(prefix))
         {
@@ -46,7 +48,7 @@ public class Vector implements Cloneable {
         StringBuilder buffer = new StringBuilder(content.substring(prefix.length()));
         while(true)
         {
-            content = seq.next().trim();
+            content = record(seq.next()).trim();
             if(content.endsWith(suffix))
             {
                 buffer.append(" ").append(content.substring(0, content.length() - suffix.length()));
@@ -93,9 +95,22 @@ public class Vector implements Cloneable {
         return parsed != null;
     }
 
+    public List<String> getLastReaded()
+    {
+        return Collections.unmodifiableList(lastReaded);
+    }
+
+    String record(String readed)
+    {
+        lastReaded.add(readed);
+        return readed;
+    }
+
     public void reset()
     {
         excepted = false;
+        outOfLimit = false;
+        lastReaded.clear();
         parsed = null;
     }
 
@@ -110,6 +125,8 @@ public class Vector implements Cloneable {
     private boolean outOfLimit;
 
     private boolean excepted;
+
+    private final List<String> lastReaded = new ArrayList<>();
 
     private String[] parsed;
 
