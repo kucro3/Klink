@@ -75,7 +75,7 @@ public class Call implements ExpressionCompiler.Level1 {
             CallInfo callInfo = new CallInfo();
             function.call(sys, env, callingRefs, callInfo);
 
-            Object[] returned = callInfo.getReturns().get();
+            Object[] returned = callInfo.getReturns().orElse(new Object[0]);
 
             Ref[] returnRefs;
             if(returns == null)
