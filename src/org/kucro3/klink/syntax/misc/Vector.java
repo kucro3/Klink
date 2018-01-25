@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class Vector implements Cloneable {
+public class Vector implements Cloneable, Parser {
     public Vector(String prefix, String suffix, String separator)
     {
         this(prefix, suffix, separator, Integer.MAX_VALUE);
@@ -24,6 +24,7 @@ public class Vector implements Cloneable {
             throw new IllegalArgumentException("limit");
     }
 
+    @Override
     public Vector parse(Sequence seq)
     {
         reset();
@@ -32,7 +33,7 @@ public class Vector implements Cloneable {
 
         if(!content.startsWith(prefix))
         {
-            this.result = Results.FAILED;
+            this.result = Results.PATTERN_MISMATCH;
             return this;
         }
 
@@ -119,6 +120,7 @@ public class Vector implements Cloneable {
         return new Vector(prefix, suffix, separator);
     }
 
+    @Override
     public Result getResult()
     {
         return result;
@@ -145,6 +147,7 @@ public class Vector implements Cloneable {
         return readed;
     }
 
+    @Override
     public void reset()
     {
         result = null;
