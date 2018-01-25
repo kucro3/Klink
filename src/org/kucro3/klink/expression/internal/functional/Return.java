@@ -32,13 +32,11 @@ public class Return implements ExpressionCompiler.Level1 {
         if(contents.length == 0)
             return (sys, env) -> {throw new JumpOut();};
 
-        final Ref[] returns = new Ref[contents.length];
-        for(int i = 0; i < returns.length; i++)
-            returns[i] = Util.toRef(contents[i]);
+        final Ref[] returns = Util.toRefs(contents);
 
         return (sys, env) -> {
             for(int i = 0; i < returns.length; i++)
-                env.getRegisters().RV[i] = returns[i];
+                env.getRegisters().RV[i] = returns[i].get(env);
         };
     }
 

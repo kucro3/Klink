@@ -87,6 +87,14 @@ public class Util {
 			throw new ScriptException("Illegal number format for double float: " + e.getMessage());
 		}
 	}
+
+	public static Ref[] toRefs(String... vars)
+	{
+		Ref[] refs = new Ref[vars.length];
+		for(int i = 0; i < vars.length; i++)
+			refs[i] = toRef(vars[i]);
+		return refs;
+	}
 	
 	public static Ref toRef(String var)
 	{

@@ -25,8 +25,6 @@ public class Caller implements Cloneable, Parser {
         argumentVector.parse(seq);
 
         String temp;
-        String[] contents;
-        Ref[] parsed;
 
         PARSING_PARAMS:
         {
@@ -54,11 +52,7 @@ public class Caller implements Cloneable, Parser {
                 return this;
             }
 
-            contents = argumentVector.getLastParsed();
-            parsed = new Ref[contents.length];
-            for(int i = 0; i < contents.length; i++)
-                parsed[i] = Util.toRef(contents[i]);
-            this.parsedArguments = parsed;
+            this.parsedArguments = Util.toRefs(argumentVector.getLastParsed());
 
             if((temp = seq.next()).equals("->"))
                 break PARSING_PARAMS;
@@ -78,11 +72,7 @@ public class Caller implements Cloneable, Parser {
             return this;
         }
 
-        contents = returnVector.getLastParsed();
-        parsed = new Ref[contents.length];
-        for(int i = 0; i < contents.length; i++)
-            parsed[i] = Util.toRef(contents[i]);
-        this.parsedReturns = parsed;
+        this.parsedReturns = Util.toRefs(returnVector.getLastParsed());
 
         this.parsedFunctionName = seq.next();
 
