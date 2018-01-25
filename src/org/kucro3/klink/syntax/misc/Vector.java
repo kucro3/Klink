@@ -1,4 +1,4 @@
-package org.kucro3.klink.misc;
+package org.kucro3.klink.syntax.misc;
 
 import org.kucro3.klink.syntax.Sequence;
 
@@ -15,10 +15,13 @@ public class Vector implements Cloneable {
 
     public Vector(String prefix, String suffix, String separator, int limit)
     {
-        this.prefix = Objects.requireNonNull(prefix);
-        this.suffix = Objects.requireNonNull(suffix);
-        this.separator = Objects.requireNonNull(separator);
+        this.prefix = Objects.requireNonNull(prefix, "prefix");
+        this.suffix = Objects.requireNonNull(suffix, "suffix");
+        this.separator = Objects.requireNonNull(separator, "separator");
         this.limit = limit;
+
+        if(limit < 0)
+            throw new IllegalArgumentException("limit");
     }
 
     public Vector parse(Sequence seq)
@@ -73,6 +76,46 @@ public class Vector implements Cloneable {
             this.parsed[i] = splitted[i].trim();
 
         return this;
+    }
+
+    public String getPrefix()
+    {
+        return prefix;
+    }
+
+    public Vector setPrefix(String prefix)
+    {
+        return new Vector(prefix, suffix, separator);
+    }
+
+    public String getSuffix()
+    {
+        return suffix;
+    }
+
+    public Vector setSuffix(String suffix)
+    {
+        return new Vector(prefix, suffix, separator);
+    }
+
+    public String getSeparator()
+    {
+        return separator;
+    }
+
+    public Vector setSeparator(String separator)
+    {
+        return new Vector(prefix, suffix, separator);
+    }
+
+    public Vector set(String prefix, String suffix)
+    {
+        return set(prefix, suffix, separator);
+    }
+
+    public Vector set(String prefix, String suffix, String separator)
+    {
+        return new Vector(prefix, suffix, separator);
     }
 
     public boolean outOfLimit()

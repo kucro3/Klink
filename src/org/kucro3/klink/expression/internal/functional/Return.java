@@ -7,9 +7,12 @@ import org.kucro3.klink.exception.ScriptException;
 import org.kucro3.klink.expression.ExpressionCompiler;
 import org.kucro3.klink.expression.ExpressionInstance;
 import org.kucro3.klink.expression.ExpressionLibrary;
-import org.kucro3.klink.misc.Vector;
+import org.kucro3.klink.syntax.misc.Vector;
 import org.kucro3.klink.syntax.Sequence;
 
+/**
+ * Return ($anyvar, @anyreg, @/$...) ;
+ */
 public class Return implements ExpressionCompiler.Level1 {
     @Override
     public ExpressionInstance compile(ExpressionLibrary lib, Ref[] refs, Sequence seq)

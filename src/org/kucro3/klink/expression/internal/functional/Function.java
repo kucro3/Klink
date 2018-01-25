@@ -7,12 +7,20 @@ import org.kucro3.klink.expression.ExpressionInstance;
 import org.kucro3.klink.expression.ExpressionLibrary;
 import org.kucro3.klink.flow.Flow;
 import org.kucro3.klink.functional.*;
-import org.kucro3.klink.misc.Vector;
+import org.kucro3.klink.syntax.misc.Vector;
 import org.kucro3.klink.syntax.Sequence;
 
 import java.util.*;
 import java.util.Optional;
 
+/**
+ * $arg : reference
+ * optional arg : optional
+ *
+ * Function (arg0, args...) FunctionName :
+ *     ... codes here ;
+ * ;
+ */
 @SuppressWarnings("unchecked")
 public class Function implements ExpressionCompiler.Level2 {
     @Override
@@ -22,7 +30,7 @@ public class Function implements ExpressionCompiler.Level2 {
 
         // parse params
         Parameter<?>[] params;
-        Vector vector = VECTOR.clone();
+        Vector vector = VECTOR.clone().parse(seq);
 
         if(vector.isExcepted())
             if(vector.outOfLimit())
