@@ -36,7 +36,7 @@ public class Caller implements Cloneable, Parser {
                     this.result = Results.SYNTAX_ERROR;
                     return this;
                 }
-                else if((temp = readed.get(0)).equals("->"))
+                else if((temp = readed.get(0)).equals(connector))
                     break PARSING_PARAMS;
                 else
                 {
@@ -54,7 +54,7 @@ public class Caller implements Cloneable, Parser {
 
             this.parsedArguments = Util.toRefs(argumentVector.getLastParsed());
 
-            if((temp = seq.next()).equals("->"))
+            if((temp = seq.next()).equals(connector))
                 break PARSING_PARAMS;
             else
             {

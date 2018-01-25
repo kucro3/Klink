@@ -6,6 +6,7 @@ import org.kucro3.klink.expression.ExpressionCompiler;
 import org.kucro3.klink.expression.ExpressionInstance;
 import org.kucro3.klink.expression.ExpressionLibrary;
 import org.kucro3.klink.functional.KlinkFunctionRegistry;
+import org.kucro3.klink.syntax.misc.Caller;
 import org.kucro3.klink.syntax.misc.Vector;
 import org.kucro3.klink.syntax.Sequence;
 
@@ -34,4 +35,6 @@ public class Call implements ExpressionCompiler.Level1 {
     }
 
     private static final Vector VECTOR = new Vector("(", ")", ",", 16);
+
+    private static final Caller CALLER = new Caller(VECTOR, VECTOR, "->");
 }
