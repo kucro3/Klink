@@ -55,6 +55,16 @@ public class Function implements ExpressionCompiler.Level2 {
                 else
                     manipluator.manipluate(param);
 
+            String last = contents[contents.length - 1];
+
+            if(last.startsWith("&"))
+            {
+                param.reference = true;
+                last = last.substring(1);
+            }
+
+            param.name = last;
+
             params[i] = param;
         }
 
@@ -119,7 +129,7 @@ public class Function implements ExpressionCompiler.Level2 {
 
         boolean reference;
 
-        Type<?> type;
+        Type<?> type = DEFAULT;
 
         String name;
 

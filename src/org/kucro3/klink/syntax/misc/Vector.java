@@ -46,6 +46,7 @@ public class Vector implements Cloneable, Parser {
             else
                 this.parsed = new String[] {content};
 
+            this.result = Results.SUCCEEDED;
             return this;
         }
 

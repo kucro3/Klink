@@ -48,7 +48,7 @@ public class MappedVariables implements Variables {
 	public Variable newVarIfAbsent(String name)
 	{
 		Variable var = vars.get(name);
-		if(var == null || parent != null)
+		if(var == null && parent != null)
 			var = parent.getVar(name).orElse(null);
 		if(var == null)
 			vars.put(name, var = factory.produce(name));
@@ -92,7 +92,7 @@ public class MappedVariables implements Variables {
 	public Optional<Variable> getVar(String name)
 	{
 		Variable var = vars.get(name);
-		if(var == null || parent != null)
+		if(var == null && parent != null)
 			var = parent.getVar(name).orElse(null);
 		return Optional.ofNullable(var);
 	}

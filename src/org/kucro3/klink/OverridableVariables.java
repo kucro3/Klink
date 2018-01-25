@@ -1,5 +1,7 @@
 package org.kucro3.klink;
 
+import java.util.Objects;
+
 public class OverridableVariables extends MappedVariables {
     public OverridableVariables()
     {
@@ -23,6 +25,7 @@ public class OverridableVariables extends MappedVariables {
     @Override
     public void putVar(Variable var)
     {
+        Objects.requireNonNull(var.getName(), "name");
         if(vars.containsKey(var.getName()))
             throw Variables.VariableRedefinition(var.getName());
         vars.put(var.getName(), var);
@@ -41,6 +44,7 @@ public class OverridableVariables extends MappedVariables {
     @Override
     public Variable newVarIfAbsent(String name)
     {
+        Objects.requireNonNull(name, "name");
         Variable var = vars.get(name);
         if(var == null)
             vars.put(name, var = factory.produce(name));

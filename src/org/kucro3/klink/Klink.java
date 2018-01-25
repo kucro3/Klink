@@ -155,7 +155,7 @@ public class Klink {
 
 	public Executable execute(File file)
 	{
-		return execute(file);
+		return execute(file, currentEnv());
 	}
 
 	public Executable execute(File file, Environment env)

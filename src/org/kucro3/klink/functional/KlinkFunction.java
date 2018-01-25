@@ -59,7 +59,7 @@ public class KlinkFunction implements Function {
                 throw Function.TooManyArguments();
 
             int i = 0;
-            for (; i < params.size(); i++)
+            for (; i < refs.length; i++)
             {
                 Parameter<Type> param = params.get(i);
                 Object object = refs[i].get(env);
@@ -75,7 +75,7 @@ public class KlinkFunction implements Function {
                 replacement.putVar(var);
             }
 
-            for(; i < optionalParams.size(); i++)
+            for(; i < params.size(); i++)
                 replacement.putVar(new HeapVariable(params.get(i).getType().getName(), null));
 
             env.setVars(replacement);
