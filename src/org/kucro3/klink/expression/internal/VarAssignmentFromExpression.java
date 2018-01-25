@@ -27,7 +27,7 @@ public class VarAssignmentFromExpression implements ExpressionCompiler {
 			exec.set(trans.pullOperation());
 		});
 		return (sys, env) -> {
-			exec.get().ifPresent((e) -> e.execute(sys));
+			exec.get().ifPresent((e) -> e.execute(sys, env));
 			java.lang.Object obj = flag ? env.popReturnSlot() : env.popBooleanSlot();
 			for(Ref ref : refs)
 				ref.set(env, obj);

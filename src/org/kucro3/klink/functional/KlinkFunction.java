@@ -6,6 +6,7 @@ import org.kucro3.klink.OverridableVariables;
 import org.kucro3.klink.Variables;
 import org.kucro3.klink.exception.ScriptException;
 import org.kucro3.klink.flow.Flow;
+import org.kucro3.klink.registers.RegisterHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -78,7 +79,12 @@ public class KlinkFunction implements Function {
                 replacement.putVar(new HeapVariable(params.get(i).getType().getName(), null));
 
             env.setVars(replacement);
-            flow.execute(klink);
+            flow.execute(klink, env);
+
+            callInfo.allocateReturns(env.getRegisters().RC);
+            env.getRegisters().RC = 0;
+
+
         } finally {
             // recover scene
             if (env.getVars() == replacement)
@@ -115,6 +121,8 @@ public class KlinkFunction implements Function {
     {
         return Collections.unmodifiableList(optionalParams);
     }
+
+    private static final RegisterHelper RVHELPER = RegisterHelper.getHelper("RV").get();
 
     private final String identifier;
 

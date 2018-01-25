@@ -142,36 +142,66 @@ public class Klink {
 		translator.setGlobal(seq);
 		return translator.pullAll();
 	}
-	
+
 	public Executable execute(String filename)
 	{
-		return execute(null, filename);
+		return execute(filename, currentEnv());
 	}
 	
+	public Executable execute(String filename, Environment env)
+	{
+		return execute(null, filename, env);
+	}
+
 	public Executable execute(File file)
 	{
-		return execute(null, file);
+		return execute(file);
 	}
-	
+
+	public Executable execute(File file, Environment env)
+	{
+		return execute(null, file, env);
+	}
+
 	public Executable execute(String name, String filename)
 	{
-		return execute(name, new File(filename));
+		return execute(name, filename, currentEnv());
 	}
-	
+
+	public Executable execute(String name, String filename, Environment env)
+	{
+		return execute(name, new File(filename), env);
+	}
+
 	public Executable execute(String name, File file)
 	{
-		return execute(name, SequenceUtil.readFrom(file));
+		return execute(name, file, currentEnv());
 	}
 	
+	public Executable execute(String name, File file, Environment env)
+	{
+		return execute(name, SequenceUtil.readFrom(file), env);
+	}
+
 	public Executable execute(Sequence seq)
+	{
+		return execute(seq, currentEnv());
+	}
+	
+	public Executable execute(Sequence seq, Environment env)
 	{
 		return execute(seq.getName(), seq);
 	}
-	
+
 	public Executable execute(String name, Sequence seq)
 	{
+		return execute(name, seq, currentEnv());
+	}
+
+	public Executable execute(String name, Sequence seq, Environment env)
+	{
 		Executable exec = compile(name, seq);
-		exec.execute(this);
+		exec.execute(this, currentEnv());
 		return exec;
 	}
 	

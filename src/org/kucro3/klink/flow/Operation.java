@@ -1,9 +1,6 @@
 package org.kucro3.klink.flow;
 
-import org.kucro3.klink.Executable;
-import org.kucro3.klink.Klink;
-import org.kucro3.klink.Ref;
-import org.kucro3.klink.Snapshot;
+import org.kucro3.klink.*;
 import org.kucro3.klink.expression.Expression;
 import org.kucro3.klink.expression.ExpressionInstance;
 import org.kucro3.klink.expression.ExpressionLibrary;
@@ -17,9 +14,9 @@ public class Operation implements Executable {
 		this.instance = this.exp.compile(lib, refs, seq, codeBlock, snapshot);
 	}
 	
-	public void execute(Klink sys)
+	public void execute(Klink sys, Environment env)
 	{
-		instance.call(sys, sys.currentEnv());
+		instance.call(sys, env);
 	}
 	
 	public Expression getExpression()

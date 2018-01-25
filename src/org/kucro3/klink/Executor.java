@@ -8,10 +8,10 @@ public class Executor {
 	{
 	}
 
-	public void execute(Executable entity, Klink sys) 
+	public void execute(Executable entity, Klink sys, Environment env)
 	{
 		try {
-			entity.execute(sys);
+			entity.execute(sys, env);
 		} catch (Interruption i) {
 			if(interruptionHandler != null)
 				interruptionHandler.handle(i);

@@ -59,7 +59,7 @@ public class VarCall implements ExpressionCompiler {
 		@Override
 		public void call(Klink sys, Environment env) 
 		{
-			this.operation.ifPresent((e) -> e.execute(sys));
+			this.operation.ifPresent((e) -> e.execute(sys, env));
 		}
 		
 		private final Optional<Operation> operation;

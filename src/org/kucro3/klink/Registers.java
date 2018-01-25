@@ -19,6 +19,8 @@ public class Registers {
 	
 	public final double F64[] = new double[6];
 
+	public int RC = 0;
+
 	public void clearReturnValues()
 	{
 		RV[0] = RV[1] = RV[2] = RV[3] = RV[4] = RV[5] = RV[6] = RV[7] = null;

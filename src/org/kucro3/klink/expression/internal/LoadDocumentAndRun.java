@@ -26,7 +26,7 @@ public class LoadDocumentAndRun implements ExpressionCompiler {
 			Executable exec = sys.compile(_seq);
 			sys.getNamespace().put(name, exec);
 			sys.getMessenger().info("Loaded script document: " + name + " (" + file + ")");
-			exec.execute(sys);
+			exec.execute(sys, env);
 		};
 	}
 	

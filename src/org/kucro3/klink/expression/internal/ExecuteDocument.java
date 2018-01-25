@@ -24,7 +24,7 @@ public class ExecuteDocument implements ExpressionCompiler {
 			Sequence _seq = SequenceUtil.readFrom(file);
 			_seq.setName(name);
 			Executable exec = sys.compile(_seq);
-			exec.execute(sys);
+			exec.execute(sys, env);
 		};
 	}
 	

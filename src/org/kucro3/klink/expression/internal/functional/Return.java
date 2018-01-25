@@ -37,6 +37,7 @@ public class Return implements ExpressionCompiler.Level1 {
         return (sys, env) -> {
             for(int i = 0; i < returns.length; i++)
                 env.getRegisters().RV[i] = returns[i].get(env);
+            env.getRegisters().RC = returns.length;
         };
     }
 

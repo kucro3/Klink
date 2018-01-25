@@ -1,5 +1,6 @@
 package org.kucro3.klink.flow;
 
+import org.kucro3.klink.Environment;
 import org.kucro3.klink.Executable;
 import org.kucro3.klink.Klink;
 import org.kucro3.klink.Predicatable;
@@ -13,9 +14,9 @@ public abstract class Predicate implements Predicatable {
 	}
 	
 	@Override
-	public void execute(Klink sys)
+	public void execute(Klink sys, Environment env)
 	{
-		operation.execute(sys);
+		operation.execute(sys, env);
 		try {
 			result = sys.currentEnv().popBooleanSlot();
 		} catch (ScriptException e) {
@@ -29,7 +30,7 @@ public abstract class Predicate implements Predicatable {
 	{
 		return new Predicatable() {
 			@Override
-			public void execute(Klink sys)
+			public void execute(Klink sys, Environment env)
 			{
 			}
 

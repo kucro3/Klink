@@ -2,6 +2,7 @@ package org.kucro3.klink.flow;
 
 import java.util.Optional;
 
+import org.kucro3.klink.Environment;
 import org.kucro3.klink.Executable;
 import org.kucro3.klink.Klink;
 import org.kucro3.klink.Predicatable;
@@ -17,15 +18,15 @@ public class LoopFor extends Loop {
 	}
 	
 	@Override
-	public void execute(Klink sys)
+	public void execute(Klink sys, Environment env)
 	{
-		init.ifPresent((e) -> e.execute(sys));
+		init.ifPresent((e) -> e.execute(sys, env));
 		while(true) try {
-			judge.execute(sys);
+			judge.execute(sys, env);
 			if(!judge.passed())
 				break;
-			super.execute(sys);
-			control.ifPresent((e) -> e.execute(sys));
+			super.execute(sys, env);
+			control.ifPresent((e) -> e.execute(sys, env));
 		} catch (BreakLoop e) {
 			break;
 		}

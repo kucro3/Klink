@@ -2,6 +2,7 @@ package org.kucro3.klink.flow;
 
 import java.util.Objects;
 
+import org.kucro3.klink.Environment;
 import org.kucro3.klink.Executable;
 import org.kucro3.klink.Klink;
 import org.kucro3.klink.Predicatable;
@@ -14,12 +15,12 @@ public class Branch implements Executable, Predicatable {
 	}
 
 	@Override
-	public void execute(Klink sys)
+	public void execute(Klink sys, Environment env)
 	{
-		judgable.execute(sys);
+		judgable.execute(sys, env);
 			
 		if(passed())
-			branch.execute(sys);
+			branch.execute(sys, env);
 	}
 	
 	@Override

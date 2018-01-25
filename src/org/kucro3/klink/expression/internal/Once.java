@@ -76,7 +76,7 @@ public class Once implements ExpressionCompiler.Level3 {
                 return;
 
             if(body != null)
-                body.execute(sys);
+                body.execute(sys, env);
             this.setFlag(true);
         }
 

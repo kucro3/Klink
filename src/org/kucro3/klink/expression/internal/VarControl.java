@@ -139,7 +139,7 @@ public class VarControl implements ExpressionCompiler {
 		@Override
 		public void call(Klink sys, Environment env) 
 		{
-			executable.execute(sys);
+			executable.execute(sys, env);
 			dst.force(env, requireObj ? env.popReturnSlot() : env.popBooleanSlot());
 		}
 		

@@ -409,10 +409,10 @@ public class KlinkTranslator implements Translator {
 		}
 		
 		@Override
-		public void execute(Klink sys)
+		public void execute(Klink sys, Environment env)
 		{
 			try {
-				super.execute(sys);
+				super.execute(sys, env);
 			} catch (ScriptException e) {
 				e.addLineInfo(line);
 				if(super.getSequence().getName() != null)

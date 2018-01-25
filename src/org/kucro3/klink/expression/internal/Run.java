@@ -13,7 +13,7 @@ public class Run implements ExpressionCompiler {
 	public ExpressionInstance compile(ExpressionLibrary lib, Ref[] refs, Sequence seq, Flow codeBlock) 
 	{
 		final String document = seq.next();
-		return (sys, env) -> sys.getNamespace().require(document).execute(sys);
+		return (sys, env) -> sys.getNamespace().require(document).execute(sys, env);
 	}
 	
 	public static Expression instance()

@@ -1,5 +1,6 @@
 package org.kucro3.klink.flow;
 
+import org.kucro3.klink.Environment;
 import org.kucro3.klink.Executable;
 import org.kucro3.klink.Klink;
 import org.kucro3.klink.Predicatable;
@@ -13,13 +14,13 @@ public class LoopWhile extends Loop {
 	}
 	
 	@Override
-	public void execute(Klink sys)
+	public void execute(Klink sys, Environment env)
 	{
 		while(true) try {
-			judge.execute(sys);
+			judge.execute(sys, env);
 			if(!judge.passed())
 				break;
-			super.execute(sys);
+			super.execute(sys, env);
 		} catch (BreakLoop e) {
 			break;
 		}
