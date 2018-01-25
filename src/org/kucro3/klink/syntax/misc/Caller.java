@@ -1,5 +1,8 @@
 package org.kucro3.klink.syntax.misc;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 public class Caller {
@@ -49,6 +52,61 @@ public class Caller {
     {
         return new Caller(argumentVector, returnVector, connector);
     }
+
+    public String getLastParsedFunctionName()
+    {
+        return parsedFunctionName;
+    }
+
+    public String[] getLastParsedArguments()
+    {
+        return parsedArguments;
+    }
+
+    public String[] getLastParsedReturns()
+    {
+        return parsedReturns;
+    }
+
+    public List<String> getLastReaded()
+    {
+        ArrayList<String> list = new ArrayList<>();
+
+        list.addAll(argumentVector.getLastReaded());
+
+        if(argumentVector.getResult().passed())
+            list.addAll(returnVector.getLastReaded());
+
+        list.trimToSize();
+        return Collections.unmodifiableList(list);
+    }
+
+    public void reset()
+    {
+        parsedArguments = null;
+        parsedReturns = null;
+        parsedFunctionName = null;
+        lazyLastReaded = null;
+        result = null;
+
+        argumentVector.reset();
+        returnVector.reset();
+    }
+
+    public Result getResult()
+    {
+        return result;
+    }
+
+    private String[] parsedReturns;
+
+    private String[] parsedArguments;
+
+    private String parsedFunctionName;
+
+    private List<String> lazyLastReaded;
+
+    private Result result;
 
     private final String connector;
 

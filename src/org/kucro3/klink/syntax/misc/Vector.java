@@ -32,7 +32,7 @@ public class Vector implements Cloneable {
 
         if(!content.startsWith(prefix))
         {
-            excepted = true;
+            this.result = Results.FAILED;
             return this;
         }
 
@@ -65,8 +65,7 @@ public class Vector implements Cloneable {
 
         if(splitted.length > limit)
         {
-            this.excepted = true;
-            this.outOfLimit = true;
+            this.result = OUT_OF_LIMIT;
             return this;
         }
 
@@ -74,6 +73,8 @@ public class Vector implements Cloneable {
 
         for(int i = 0; i < splitted.length; i++)
             this.parsed[i] = splitted[i].trim();
+
+        this.result = Results.SUCCEEDED;
 
         return this;
     }
@@ -118,14 +119,9 @@ public class Vector implements Cloneable {
         return new Vector(prefix, suffix, separator);
     }
 
-    public boolean outOfLimit()
+    public Result getResult()
     {
-        return outOfLimit;
-    }
-
-    public boolean isExcepted()
-    {
-        return excepted;
+        return result;
     }
 
     public String[] getLastParsed()
@@ -151,8 +147,7 @@ public class Vector implements Cloneable {
 
     public void reset()
     {
-        excepted = false;
-        outOfLimit = false;
+        result = null;
         lastReaded.clear();
         parsed = null;
     }
@@ -165,9 +160,7 @@ public class Vector implements Cloneable {
 
     private final int limit;
 
-    private boolean outOfLimit;
-
-    private boolean excepted;
+    private Result result;
 
     private final List<String> lastReaded = new ArrayList<>();
 
@@ -178,4 +171,6 @@ public class Vector implements Cloneable {
     private final String suffix;
 
     private final String separator;
+
+    public static final Result OUT_OF_LIMIT = Result.of("OUT_OF_LIMIT", "Too many contents", false);
 }

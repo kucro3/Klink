@@ -7,6 +7,7 @@ import org.kucro3.klink.expression.ExpressionInstance;
 import org.kucro3.klink.expression.ExpressionLibrary;
 import org.kucro3.klink.flow.Flow;
 import org.kucro3.klink.functional.*;
+import org.kucro3.klink.syntax.misc.Result;
 import org.kucro3.klink.syntax.misc.Vector;
 import org.kucro3.klink.syntax.Sequence;
 
@@ -32,11 +33,12 @@ public class Function implements ExpressionCompiler.Level2 {
         Parameter<?>[] params;
         Vector vector = VECTOR.clone().parse(seq);
 
-        if(vector.isExcepted())
-            if(vector.outOfLimit())
+        Result result;
+        if(!(result = vector.getResult()).passed())
+            if(result.equals(Vector.OUT_OF_LIMIT))
                 throw new ScriptException("Too many arguments (no more than 16)");
             else
-                throw new ScriptException("Syntax error");
+                throw new ScriptException(result.getMessage());
 
         String[] parsed = vector.getLastParsed();
         params = new Parameter[parsed.length];
