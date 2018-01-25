@@ -5,6 +5,10 @@ import java.util.Map;
 
 import org.kucro3.klink.exception.ScriptException;
 import org.kucro3.klink.expression.internal.*;
+import org.kucro3.klink.expression.internal.functional.Call;
+import org.kucro3.klink.expression.internal.functional.CallNative;
+import org.kucro3.klink.expression.internal.functional.Function;
+import org.kucro3.klink.expression.internal.functional.Return;
 
 public class ExpressionLibrary {
 	public ExpressionLibrary()
@@ -46,6 +50,10 @@ public class ExpressionLibrary {
 		forceExpression(ExecuteDocument.instance());
 		forceExpression(LoadExpressionPack.instance());
 		forceExpression(Once.instance());
+		forceExpression(Call.instance());
+		forceExpression(CallNative.instance());
+		forceExpression(Function.instance());
+		forceExpression(Return.instance());
 	}
 	
 	public void removeExpression(String name)

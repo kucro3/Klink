@@ -2,6 +2,7 @@ package org.kucro3.klink.expression.internal.functional;
 
 import org.kucro3.klink.Ref;
 import org.kucro3.klink.exception.ScriptException;
+import org.kucro3.klink.expression.Expression;
 import org.kucro3.klink.expression.ExpressionCompiler;
 import org.kucro3.klink.expression.ExpressionInstance;
 import org.kucro3.klink.expression.ExpressionLibrary;
@@ -69,6 +70,11 @@ public class Function implements ExpressionCompiler.Level2 {
             KlinkFunctionRegistry registry = optional.get();
             registry.defineFunction(functionName, function);
         };
+    }
+
+    public static Expression instance()
+    {
+        return new Expression("Function", new Function());
     }
 
     private static interface ContextManipluator

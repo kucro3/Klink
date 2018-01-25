@@ -81,10 +81,17 @@ public class KlinkFunction implements Function {
             env.setVars(replacement);
             flow.execute(klink, env);
 
-            callInfo.allocateReturns(env.getRegisters().RC);
+            int allocated;
+            callInfo.allocateReturns(allocated = env.getRegisters().RC);
             env.getRegisters().RC = 0;
 
+            Object[] returns = callInfo.getReturns().get();
+            Object[] RV = env.getRegisters().RV;
 
+            for(int j = 0; j < allocated; j++)
+                returns[j] = RV[j];
+
+            RVHELPER.clearRegisters(env.getRegisters());
         } finally {
             // recover scene
             if (env.getVars() == replacement)

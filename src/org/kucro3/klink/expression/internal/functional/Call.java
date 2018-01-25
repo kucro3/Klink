@@ -3,6 +3,7 @@ package org.kucro3.klink.expression.internal.functional;
 import org.kucro3.klink.Ref;
 import org.kucro3.klink.Registers;
 import org.kucro3.klink.exception.ScriptException;
+import org.kucro3.klink.expression.Expression;
 import org.kucro3.klink.expression.ExpressionCompiler;
 import org.kucro3.klink.expression.ExpressionInstance;
 import org.kucro3.klink.expression.ExpressionLibrary;
@@ -72,7 +73,32 @@ public class Call implements ExpressionCompiler.Level1 {
             }
 
             CallInfo callInfo = new CallInfo();
+            function.call(sys, env, callingRefs, callInfo);
+
+            Object[] returned = callInfo.getReturns().get();
+
+            Ref[] returnRefs;
+            if(returns == null)
+                returnRefs = new Ref[0];
+            else
+                returnRefs = returns;
+
+            int i = 0;
+            for(int j = 0; j < returnRefs.length; j++, i++)
+                returnRefs[j].set(env, returned[i]);
+
+            Object[] RV = env.getRegisters().RV;
+            for(int j = 0; i < returned.length && j < RV.length; j++, i++)
+                RV[j] = returned[i];
+
+            if(i != returned.length)
+                throw new ScriptException("Return overflow");
         };
+    }
+
+    public static Expression instance()
+    {
+        return new Expression("Call", new Call(false));
     }
 
     private final boolean isNative;

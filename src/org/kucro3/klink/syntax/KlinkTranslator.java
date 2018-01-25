@@ -83,13 +83,13 @@ public class KlinkTranslator implements Translator {
 	@Override
 	public Optional<Operation> pullOperation(Ref[] refs)
 	{
-		return record(pullOperation0(refs, null));
+		return Optional.ofNullable(record(pullOperation0(refs, null).orElse(null)));
 	}
 	
 	@Override
 	public Optional<Operation> pullOperation(Ref[] refs, Flow defaultCodeBlock)
 	{
-		return record(pullOperation0(refs, defaultCodeBlock));
+		return Optional.ofNullable(record(pullOperation0(refs, defaultCodeBlock).orElse(null)));
 	}
 	
 	Optional<Operation> pullOperation0(Ref[] refs, Flow defaultCodeBlock)
@@ -173,10 +173,10 @@ public class KlinkTranslator implements Translator {
 			switch(globalSeq.next())
 			{
 			case ";":	
-				return record(elseBranch ? new BranchElse(getContext().tail().orElse(new Empty()), 
+				return record(elseBranch ? new BranchElse(getContext().tail(),
 						judgable, new Empty()) : new Branch(judgable, null));
 			case ":":	
-				return record(elseBranch ? new BranchElse(getContext().tail().orElse(new Empty()), 
+				return record(elseBranch ? new BranchElse(getContext().tail(),
 						judgable, pullCodeBlock0()) : new Branch(judgable, pullCodeBlock0()));
 			default:	throw new RuntimeException("Should not reach here");
 			}
@@ -262,7 +262,7 @@ public class KlinkTranslator implements Translator {
 	@Override
 	public Flow pullCodeBlock()
 	{
-		return record(Optional.of(pullCodeBlock0())).get();
+		return record(pullCodeBlock0());
 	}
 	
 	Flow pullCodeBlock0()
@@ -351,16 +351,11 @@ public class KlinkTranslator implements Translator {
 		this.currentFlow = flow;
 	}
 	
-	@SuppressWarnings("unchecked")
-	<T extends Executable> Optional<T> record(Optional<T> t)
-	{
-		currentFlow.append((Optional<Executable>) t);
-		return t;
-	}
-	
 	<T extends Executable> T record(T t)
 	{
-		return record(Optional.of(t)).get();
+		if(t != null)
+			currentFlow.append(t);
+		return t;
 	}
 	
 	private boolean elseBranch;

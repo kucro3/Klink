@@ -4,6 +4,7 @@ import org.kucro3.klink.Ref;
 import org.kucro3.klink.Util;
 import org.kucro3.klink.exception.JumpOut;
 import org.kucro3.klink.exception.ScriptException;
+import org.kucro3.klink.expression.Expression;
 import org.kucro3.klink.expression.ExpressionCompiler;
 import org.kucro3.klink.expression.ExpressionInstance;
 import org.kucro3.klink.expression.ExpressionLibrary;
@@ -39,6 +40,11 @@ public class Return implements ExpressionCompiler.Level1 {
                 env.getRegisters().RV[i] = returns[i].get(env);
             env.getRegisters().RC = returns.length;
         };
+    }
+
+    public static Expression instance()
+    {
+        return new Expression("Return", new Return());
     }
 
     private static final Vector VECTOR = new Vector("(", ")", ",", 16);
