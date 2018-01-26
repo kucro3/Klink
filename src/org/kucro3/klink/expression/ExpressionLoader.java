@@ -109,7 +109,7 @@ public class ExpressionLoader {
 				}
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 				if(e.getCause() instanceof ScriptException)
-					throw (ScriptException) e;
+					throw (ScriptException) e.getCause();
 				// unused
 				throw new ScriptException("Internal: Reflection Failure", e);
 			}
