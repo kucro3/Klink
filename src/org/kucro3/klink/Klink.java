@@ -6,6 +6,7 @@ import java.util.*;
 import org.kucro3.klink.exception.ScriptException;
 import org.kucro3.klink.expression.ExpressionLibrary;
 import org.kucro3.klink.expression.ExpressionPackLoader;
+import org.kucro3.klink.flow.Flow;
 import org.kucro3.klink.syntax.KlinkTranslator;
 import org.kucro3.klink.syntax.Sequence;
 
@@ -140,7 +141,12 @@ public class Klink {
 	{
 		Translator translator = getTranslatorProviderWithLibrary().provide();
 		translator.setGlobal(seq);
-		return translator.pullAll();
+
+		Flow flow = translator.pullAll();
+		if(flow == null)
+			flow = new Flow();
+
+		return flow;
 	}
 
 	public Executable execute(String filename)
