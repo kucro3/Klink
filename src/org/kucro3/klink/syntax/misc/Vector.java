@@ -10,17 +10,24 @@ import java.util.Objects;
 public class Vector implements Cloneable, Parser {
     public Vector(String prefix, String suffix, String separator)
     {
-        this(prefix, suffix, separator, Integer.MAX_VALUE);
+        this(prefix, suffix, separator, 0, Integer.MAX_VALUE);
     }
 
-    public Vector(String prefix, String suffix, String separator, int limit)
+    public Vector(String prefix, String suffix, String separator, int max)
+    {
+        this(prefix, suffix, separator, max, 0);
+    }
+
+    public Vector(String prefix, String suffix, String separator, int max, int min)
     {
         this.prefix = Objects.requireNonNull(prefix, "prefix");
         this.suffix = Objects.requireNonNull(suffix, "suffix");
         this.separator = Objects.requireNonNull(separator, "separator");
-        this.limit = limit;
 
-        if(limit < 0)
+        this.max = max;
+        this.min = min;
+
+        if(max < 0 || min < 0 || max < min)
             throw new IllegalArgumentException("limit");
     }
 
@@ -65,7 +72,13 @@ public class Vector implements Cloneable, Parser {
 
         String[] splitted = buffer.toString().split(separator);
 
-        if(splitted.length > limit)
+        if(splitted.length < min)
+        {
+            this.result = UNDER_LIMIT;
+            return this;
+        }
+
+        if(splitted.length > max)
         {
             this.result = OUT_OF_LIMIT;
             return this;
@@ -162,7 +175,9 @@ public class Vector implements Cloneable, Parser {
         return new Vector(prefix, suffix, separator);
     }
 
-    private final int limit;
+    private final int max;
+
+    private final int min;
 
     private Result result;
 
@@ -177,4 +192,6 @@ public class Vector implements Cloneable, Parser {
     private final String separator;
 
     public static final Result OUT_OF_LIMIT = Result.of("OUT_OF_LIMIT", "Too many contents", false);
+
+    public static final Result UNDER_LIMIT = Result.of("UNDER_LIMIT", "Need more contents", false);
 }
