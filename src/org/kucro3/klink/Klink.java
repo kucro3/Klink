@@ -225,7 +225,7 @@ public class Klink {
 	{
 		return () -> {
 			Translator translator = translatorProvider.provide();
-			translator.setDynamic(dynamic);
+			translator.setCompileMode(compileMode);
 			return translator;
 		};
 	}
@@ -275,17 +275,17 @@ public class Klink {
 		return DEFAULT;
 	}
 
-	public void setDynamic(boolean dynamic)
+	public void setCompileMode(CompileMode compileMode)
 	{
-		this.dynamic = dynamic;
+		this.compileMode = Objects.requireNonNull(compileMode, "compileMode");
 	}
 
-	public boolean isDynamic()
+	public CompileMode getCompileMode()
 	{
-		return dynamic;
+		return compileMode;
 	}
 
-	private boolean dynamic;
+	private CompileMode compileMode;
 
 	private TranslatorProvider translatorProvider = () -> new KlinkTranslator();
 

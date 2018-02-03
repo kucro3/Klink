@@ -43,9 +43,9 @@ public interface Translator {
 	
 	public Optional<Operation> pullOperation(Ref[] refs, Flow defaultCodeBlock);
 
-	public void setDynamic(boolean dynamic);
+	public void setCompileMode(CompileMode compileMode);
 
-	public boolean isDynamic();
+	public CompileMode getCompileMode();
 	
 	public Flow pullAll();
 

@@ -93,15 +93,15 @@ public class KlinkTranslator implements Translator {
 	}
 
 	@Override
-	public void setDynamic(boolean dynamic)
+	public void setCompileMode(CompileMode compileMode)
 	{
-		this.dynamic = dynamic;
+		this.compileMode = compileMode;
 	}
 
 	@Override
-	public boolean isDynamic()
+	public CompileMode getCompileMode()
 	{
-		return this.dynamic;
+		return compileMode;
 	}
 
 	Optional<Operation> pullOperation0(Ref[] refs, Flow defaultCodeBlock)
@@ -129,7 +129,7 @@ public class KlinkTranslator implements Translator {
 		case ";":
 			return Optional.of(LinedOperation.construct(lib, expression, refs,
 					new Sequence(strs.toArray(new String[0]), globalSeq.currentRow() - 1, 0, globalSeq.getName())
-				, codeblock == null ? defaultCodeBlock : codeblock, snapshot(), globalSeq.currentRow(), dynamic));
+				, codeblock == null ? defaultCodeBlock : codeblock, snapshot(), globalSeq.currentRow(), compileMode));
 		
 		default:
 			strs.add(current);
@@ -231,7 +231,7 @@ public class KlinkTranslator implements Translator {
 					case ";":
 						operation = LinedOperation.construct(lib, exp, Util.NULL_REFS,
 								new Sequence(strs.toArray(new String[0]), globalSeq.currentRow() - 1, 0, globalSeq.getName())
-							, null, snapshot(), globalSeq.currentRow(), dynamic);
+							, null, snapshot(), globalSeq.currentRow(), compileMode);
 						judgable = not ? new LinedJudgeIfnot(operation, globalSeq.currentRow()) : new LinedJudgeIf(operation, globalSeq.currentRow());
 						if(left == null)
 							return judgable;
@@ -243,7 +243,7 @@ public class KlinkTranslator implements Translator {
 					case "|":
 						operation = LinedOperation.construct(lib, exp, Util.NULL_REFS,
 								new Sequence(strs.toArray(new String[0]), globalSeq.currentRow() - 1, 0, globalSeq.getName())
-							, null, snapshot(), globalSeq.currentRow(), dynamic);
+							, null, snapshot(), globalSeq.currentRow(), compileMode);
 						judgable = not ? new LinedJudgeIfnot(operation, globalSeq.currentRow()) : new LinedJudgeIf(operation, globalSeq.currentRow());
 						if(left == null)
 							left = judgable;
@@ -380,7 +380,7 @@ public class KlinkTranslator implements Translator {
 	
 	private Flow currentFlow = new Flow();
 
-	private boolean dynamic;
+	private CompileMode compileMode;
 	
 	public static class TranslatorReference
 	{
@@ -399,10 +399,10 @@ public class KlinkTranslator implements Translator {
 	
 	public static class LinedOperation extends Operation implements Lined
 	{
-		public static LinedOperation construct(ExpressionLibrary lib, String exp, Ref[] refs, Sequence seq, Flow codeBlock, Snapshot snapshot, int line, boolean dynamic)
+		public static LinedOperation construct(ExpressionLibrary lib, String exp, Ref[] refs, Sequence seq, Flow codeBlock, Snapshot snapshot, int line, CompileMode compileMode)
 		{
 			try {
-				return new LinedOperation(lib, exp, refs, seq, codeBlock, snapshot, line, dynamic);
+				return new LinedOperation(lib, exp, refs, seq, codeBlock, snapshot, line, compileMode);
 			} catch (ScriptException e) {
 				e.addLineInfo(line);
 				if(seq.getName() != null)
@@ -411,9 +411,9 @@ public class KlinkTranslator implements Translator {
 			}
 		}
 		
-		private LinedOperation(ExpressionLibrary lib, String exp, Ref[] refs, Sequence seq, Flow codeBlock, Snapshot snapshot, int line, boolean dynamic)
+		private LinedOperation(ExpressionLibrary lib, String exp, Ref[] refs, Sequence seq, Flow codeBlock, Snapshot snapshot, int line, CompileMode compileMode)
 		{
-			super(lib, exp, refs, seq, codeBlock, snapshot, dynamic);
+			super(lib, exp, refs, seq, codeBlock, snapshot, compileMode);
 			this.line = line;
 		}
 		
