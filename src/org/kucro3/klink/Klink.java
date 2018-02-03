@@ -233,7 +233,7 @@ public class Klink {
 	public TranslatorProvider getTranslatorProviderWithLibrary()
 	{
 		return () -> {
-			Translator provided = this.translatorProvider.provide();
+			Translator provided = getTranslatorProvider().provide();
 			provided.setLibrary(exprLibrary);
 			return provided;
 		};
@@ -285,7 +285,7 @@ public class Klink {
 		return compileMode;
 	}
 
-	private CompileMode compileMode;
+	private CompileMode compileMode = CompileMode.BEFORE_EXECUTE;
 
 	private TranslatorProvider translatorProvider = () -> new KlinkTranslator();
 
