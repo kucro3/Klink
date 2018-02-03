@@ -42,6 +42,10 @@ public interface Translator {
 	public Optional<Operation> pullOperation(Ref[] refs);
 	
 	public Optional<Operation> pullOperation(Ref[] refs, Flow defaultCodeBlock);
+
+	public void setDynamic(boolean dynamic);
+
+	public boolean isDynamic();
 	
 	public Flow pullAll();
 

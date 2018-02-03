@@ -10,6 +10,7 @@ public class FlowSnapshot {
 	{
 		this.content = content;
 		this.owner = owner;
+		this.prev = content.size() - 1;
 	}
 	
 	public Flow getOwner()
@@ -27,11 +28,37 @@ public class FlowSnapshot {
 		return content.size();
 	}
 	
-	public Executable last()
+	public Optional<Executable> last()
 	{
-		return content.get(content.size() - 1);
+		if(content.isEmpty())
+			return Optional.empty();
+		return Optional.of(content.get(content.size() - 1));
 	}
-	
+
+	public Optional<Executable> prev()
+	{
+		return get(prev);
+	}
+
+	public Optional<Executable> current()
+	{
+		return get(prev + 1);
+	}
+
+	public Optional<Executable> next()
+	{
+		return get(prev + 2);
+	}
+
+	private Optional<Executable> get(int index)
+	{
+		if(index >= 0 && index < content.size())
+			return Optional.of(content.get(index));
+		return Optional.of(content.get(index));
+	}
+
+	private final int prev;
+
 	private final Flow owner;
 	
 	private final List<Executable> content;
