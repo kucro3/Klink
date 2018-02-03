@@ -10,7 +10,7 @@ import java.util.Objects;
 public class Vector implements Cloneable, Parser {
     public Vector(String prefix, String suffix, String separator)
     {
-        this(prefix, suffix, separator, 0, Integer.MAX_VALUE);
+        this(prefix, suffix, separator, Integer.MAX_VALUE);
     }
 
     public Vector(String prefix, String suffix, String separator, int max)
