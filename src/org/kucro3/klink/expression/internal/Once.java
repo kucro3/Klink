@@ -2,6 +2,7 @@ package org.kucro3.klink.expression.internal;
 
 import org.kucro3.klink.*;
 import org.kucro3.klink.exception.JumpOut;
+import org.kucro3.klink.exception.ScriptException;
 import org.kucro3.klink.expression.Expression;
 import org.kucro3.klink.expression.ExpressionCompiler;
 import org.kucro3.klink.expression.ExpressionInstance;
@@ -18,7 +19,7 @@ public class Once implements ExpressionCompiler.Level3 {
         if(!seq.hasNext())
             return new JumpOutStub();
 
-        return new CodeStub(Util.pullExecutable(seq, refs, codeBlock, context));
+        return new CodeStub(Util.requireOperation(seq, refs, codeBlock, context));
     }
 
     public static Expression instance()

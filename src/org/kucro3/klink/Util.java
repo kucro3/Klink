@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.kucro3.klink.Registers.*;
 import org.kucro3.klink.Variables.Var;
 import org.kucro3.klink.exception.ScriptException;
+import org.kucro3.klink.flow.Empty;
 import org.kucro3.klink.flow.Flow;
 import org.kucro3.klink.flow.Operation;
 import org.kucro3.klink.syntax.Sequence;
@@ -112,7 +113,13 @@ public class Util {
 			throw InvalidReference(var);
 	}
 
-	public static Executable pullExecutable(Sequence seq, Ref[] refs, Flow codeBlock, Snapshot context)
+	public static Operation requireOperation(Sequence seq, Ref[] refs, Flow codeBlock, Snapshot context)
+	{
+		return pullOperation(seq, refs, codeBlock, context)
+				.orElseThrow(Util::ExpressionRequried);
+	}
+
+	public static Optional<Operation> pullOperation(Sequence seq, Ref[] refs, Flow codeBlock, Snapshot context)
 	{
 		seq.decRow();
 		Translator translator = context.getTranslator();
@@ -121,7 +128,12 @@ public class Util {
 			operation.set(translator.pullOperation(refs, codeBlock))
 		);
 
-		return operation.get().orElse(null);
+		return operation.get();
+	}
+
+	public static ScriptException ExpressionRequried()
+	{
+		return new ScriptException("Expression here required");
 	}
 	
 	public static ScriptException InvalidReference(String ref)

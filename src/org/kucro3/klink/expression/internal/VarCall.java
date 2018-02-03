@@ -41,7 +41,7 @@ public class VarCall implements ExpressionCompiler {
 			operation.set(translator.pullOperation(v, codeBlock));
 		});
 		
-		return new Compiled(operation.get());
+		return new Compiled(Util.requireOperation(seq, v, codeBlock, context));
 	}
 	
 	public static Expression instance()
@@ -51,7 +51,7 @@ public class VarCall implements ExpressionCompiler {
 	
 	public static class Compiled implements ExpressionInstance
 	{
-		public Compiled(Optional<Operation> operation)
+		public Compiled(Operation operation)
 		{
 			this.operation = operation;
 		}
@@ -59,9 +59,9 @@ public class VarCall implements ExpressionCompiler {
 		@Override
 		public void call(Klink sys, Environment env) 
 		{
-			this.operation.ifPresent((e) -> e.execute(sys, env));
+			this.operation.execute(sys, env);
 		}
 		
-		private final Optional<Operation> operation;
+		private final Operation operation;
 	}
 }
