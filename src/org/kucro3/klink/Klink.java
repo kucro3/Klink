@@ -223,7 +223,11 @@ public class Klink {
 	
 	public TranslatorProvider getTranslatorProvider()
 	{
-		return this.translatorProvider;
+		return () -> {
+			Translator translator = translatorProvider.provide();
+			translator.setDynamic(dynamic);
+			return translator;
+		};
 	}
 	
 	public TranslatorProvider getTranslatorProviderWithLibrary()
@@ -270,6 +274,18 @@ public class Klink {
 	{
 		return DEFAULT;
 	}
+
+	public void setDynamic(boolean dynamic)
+	{
+		this.dynamic = dynamic;
+	}
+
+	public boolean isDynamic()
+	{
+		return dynamic;
+	}
+
+	private boolean dynamic;
 
 	private TranslatorProvider translatorProvider = () -> new KlinkTranslator();
 
